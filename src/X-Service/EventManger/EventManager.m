@@ -120,8 +120,7 @@ extern DDLogLevel ddLogLevel;
             */
              
             [self->caches fillEventFromCache:event];
-            
-            for (id<ConsumerProtocol> consumer in self->consumers) {
+            for (id<ConsumerProtocol> consumer in [self->consumers copy]) {
                 if ([consumer.subscribleEventTypes containsObject:event.eventType]) {
                     [consumer consumeEvent:event];
                 }
