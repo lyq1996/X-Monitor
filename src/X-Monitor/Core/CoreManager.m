@@ -310,6 +310,8 @@ extern DDLogLevel ddLogLevel;
         } else {
             [self.dataSource addEvent:event];
         }
+        
+        completion(YES);
     }
 }
 
