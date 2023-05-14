@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Window Controller-->
+        <scene sceneID="IWB-Ie-4Mk">
+            <objects>
+                <customObject id="aHe-0w-acj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <windowController storyboardIdentifier="ActivationWindow" id="jjG-s6-fxj" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titleVisibility="hidden" id="Ack-FN-pFn">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="294" y="313" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+                        <view key="contentView" id="e3n-ZP-7mY">
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                        <connections>
+                            <outlet property="delegate" destination="jjG-s6-fxj" id="Wys-t5-bpL"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="b8T-4o-h4G" kind="relationship" relationship="window.shadowedContentViewController" id="TGP-fY-LdX"/>
+                    </connections>
+                </windowController>
+            </objects>
+            <point key="canvasLocation" x="238" y="3"/>
+        </scene>
+        <!--Activation View Controller-->
+        <scene sceneID="sIC-2I-vSL">
+            <objects>
+                <viewController storyboardIdentifier="ActivationVC" id="b8T-4o-h4G" customClass="ActivationViewController" sceneMemberID="viewController">
+                    <view key="view" id="1D0-OJ-Sqi">
+                        <rect key="frame" x="0.0" y="0.0" width="580" height="370"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" id="Ngj-A9-gtj">
+                                <rect key="frame" x="150" y="10" width="80" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Retry" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" inset="2" id="B0C-1U-5af">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="onRetry:" target="b8T-4o-h4G" id="hJu-ob-yle"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="Au9-ZY-AnX">
+                                <rect key="frame" x="350" y="10" width="80" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Xmj-Ym-YcC">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="onCancel:" target="b8T-4o-h4G" id="zO1-uX-Sth"/>
+                                </connections>
+                            </button>
+                            <progressIndicator fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="ecg-cn-z4s">
+                                <rect key="frame" x="0.0" y="37" width="580" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            </progressIndicator>
+                            <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EMf-ZX-JyX">
+                                <rect key="frame" x="0.0" y="50" width="580" height="320"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <clipView key="contentView" copiesOnScroll="NO" id="mwq-gU-IPO">
+                                    <rect key="frame" x="0.0" y="0.0" width="580" height="320"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="EFI-wT-wjs">
+                                            <rect key="frame" x="0.0" y="0.0" width="580" height="320"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="minSize" width="580" height="320"/>
+                                            <size key="maxSize" width="580" height="10000000"/>
+                                            <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        </textView>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="RZB-ia-X9V">
+                                    <rect key="frame" x="-100" y="-100" width="480" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="VSY-4h-I18">
+                                    <rect key="frame" x="-100" y="-100" width="15" height="200"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="Au9-ZY-AnX" id="h2X-eM-Trz"/>
+                        <outlet property="indicator" destination="ecg-cn-z4s" id="Bhc-V9-FhR"/>
+                        <outlet property="retryButton" destination="Ngj-A9-gtj" id="j6u-Hi-Uzv"/>
+                        <outlet property="textView" destination="EFI-wT-wjs" id="f9d-Pl-G9s"/>
+                    </connections>
+                </viewController>
+                <customObject id="2Af-Do-wC9" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="238" y="462"/>
+        </scene>
+    </scenes>
+</document>
