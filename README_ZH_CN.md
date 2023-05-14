@@ -12,15 +12,28 @@
     <a href="https://github.com/lyq1996/X-Monitor/README.md"><img src="https://img.shields.io/badge/lang-English-red.svg" alt="English"></a>
 </p>
 
+![GUI](docs/X-Monitor-GUI.png)
+
+# 阻断进程与低版本macOS支持
+如果你需要：
+1. 阻断功能；
+2. 10.12 ~ 10.14系统的事件监控。
+
+可以使用[NuwaStone](https://github.com/ConradSun/NuwaStone)，该项目支持`阻断`未签名的二进制`执行`。
+
+> NuwaStone未来可能与X-Monitor合并，并移动到[Macintosh-Mystery](https://github.com/Macintosh-Mystery)组织。
+
 # 功能
 它当前支持：
 1. 来自Endpoint Security框架的`notify_exit`, `notify_exec`, `notify_fork`, `notify_open`, `notify_unlink`, `notify_rename`事件。
 2. 可根据事件类型进行分类。
 
 它未来将支持：
-1. 来自Endpoint Security框架的所有事件（未完成）；
-2. 来自Network Extension框架的网络连接、DNS事件（未完成）；
-3. 进程链分析（未完成）；
+1. 提供来自`Endpoint Security`框架的`所有事件`（H1优先级）（X-Monitor被设计为可拓展的，因此添加`事件`非常简单）；
+2. 实现事件过滤器（H1优先级）；
+3. 进程链分析（H2优先级）；
+4. 来自`Network Extension`框架的网络连接、DNS事件（H2优先级）；
+5. 事件保存至本地（H3优先级）。
 
 # 安装
 可以从源码编译，也可以安装预编译的二进制。
@@ -29,27 +42,31 @@
 需要Xcode Version 14.3
 
 # 使用
-由于X-Monitor的开发人员没有相应的Endpoint Security Entitlements，请关闭SIP使用。
+## 系统要求
+X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 
+在创建工程时曾考虑过使用内核拓展（KEXT）支持`10.12 ~ 10.14`的系统，但：
+1. KEXT是过时的；
+2. KEXT支持的事件远比不上SEXT（来自`Endpoint Security`）；
 
-![GUI](docs/X-Monitor-GUI.png)
+因此，经过权衡，KEXT的开发计划无限期搁置。
 
-1. 点击`start`，即可开始监控事件，订阅事件可通过左上角`X-Monitor`->`Settings`进行设置。
+## 注意事项
+由于X-Monitor的开发人员没有相应的`Entitlements`，请关闭SIP使用。
+
+## 启动
+
+1. 点击界面`start`，即可开始监控事件，订阅事件可通过左上角`X-Monitor`->`Settings`进行设置。
 2. 点击具体行，可显示事件详细信息。
 
-# 卸载
+## 卸载
 只需要将其移除到废纸篓。
 
+# 支持
+如果您在使用X-Monitor时遇到任何问题，欢迎提出issue。
 
-# 技术支持
-如果您在使用X-Monitor时遇到任何问题，欢迎提出。
-
-# 待做事项
-1. 完成所有Endpoint Security事件的解析（太多了，我需要帮助！）；
-2. X-Service添加网络连接、DNS事件生产者；
-3. 进程链分析；
-4. 单元测试；
-5. 文档编写；
-6. 事件阻断机制实现；
-7. 系统拓展XPC对端签名校验（自实现）；
-8. 优化用于显示事件的NSTableView的性能。
+# 其它待做事项
+1. 单元测试；
+2. 文档编写；
+3. 系统拓展XPC对端签名校验（自实现）；
+4. 优化用于显示事件的NSTableView的性能。
