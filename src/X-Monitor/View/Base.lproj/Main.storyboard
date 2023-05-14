@@ -859,7 +859,7 @@
                                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                                             <prototypeCellViews>
                                                                                                 <tableCellView id="CJL-NT-Vtn">
-                                                                                                    <rect key="frame" x="11" y="0.0" width="25" height="28"/>
+                                                                                                    <rect key="frame" x="11" y="0.0" width="373" height="28"/>
                                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                                     <subviews>
                                                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="0IW-mJ-s3J">
