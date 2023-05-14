@@ -7,7 +7,6 @@
 
 #import "EventManager.h"
 #import "ProcessCache.h"
-#import "NSMutableDictionary+Event.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
 extern DDLogLevel ddLogLevel;

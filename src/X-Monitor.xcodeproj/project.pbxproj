@@ -57,7 +57,6 @@
 		DEBD99202A1078B10098A4F8 /* EventDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBD991F2A1078B10098A4F8 /* EventDataSource.m */; };
 		DEC5D5BE29EA403400EAB6D2 /* EventTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC5D5BD29EA403400EAB6D2 /* EventTableViewController.m */; };
 		DEC5D5C129EA43D100EAB6D2 /* EventInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC5D5C029EA43D100EAB6D2 /* EventInfoViewController.m */; };
-		DEC5D5C329EA49FB00EAB6D2 /* NSMutableDictionary+Event.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC5D5C229EA49FB00EAB6D2 /* NSMutableDictionary+Event.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -233,7 +232,6 @@
 		3585EBB12994872C002E70C6 /* ServiceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceManager.h; sourceTree = "<group>"; };
 		3585EBB32994872C002E70C6 /* ServiceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceManager.m; sourceTree = "<group>"; };
 		3585EBBC29948EA5002E70C6 /* ServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceProtocol.h; sourceTree = "<group>"; };
-		3585EBBE29949799002E70C6 /* NSMutableDictionary+Event.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+Event.h"; sourceTree = "<group>"; };
 		35A64B992993D00300D59F2A /* ProducerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProducerProtocol.h; sourceTree = "<group>"; };
 		35C7ADE929BC76E4001130C8 /* ConsumerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConsumerProtocol.h; sourceTree = "<group>"; };
 		35C7ADEA29BC76F9001130C8 /* EventManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventManager.h; sourceTree = "<group>"; };
@@ -273,7 +271,6 @@
 		DEC5D5BD29EA403400EAB6D2 /* EventTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventTableViewController.m; sourceTree = "<group>"; };
 		DEC5D5BF29EA43D100EAB6D2 /* EventInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventInfoViewController.h; sourceTree = "<group>"; };
 		DEC5D5C029EA43D100EAB6D2 /* EventInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventInfoViewController.m; sourceTree = "<group>"; };
-		DEC5D5C229EA49FB00EAB6D2 /* NSMutableDictionary+Event.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+Event.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -497,8 +494,6 @@
 		35C7ADE829BC72DD001130C8 /* EventManger */ = {
 			isa = PBXGroup;
 			children = (
-				3585EBBE29949799002E70C6 /* NSMutableDictionary+Event.h */,
-				DEC5D5C229EA49FB00EAB6D2 /* NSMutableDictionary+Event.m */,
 				35A64B992993D00300D59F2A /* ProducerProtocol.h */,
 				35C7ADE929BC76E4001130C8 /* ConsumerProtocol.h */,
 				35F65EA429BCBAD000B6821C /* EventManagerStatus.h */,
@@ -827,7 +822,6 @@
 				35E84BC42A0C7DCC00E4921A /* ProcUtils.m in Sources */,
 				3551D22729739E730088CE7F /* main.m in Sources */,
 				351F748D29DC10510048899E /* ESProducer.m in Sources */,
-				DEC5D5C329EA49FB00EAB6D2 /* NSMutableDictionary+Event.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -875,7 +869,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -907,7 +901,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -936,7 +930,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -969,7 +963,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1007,7 +1001,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1048,7 +1042,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1084,7 +1078,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1120,7 +1114,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1010;
+				CURRENT_PROJECT_VERSION = 1015;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (

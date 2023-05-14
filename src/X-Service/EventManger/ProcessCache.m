@@ -6,7 +6,6 @@
 //
 
 #import "ProcessCache.h"
-#import "NSMutableDictionary+Event.h"
 #import "ProcUtils.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
 

@@ -7,7 +7,6 @@
 
 #import "ESEventHandler.h"
 #import "ESDefination.h"
-#import "NSMutableDictionary+Event.h"
 #import <bsm/libbsm.h>
 #import <CocoaLumberjack/CocoaLumberjack.h>
 #import <Foundation/Foundation.h>
