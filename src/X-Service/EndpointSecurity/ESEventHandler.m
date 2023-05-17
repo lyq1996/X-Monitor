@@ -84,7 +84,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_AUTH_KEXTLOAD
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    KextLoadEvent *event = (KextLoadEvent *)[super handleEvent:msg];
+    event.kextFilePath = [NSString stringWithUTF8String:[super getString:msg->event.kextload.identifier]];
     return event;
 }
 
