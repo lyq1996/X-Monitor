@@ -695,6 +695,47 @@ static NSSet *eventClassesSet;
 
 @implementation CreateEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _destinationFilePath = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _destinationFilePath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tDestination File Path: %@", _destinationFilePath];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _destinationFilePath = [decoder decodeObjectForKey:@"destinationFilePath"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_destinationFilePath forKey:@"destinationFilePath"];
+}
+
 @end
 
 @implementation ExchangeDataEvent

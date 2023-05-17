@@ -123,6 +123,8 @@ DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(CreateEvent)
 
+@property (nonatomic, copy) NSString *destinationFilePath;
+
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(ExchangeDataEvent)

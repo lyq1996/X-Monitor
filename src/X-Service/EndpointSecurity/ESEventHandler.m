@@ -206,7 +206,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CREATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    CreateEvent *event = (CreateEvent *)[super handleEvent:msg];
+    
+    NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.dir->path]];
+    [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.filename]]];
+    event.destinationFilePath = destination;
+    
     return event;
 }
 
