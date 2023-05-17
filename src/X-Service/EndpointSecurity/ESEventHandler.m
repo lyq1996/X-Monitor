@@ -220,7 +220,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_EXCHANGEDATA
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    ExchangeDataEvent *event = (ExchangeDataEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, file1, msg->event.exchangedata.file1)
+    FILL_EVENT_FILE_INFO(event, file2, msg->event.exchangedata.file2)
     return event;
 }
 
