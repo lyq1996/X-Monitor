@@ -242,7 +242,31 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_GET_TASK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    GetTaskEvent *event = (GetTaskEvent *)[super handleEvent:msg];
+    FILL_EVENT_PROCESS_INFO(event, target, msg->event.get_task.target)
+    if (msg->version >= 5) {
+        switch (msg->event.get_task.type) {
+            case ES_GET_TASK_TYPE_TASK_FOR_PID:
+                event.taskType = @"ES_GET_TASK_TYPE_TASK_FOR_PID";
+                break;
+            
+            case ES_GET_TASK_TYPE_EXPOSE_TASK:
+                event.taskType = @"ES_GET_TASK_TYPE_EXPOSE_TASK";
+                break;
+            
+            case ES_GET_TASK_TYPE_IDENTITY_TOKEN:
+                event.taskType = @"ES_GET_TASK_TYPE_IDENTITY_TOKEN";
+                break;
+                
+            default:
+                event.taskType = @"";
+                break;
+        }
+    }
+    else {
+        event.taskType = @"";
+    }
+    
     return event;
 }
 

@@ -846,6 +846,55 @@ static NSSet *eventClassesSet;
 
 @implementation GetTaskEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_PROCESS_PROPERTY(target)
+        _taskType = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _targetPath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget Process Create Time: %@\n", _targetCreateTime];
+    [detailString appendFormat:@"\tTarget Process Path: %@\n", _targetPath];
+    [detailString appendFormat:@"\tTarget Process Cmdline: %@\n", _targetCmdline];
+    [detailString appendFormat:@"\tTarget Process Codesign Flag: 0x%X\n", [_targetCodesignFlag unsignedIntValue]];
+    [detailString appendFormat:@"\tTarget Process Signing ID: %@\n", _targetSigningID];
+    [detailString appendFormat:@"\tTarget Process Team ID: %@\n", _targetTeamID];
+    [detailString appendFormat:@"\tTask Type: %@\n", _taskType];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_PROCESS_PROPERTY(target)
+        _taskType = [decoder decodeObjectForKey:@"taskType"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_PROCESS_PROPERTY(target)
+    [encoder encodeObject:_taskType forKey:@"taskType"];
+}
+
 @end
 
 @implementation KextUnloadEvent
