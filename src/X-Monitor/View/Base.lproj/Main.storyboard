@@ -1493,14 +1493,14 @@
         <scene sceneID="mmX-6z-11R">
             <objects>
                 <viewController id="0tk-qp-Ji3" userLabel="Event Table" customClass="EventTableViewController" sceneMemberID="viewController">
-                    <view key="view" id="q4z-a5-yW0">
-                        <rect key="frame" x="0.0" y="0.0" width="796" height="32"/>
+                    <view key="view" misplaced="YES" id="q4z-a5-yW0">
+                        <rect key="frame" x="0.0" y="0.0" width="756" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qky-ce-gcE">
-                                <rect key="frame" x="0.0" y="0.0" width="796" height="32"/>
+                                <rect key="frame" x="0.0" y="0.0" width="736" height="32"/>
                                 <clipView key="contentView" id="B1U-Vm-6ni">
-                                    <rect key="frame" x="1" y="1" width="794" height="30"/>
+                                    <rect key="frame" x="1" y="1" width="734" height="30"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="systemDefault" headerView="6KV-jV-ld0" viewBased="YES" id="TrI-RG-osL">
@@ -1619,7 +1619,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn editable="NO" width="128" minWidth="100" maxWidth="1000" id="J5e-eB-nFC" userLabel="Process">
+                                                <tableColumn editable="NO" width="128" minWidth="100" maxWidth="9.2233720368547758e+18" id="J5e-eB-nFC" userLabel="Process">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Process">
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1656,7 +1656,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn editable="NO" width="291" minWidth="100" maxWidth="1000" id="tCT-1u-6t0" userLabel="Short Info">
+                                                <tableColumn editable="NO" width="291" minWidth="100" maxWidth="9.2233720368547758e+18" id="tCT-1u-6t0" userLabel="Short Info">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Short Info">
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1697,12 +1697,12 @@
                                         </tableView>
                                     </subviews>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="AqH-Q6-JUl">
-                                    <rect key="frame" x="1" y="16" width="779" height="15"/>
+                                <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="AqH-Q6-JUl">
+                                    <rect key="frame" x="1" y="15" width="734" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="32F-6j-9g8">
-                                    <rect key="frame" x="780" y="16" width="15" height="13"/>
+                                    <rect key="frame" x="779" y="29" width="16" height="2"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" wantsLayer="YES" id="6KV-jV-ld0">
@@ -1751,11 +1751,11 @@
                                         </textView>
                                     </subviews>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="vyb-aF-MGw">
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="vyb-aF-MGw">
                                     <rect key="frame" x="-100" y="-100" width="225" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="b28-zK-8So">
+                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="b28-zK-8So">
                                     <rect key="frame" x="-100" y="-100" width="15" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
