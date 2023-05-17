@@ -20,7 +20,9 @@ extern DDLogLevel ddLogLevel;
 }
 
 - (void)updateEventTable {
+    NSIndexSet *indexs = eventTable.selectedRowIndexes;
     [eventTable reloadData];
+    [eventTable selectRowIndexes:indexs byExtendingSelection:NO];
     if (eventTable.numberOfRows > 0 && autoScroll) {
         [eventTable scrollRowToVisible:eventTable.numberOfRows - 1];
     }
