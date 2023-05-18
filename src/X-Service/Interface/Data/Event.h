@@ -49,7 +49,7 @@ GEN_PROCESS_PROPERTY(parent)
 
 @interface EventFactory : NSObject
 
-+ (Event *)initEvent:(NSString *)eventType;
++ (nullable Event *)initEvent:(NSString *)eventType;
 + (NSSet *)getAllClasses;
 
 @end

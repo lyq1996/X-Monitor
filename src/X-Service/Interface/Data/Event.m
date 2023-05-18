@@ -67,7 +67,7 @@ extern DDLogLevel ddLogLevel;
 static NSDictionary *eventClasses;
 static NSSet *eventClassesSet;
 
-+ (Event *)initEvent:(NSString *)eventType {
++ (nullable Event *)initEvent:(NSString *)eventType {
     Class eventClass = [eventClasses objectForKey:eventType];
     if (!eventClass) {
         return nil;
@@ -551,7 +551,7 @@ static NSSet *eventClassesSet;
     [detailString appendFormat:@"\tSource File Modify Time: %@\n", _sourceFileModifyTime];
     [detailString appendFormat:@"\tSource File Create Time: %@\n", _sourceFileCreateTime];
     [detailString appendFormat:@"\tSource File Path: %@\n", _sourceFilePath];
-    [detailString appendFormat:@"\tDestination File Path: %@", _destinationFilePath];
+    [detailString appendFormat:@"\tDestination File Path: %@\n", _destinationFilePath];
     
     [detailString appendFormat:@"}"];
 
