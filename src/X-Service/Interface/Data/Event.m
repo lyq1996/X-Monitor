@@ -333,7 +333,7 @@ static NSSet *eventClassesSet;
         _pid = [decoder decodeObjectForKey:@"pid"];
         DECODE_PROCESS_PROPERTY(process)
         DECODE_PROCESS_PROPERTY(parent)
-        _ppid = [decoder decodeObjectForKey:@"pid"];
+        _ppid = [decoder decodeObjectForKey:@"ppid"];
     }
     return self;
 }
