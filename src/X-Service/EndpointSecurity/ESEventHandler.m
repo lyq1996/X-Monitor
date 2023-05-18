@@ -85,7 +85,7 @@ extern ESEvent ESEvents[];
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     KextLoadEvent *event = (KextLoadEvent *)[super handleEvent:msg];
-    event.kextFilePath = [NSString stringWithUTF8String:[super getString:msg->event.kextload.identifier]];
+    event.kextFilePath = [NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]];
     return event;
 }
 
@@ -159,7 +159,7 @@ extern ESEvent ESEvents[];
     int argv_count = es_exec_arg_count(&msg->event.exec);
     for(int i=0; i<argv_count; ++i) {
         es_string_token_t argv_token = es_exec_arg(&msg->event.exec, i);
-        NSString *argv = [NSString stringWithUTF8String:[super getString:argv_token]];
+        NSString *argv = [NSString stringWithUTF8String:[self getString:argv_token]];
         cmdline = [cmdline stringByAppendingString:argv];
         if (i != argv_count - 1) {
             cmdline = [cmdline stringByAppendingString:@" "];
