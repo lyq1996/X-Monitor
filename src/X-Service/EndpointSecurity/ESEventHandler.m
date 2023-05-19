@@ -197,7 +197,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CLOSE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    CloseEvent *event = (CloseEvent *)[super handleEvent:msg];
+    event.targetFilePath = [NSString stringWithUTF8String:[super getString:msg->event.close.target->path]];
     return event;
 }
 
