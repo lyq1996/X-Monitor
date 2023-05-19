@@ -290,7 +290,14 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MOUNT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    MountEvent *event = (MountEvent *)[super handleEvent:msg];
+    event.fsID = [NSString stringWithFormat:@"%d %d", msg->event.mount.statfs->f_fsid.val[0], msg->event.mount.statfs->f_fsid.val[1]];
+    event.fsType = [NSString stringWithUTF8String:msg->event.mount.statfs->f_fstypename];
+    event.ownerUid = [NSNumber numberWithUnsignedInt:msg->event.mount.statfs->f_owner];
+    event.mountFlags = [NSNumber numberWithUnsignedInt:msg->event.mount.statfs->f_flags];
+    event.totalFiles = [NSNumber numberWithUnsignedLongLong:msg->event.mount.statfs->f_files];
+    event.mountPath = [NSString stringWithUTF8String:msg->event.mount.statfs->f_mntonname];
+    event.sourcePath = [NSString stringWithUTF8String:msg->event.mount.statfs->f_mntfromname];
     return event;
 }
 

@@ -520,6 +520,68 @@ static NSSet *eventClassesSet;
 
 @implementation MountEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _mountPath = @"";
+        _sourcePath = @"";
+        _fsType = @"";
+        _fsID = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _mountPath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tMount Path: %@\n", _mountPath];
+    [detailString appendFormat:@"\tSource Path: %@\n", _sourcePath];
+    [detailString appendFormat:@"\tFile System Type: %@\n", _fsType];
+    [detailString appendFormat:@"\tFile System ID: %@\n", _fsID];
+    [detailString appendFormat:@"\tOwner UID: %@\n", _ownerUid];
+    [detailString appendFormat:@"\tMount Flags: %@\n", _mountFlags];
+    [detailString appendFormat:@"\tTotal Files: %@\n", _totalFiles];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _mountPath = [decoder decodeObjectForKey:@"mountPath"];
+        _sourcePath = [decoder decodeObjectForKey:@"sourcePath"];
+        _fsType = [decoder decodeObjectForKey:@"fsType"];
+        _fsID = [decoder decodeObjectForKey:@"fsID"];
+        _ownerUid = [decoder decodeObjectForKey:@"ownerUid"];
+        _mountFlags = [decoder decodeObjectForKey:@"mountFlags"];
+        _totalFiles = [decoder decodeObjectForKey:@"totalFiles"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_mountPath forKey:@"mountPath"];
+    [encoder encodeObject:_sourcePath forKey:@"sourcePath"];
+    [encoder encodeObject:_fsType forKey:@"fsType"];
+    [encoder encodeObject:_fsID forKey:@"fsID"];
+    [encoder encodeObject:_ownerUid forKey:@"ownerUid"];
+    [encoder encodeObject:_mountFlags forKey:@"mountFlags"];
+    [encoder encodeObject:_totalFiles forKey:@"totalFiles"];
+}
+
 @end
 
 @implementation RenameEvent

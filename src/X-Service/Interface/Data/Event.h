@@ -91,6 +91,14 @@ DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(MountEvent)
 
+@property (nonatomic, copy) NSString *mountPath;
+@property (nonatomic, copy) NSString *sourcePath;
+@property (nonatomic, copy) NSString *fsType;
+@property (nonatomic, copy) NSNumber *ownerUid;
+@property (nonatomic, copy) NSNumber *mountFlags;
+@property (nonatomic, copy) NSNumber *totalFiles;
+@property (nonatomic, copy) NSString *fsID;
+
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(RenameEvent)
