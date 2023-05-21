@@ -59,9 +59,7 @@ DDLogLevel ddLogLevel = DDLogLevelInfo;
 }
 
 - (void)registerDefaults {
-    // default categories
-    NSError *error;
-    
+    // default categories    
     DDLogInfo(@"init default categories");
     EventCategory *category = [[EventCategory alloc] init];
     category.categoryName = kEventCategoryAll;
