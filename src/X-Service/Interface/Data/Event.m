@@ -820,7 +820,7 @@ static NSSet *eventClassesSet;
     NSMutableString *detailString = [[super detailInfo] mutableCopy];
 
     [detailString appendFormat:@"Event Details: {\n"];
-    [detailString appendFormat:@"\tStatus %@\n", _status];
+    [detailString appendFormat:@"\tStatus: %@\n", _status];
     [detailString appendFormat:@"}"];
 
     return detailString;
