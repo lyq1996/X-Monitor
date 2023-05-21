@@ -78,6 +78,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_close",
         @"notify_mount",
         @"notify_signal",
+        @"notify_mmap",
     ]];
     
     NSMutableArray *tmpSupportedEventTypes = [NSMutableArray array];

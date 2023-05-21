@@ -272,7 +272,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MMAP
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    MmapEvent *event = (MmapEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, source, msg->event.mmap.source)
     return event;
 }
 
