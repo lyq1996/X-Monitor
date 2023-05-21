@@ -385,7 +385,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SIGNAL
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    SignalEvent *event = (SignalEvent *)[super handleEvent:msg];
+    event.signal = [NSNumber numberWithInt:msg->event.signal.sig];
+    FILL_EVENT_PROCESS_INFO(event, target, msg->event.signal.target)
     return event;
 }
 
