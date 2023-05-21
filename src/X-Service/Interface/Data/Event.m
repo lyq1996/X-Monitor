@@ -564,6 +564,53 @@ static NSSet *eventClassesSet;
 
 @implementation MprotectEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%p", _address.pointerValue];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tAddress: %p\n", _address.pointerValue];
+    [detailString appendFormat:@"\tSize: %@\n", _size];
+    [detailString appendFormat:@"\tProtection: %@\n", _protection];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _address = [decoder decodeObjectForKey:@"address"];
+        _size = [decoder decodeObjectForKey:@"size"];
+        _protection = [decoder decodeObjectForKey:@"protection"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_address forKey:@"address"];
+    [encoder encodeObject:_size forKey:@"size"];
+    [encoder encodeObject:_protection forKey:@"protection"];
+}
+
 @end
 
 @implementation MountEvent

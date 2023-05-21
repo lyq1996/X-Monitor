@@ -89,6 +89,10 @@ DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(MprotectEvent)
 
+@property (nonatomic, copy) NSNumber *protection;
+@property (nonatomic, copy) NSNumber *address;
+@property (nonatomic, copy) NSNumber *size;
+
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(MountEvent)

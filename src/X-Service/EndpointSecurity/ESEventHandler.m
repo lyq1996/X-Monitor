@@ -282,7 +282,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MPROTECT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    MprotectEvent *event = (MprotectEvent *)[super handleEvent:msg];
+    event.protection = [NSNumber numberWithInt:msg->event.mprotect.protection];
+    event.address = [NSNumber numberWithUnsignedLongLong:msg->event.mprotect.address];
+    event.size = [NSNumber numberWithUnsignedLongLong:msg->event.mprotect.size];
     return event;
 }
 
