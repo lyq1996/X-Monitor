@@ -714,7 +714,7 @@ static NSSet *eventClassesSet;
     NSMutableString *detailString = [[super detailInfo] mutableCopy];
 
     [detailString appendFormat:@"Event Details: {\n"];
-    [detailString appendFormat:@"\tDestination File Path: %@", _destinationFilePath];
+    [detailString appendFormat:@"\tDestination File Path: %@\n", _destinationFilePath];
     [detailString appendFormat:@"}"];
 
     return detailString;
