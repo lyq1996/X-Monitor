@@ -512,13 +512,170 @@ static NSSet *eventClassesSet;
 
 @implementation MmapEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(source)
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _sourceFilePath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tSource File UID: %@\n", _sourceFileUID];
+    [detailString appendFormat:@"\tSource File GID: %@\n", _sourceFileGID];
+    [detailString appendFormat:@"\tSource File Mode: %@\n", _sourceFileMode];
+    [detailString appendFormat:@"\tSource File Access Time: %@\n", _sourceFileAccessTime];
+    [detailString appendFormat:@"\tSource File Modify Time: %@\n", _sourceFileModifyTime];
+    [detailString appendFormat:@"\tSource File Create Time: %@\n", _sourceFileCreateTime];
+    [detailString appendFormat:@"\tSource File Path: %@\n", _sourceFilePath];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(source)
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(source)
+}
+
 @end
 
 @implementation MprotectEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%p", _address.pointerValue];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tAddress: %p\n", _address.pointerValue];
+    [detailString appendFormat:@"\tSize: %@\n", _size];
+    [detailString appendFormat:@"\tProtection: %@\n", _protection];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _address = [decoder decodeObjectForKey:@"address"];
+        _size = [decoder decodeObjectForKey:@"size"];
+        _protection = [decoder decodeObjectForKey:@"protection"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_address forKey:@"address"];
+    [encoder encodeObject:_size forKey:@"size"];
+    [encoder encodeObject:_protection forKey:@"protection"];
+}
+
 @end
 
 @implementation MountEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _mountPath = @"";
+        _sourcePath = @"";
+        _fsType = @"";
+        _fsID = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _mountPath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tMount Path: %@\n", _mountPath];
+    [detailString appendFormat:@"\tSource Path: %@\n", _sourcePath];
+    [detailString appendFormat:@"\tFile System Type: %@\n", _fsType];
+    [detailString appendFormat:@"\tFile System ID: %@\n", _fsID];
+    [detailString appendFormat:@"\tOwner UID: %@\n", _ownerUid];
+    [detailString appendFormat:@"\tMount Flags: %@\n", _mountFlags];
+    [detailString appendFormat:@"\tTotal Files: %@\n", _totalFiles];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _mountPath = [decoder decodeObjectForKey:@"mountPath"];
+        _sourcePath = [decoder decodeObjectForKey:@"sourcePath"];
+        _fsType = [decoder decodeObjectForKey:@"fsType"];
+        _fsID = [decoder decodeObjectForKey:@"fsID"];
+        _ownerUid = [decoder decodeObjectForKey:@"ownerUid"];
+        _mountFlags = [decoder decodeObjectForKey:@"mountFlags"];
+        _totalFiles = [decoder decodeObjectForKey:@"totalFiles"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_mountPath forKey:@"mountPath"];
+    [encoder encodeObject:_sourcePath forKey:@"sourcePath"];
+    [encoder encodeObject:_fsType forKey:@"fsType"];
+    [encoder encodeObject:_fsID forKey:@"fsID"];
+    [encoder encodeObject:_ownerUid forKey:@"ownerUid"];
+    [encoder encodeObject:_mountFlags forKey:@"mountFlags"];
+    [encoder encodeObject:_totalFiles forKey:@"totalFiles"];
+}
 
 @end
 
@@ -579,6 +736,57 @@ static NSSet *eventClassesSet;
 @end
 
 @implementation SignalEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_PROCESS_PROPERTY(target)
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _signal];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget Process Create Time: %@\n", _targetCreateTime];
+    [detailString appendFormat:@"\tTarget Process Path: %@\n", _targetPath];
+    [detailString appendFormat:@"\tTarget Process Cmdline: %@\n", _targetCmdline];
+    [detailString appendFormat:@"\tTarget Process Codesign Flag: 0x%X\n", [_targetCodesignFlag unsignedIntValue]];
+    [detailString appendFormat:@"\tTarget Process Signing ID: %@\n", _targetSigningID];
+    [detailString appendFormat:@"\tTarget Process Team ID: %@\n", _targetTeamID];
+    
+    [detailString appendFormat:@"\tSignal: %@\n", _signal];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_PROCESS_PROPERTY(target)
+        _signal= [decoder decodeObjectForKey:@"signal"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_PROCESS_PROPERTY(target)
+    [encoder encodeObject:_signal forKey:@"signal"];
+}
 
 @end
 
@@ -690,6 +898,54 @@ static NSSet *eventClassesSet;
 @end
 
 @implementation CloseEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(target)
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _targetFilePath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget File UID: %@\n", _targetFileUID];
+    [detailString appendFormat:@"\tTarget File GID: %@\n", _targetFileGID];
+    [detailString appendFormat:@"\tTarget File Mode: %@\n", _targetFileMode];
+    [detailString appendFormat:@"\tTarget File Access Time: %@\n", _targetFileAccessTime];
+    [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
+    [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
+    [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(target)
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(target)
+}
 
 @end
 

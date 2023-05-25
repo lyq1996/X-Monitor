@@ -83,13 +83,27 @@ DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(MmapEvent)
 
+GEN_FILE_PROPERTY(source)
+
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(MprotectEvent)
 
+@property (nonatomic, copy) NSNumber *protection;
+@property (nonatomic, copy) NSNumber *address;
+@property (nonatomic, copy) NSNumber *size;
+
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(MountEvent)
+
+@property (nonatomic, copy) NSString *mountPath;
+@property (nonatomic, copy) NSString *sourcePath;
+@property (nonatomic, copy) NSString *fsType;
+@property (nonatomic, copy) NSNumber *ownerUid;
+@property (nonatomic, copy) NSNumber *mountFlags;
+@property (nonatomic, copy) NSNumber *totalFiles;
+@property (nonatomic, copy) NSString *fsID;
 
 DEFINE_DERIVE_EVENT_CLASS_END
 
@@ -101,6 +115,9 @@ GEN_FILE_PROPERTY(source)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SignalEvent)
+
+@property (nonatomic, copy) NSNumber *signal;
+GEN_PROCESS_PROPERTY(target)
 
 DEFINE_DERIVE_EVENT_CLASS_END
 
@@ -118,6 +135,8 @@ DEFINE_DERIVE_EVENT_CLASS_START(ForkEvent)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(CloseEvent)
+
+GEN_FILE_PROPERTY(target)
 
 DEFINE_DERIVE_EVENT_CLASS_END
 

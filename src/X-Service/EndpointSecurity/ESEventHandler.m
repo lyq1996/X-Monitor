@@ -197,7 +197,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CLOSE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    CloseEvent *event = (CloseEvent *)[super handleEvent:msg];
+    event.targetFilePath = [NSString stringWithUTF8String:[super getString:msg->event.close.target->path]];
     return event;
 }
 
@@ -302,7 +303,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MMAP
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    MmapEvent *event = (MmapEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, source, msg->event.mmap.source)
     return event;
 }
 
@@ -311,7 +313,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MPROTECT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    MprotectEvent *event = (MprotectEvent *)[super handleEvent:msg];
+    event.protection = [NSNumber numberWithInt:msg->event.mprotect.protection];
+    event.address = [NSNumber numberWithUnsignedLongLong:msg->event.mprotect.address];
+    event.size = [NSNumber numberWithUnsignedLongLong:msg->event.mprotect.size];
     return event;
 }
 
@@ -320,7 +325,14 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MOUNT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    MountEvent *event = (MountEvent *)[super handleEvent:msg];
+    event.fsID = [NSString stringWithFormat:@"%d %d", msg->event.mount.statfs->f_fsid.val[0], msg->event.mount.statfs->f_fsid.val[1]];
+    event.fsType = [NSString stringWithUTF8String:msg->event.mount.statfs->f_fstypename];
+    event.ownerUid = [NSNumber numberWithUnsignedInt:msg->event.mount.statfs->f_owner];
+    event.mountFlags = [NSNumber numberWithUnsignedInt:msg->event.mount.statfs->f_flags];
+    event.totalFiles = [NSNumber numberWithUnsignedLongLong:msg->event.mount.statfs->f_files];
+    event.mountPath = [NSString stringWithUTF8String:msg->event.mount.statfs->f_mntonname];
+    event.sourcePath = [NSString stringWithUTF8String:msg->event.mount.statfs->f_mntfromname];
     return event;
 }
 
@@ -408,7 +420,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SIGNAL
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    SignalEvent *event = (SignalEvent *)[super handleEvent:msg];
+    event.signal = [NSNumber numberWithInt:msg->event.signal.sig];
+    FILL_EVENT_PROCESS_INFO(event, target, msg->event.signal.target)
     return event;
 }
 
