@@ -100,7 +100,7 @@
 }
 
 
-+ (NSDictionary *)getCodeSigningFromPid:(NSString *)path {
++ (nullable NSDictionary *)getCodeSigningFromPid:(NSString *)path {
     if ([path isEqualToString:@""]) {
         return nil;
     }

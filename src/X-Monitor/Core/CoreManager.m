@@ -150,7 +150,9 @@ extern DDLogLevel ddLogLevel;
                 }
                 
                 [[ConfigManager shared] saveEventSetting];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kSidebarReloadKey object:nil];
+                if (needReload) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kSidebarReloadKey object:nil];
+                }
             }
         }
     }];

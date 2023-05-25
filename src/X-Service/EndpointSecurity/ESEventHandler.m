@@ -85,7 +85,7 @@ extern ESEvent ESEvents[];
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     KextLoadEvent *event = (KextLoadEvent *)[super handleEvent:msg];
-    event.kextFilePath = [NSString stringWithUTF8String:[super getString:msg->event.kextload.identifier]];
+    event.kextFilePath = [NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]];
     return event;
 }
 
@@ -159,7 +159,7 @@ extern ESEvent ESEvents[];
     int argv_count = es_exec_arg_count(&msg->event.exec);
     for(int i=0; i<argv_count; ++i) {
         es_string_token_t argv_token = es_exec_arg(&msg->event.exec, i);
-        NSString *argv = [NSString stringWithUTF8String:[super getString:argv_token]];
+        NSString *argv = [NSString stringWithUTF8String:[self getString:argv_token]];
         cmdline = [cmdline stringByAppendingString:argv];
         if (i != argv_count - 1) {
             cmdline = [cmdline stringByAppendingString:@" "];
@@ -207,7 +207,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CREATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    CreateEvent *event = (CreateEvent *)[super handleEvent:msg];
+    
+    NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.dir->path]];
+    [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.filename]]];
+    event.destinationFilePath = destination;
+    
     return event;
 }
 
@@ -216,7 +221,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_EXCHANGEDATA
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    ExchangeDataEvent *event = (ExchangeDataEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, file1, msg->event.exchangedata.file1)
+    FILL_EVENT_FILE_INFO(event, file2, msg->event.exchangedata.file2)
     return event;
 }
 
@@ -236,7 +243,31 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_GET_TASK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    GetTaskEvent *event = (GetTaskEvent *)[super handleEvent:msg];
+    FILL_EVENT_PROCESS_INFO(event, target, msg->event.get_task.target)
+    if (msg->version >= 5) {
+        switch (msg->event.get_task.type) {
+            case ES_GET_TASK_TYPE_TASK_FOR_PID:
+                event.taskType = @"ES_GET_TASK_TYPE_TASK_FOR_PID";
+                break;
+            
+            case ES_GET_TASK_TYPE_EXPOSE_TASK:
+                event.taskType = @"ES_GET_TASK_TYPE_EXPOSE_TASK";
+                break;
+            
+            case ES_GET_TASK_TYPE_IDENTITY_TOKEN:
+                event.taskType = @"ES_GET_TASK_TYPE_IDENTITY_TOKEN";
+                break;
+                
+            default:
+                event.taskType = @"";
+                break;
+        }
+    }
+    else {
+        event.taskType = @"";
+    }
+    
     return event;
 }
 

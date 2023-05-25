@@ -59,9 +59,7 @@ DDLogLevel ddLogLevel = DDLogLevelInfo;
 }
 
 - (void)registerDefaults {
-    // default categories
-    NSError *error;
-    
+    // default categories    
     DDLogInfo(@"init default categories");
     EventCategory *category = [[EventCategory alloc] init];
     category.categoryName = kEventCategoryAll;
@@ -71,25 +69,15 @@ DDLogLevel ddLogLevel = DDLogLevelInfo;
     NSMutableArray *defaultCategories = [NSMutableArray arrayWithArray:@[
         category,
     ]];
-    NSData *defaultCategoriesData = [NSKeyedArchiver archivedDataWithRootObject:defaultCategories requiringSecureCoding:YES error:&error];
-    if (defaultCategoriesData == nil) {
-        DDLogError(@"serialize categories failed: %@", error.localizedDescription);
-    }
-    
+    NSData *defaultCategoriesData = [NSKeyedArchiver archivedDataWithRootObject:defaultCategories requiringSecureCoding:YES error:nil];
+
     DDLogInfo(@"init default event");
     
     NSMutableSet *defaultTypes = [NSMutableSet set];
-    
-    NSData *defaultTypesData = [NSKeyedArchiver archivedDataWithRootObject:defaultTypes requiringSecureCoding:YES error:&error];
-    if (defaultTypesData == nil) {
-        DDLogError(@"serialize event types failed: %@", error.localizedDescription);
-    }
-    
+    NSData *defaultTypesData = [NSKeyedArchiver archivedDataWithRootObject:defaultTypes requiringSecureCoding:YES error:nil];
+
     NSMutableArray *defaultAllEventType = [NSMutableArray array];
-    NSData *defaultAllEventTypeData = [NSKeyedArchiver archivedDataWithRootObject:defaultAllEventType requiringSecureCoding:YES error:&error];
-    if (defaultAllEventTypeData == nil) {
-        DDLogError(@"serialize all event type failed: %@", error.localizedDescription);
-    }
+    NSData *defaultAllEventTypeData = [NSKeyedArchiver archivedDataWithRootObject:defaultAllEventType requiringSecureCoding:YES error:nil];
     
     NSDictionary *defaults = @{
         kCategoriesKey: defaultCategoriesData,
@@ -237,12 +225,7 @@ DDLogLevel ddLogLevel = DDLogLevelInfo;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(nullable id)item {
-    
-    if (item == nil) {
-        return self.categories[index];
-    } else {
-        return nil;
-    }
+    return self.categories[index];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item {

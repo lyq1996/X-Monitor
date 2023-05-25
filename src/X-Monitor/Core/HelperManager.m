@@ -67,7 +67,7 @@ BOOL shouldInstallerHelper(void) {
 /*
  @brief get helper
  */
-- (id<HelperProtocol>)getHelper:(void (^)(NSError *))handle {
+- (nullable id<HelperProtocol>)getHelper:(void (^)(NSError *))handle {
     if (shouldInstallerHelper()) {
         // call X-Helper application to install helper tool
         NSString *helperBundle = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/X-Helper.app"];

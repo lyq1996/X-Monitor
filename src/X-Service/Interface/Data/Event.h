@@ -49,7 +49,7 @@ GEN_PROCESS_PROPERTY(parent)
 
 @interface EventFactory : NSObject
 
-+ (Event *)initEvent:(NSString *)eventType;
++ (nullable Event *)initEvent:(NSString *)eventType;
 + (NSSet *)getAllClasses;
 
 @end
@@ -142,9 +142,14 @@ DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(CreateEvent)
 
+@property (nonatomic, copy) NSString *destinationFilePath;
+
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(ExchangeDataEvent)
+
+GEN_FILE_PROPERTY(file1)
+GEN_FILE_PROPERTY(file2)
 
 DEFINE_DERIVE_EVENT_CLASS_END
 
@@ -155,6 +160,9 @@ DEFINE_DERIVE_EVENT_CLASS_START(ExitEvent)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(GetTaskEvent)
+
+GEN_PROCESS_PROPERTY(target)
+@property (nonatomic, copy) NSString *taskType;
 
 DEFINE_DERIVE_EVENT_CLASS_END
 

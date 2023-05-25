@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface HelperManager : NSObject
 
-- (id<HelperProtocol>) getHelper:(void (^)(NSError *))handle;
+- (nullable id<HelperProtocol>) getHelper:(void (^)(NSError *))handle;
 
 @end
 

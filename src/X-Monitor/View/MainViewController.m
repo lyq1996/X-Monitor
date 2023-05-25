@@ -22,13 +22,6 @@
     // Update the view, if already loaded.
 }
 
-- (void)splitViewWillResizeSubviews:(NSNotification *)notification {
-    NSLog(@"%@", notification.userInfo);
-    ;
-}
-
-
-
 - (void)handleInfoButtonClick:(id)sender {
     if (self.splitViewItems[1].isCollapsed) {
         [self.splitViewItems[1].animator setCollapsed:NO];

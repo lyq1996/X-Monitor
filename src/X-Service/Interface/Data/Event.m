@@ -67,7 +67,7 @@ extern DDLogLevel ddLogLevel;
 static NSDictionary *eventClasses;
 static NSSet *eventClassesSet;
 
-+ (Event *)initEvent:(NSString *)eventType {
++ (nullable Event *)initEvent:(NSString *)eventType {
     Class eventClass = [eventClasses objectForKey:eventType];
     if (!eventClass) {
         return nil;
@@ -333,7 +333,7 @@ static NSSet *eventClassesSet;
         _pid = [decoder decodeObjectForKey:@"pid"];
         DECODE_PROCESS_PROPERTY(process)
         DECODE_PROCESS_PROPERTY(parent)
-        _ppid = [decoder decodeObjectForKey:@"pid"];
+        _ppid = [decoder decodeObjectForKey:@"ppid"];
     }
     return self;
 }
@@ -708,7 +708,7 @@ static NSSet *eventClassesSet;
     [detailString appendFormat:@"\tSource File Modify Time: %@\n", _sourceFileModifyTime];
     [detailString appendFormat:@"\tSource File Create Time: %@\n", _sourceFileCreateTime];
     [detailString appendFormat:@"\tSource File Path: %@\n", _sourceFilePath];
-    [detailString appendFormat:@"\tDestination File Path: %@", _destinationFilePath];
+    [detailString appendFormat:@"\tDestination File Path: %@\n", _destinationFilePath];
     
     [detailString appendFormat:@"}"];
 
@@ -951,9 +951,107 @@ static NSSet *eventClassesSet;
 
 @implementation CreateEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _destinationFilePath = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _destinationFilePath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tDestination File Path: %@\n", _destinationFilePath];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _destinationFilePath = [decoder decodeObjectForKey:@"destinationFilePath"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_destinationFilePath forKey:@"destinationFilePath"];
+}
+
 @end
 
 @implementation ExchangeDataEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(file1)
+        INIT_FILE_PROPERTY(file2)
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@<->%@", _file1FilePath, _file2FilePath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tFile1 UID: %@\n", _file1FileUID];
+    [detailString appendFormat:@"\tFile1 GID: %@\n", _file1FileGID];
+    [detailString appendFormat:@"\tFile1 Mode: %@\n", _file1FileMode];
+    [detailString appendFormat:@"\tFile1 Access Time: %@\n", _file1FileAccessTime];
+    [detailString appendFormat:@"\tFile1 Modify Time: %@\n", _file1FileModifyTime];
+    [detailString appendFormat:@"\tFile1 Create Time: %@\n", _file1FileCreateTime];
+    [detailString appendFormat:@"\tFile1 Path: %@\n", _file1FilePath];
+    [detailString appendFormat:@"\tFile2 UID: %@\n", _file2FileUID];
+    [detailString appendFormat:@"\tFile2 GID: %@\n", _file2FileGID];
+    [detailString appendFormat:@"\tFile2 Mode: %@\n", _file2FileMode];
+    [detailString appendFormat:@"\tFile2 Access Time: %@\n", _file2FileAccessTime];
+    [detailString appendFormat:@"\tFile2 Modify Time: %@\n", _file2FileModifyTime];
+    [detailString appendFormat:@"\tFile2 Create Time: %@\n", _file2FileCreateTime];
+    [detailString appendFormat:@"\tFile2 Path: %@\n", _file2FilePath];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(file1)
+        DECODE_FILE_PROPERTY(file2)
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(file1)
+    ENCODE_FILE_PROPERTY(file2)
+}
 
 @end
 
@@ -978,7 +1076,7 @@ static NSSet *eventClassesSet;
     NSMutableString *detailString = [[super detailInfo] mutableCopy];
 
     [detailString appendFormat:@"Event Details: {\n"];
-    [detailString appendFormat:@"\tStatus %@\n", _status];
+    [detailString appendFormat:@"\tStatus: %@\n", _status];
     [detailString appendFormat:@"}"];
 
     return detailString;
@@ -1003,6 +1101,55 @@ static NSSet *eventClassesSet;
 @end
 
 @implementation GetTaskEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_PROCESS_PROPERTY(target)
+        _taskType = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _targetPath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget Process Create Time: %@\n", _targetCreateTime];
+    [detailString appendFormat:@"\tTarget Process Path: %@\n", _targetPath];
+    [detailString appendFormat:@"\tTarget Process Cmdline: %@\n", _targetCmdline];
+    [detailString appendFormat:@"\tTarget Process Codesign Flag: 0x%X\n", [_targetCodesignFlag unsignedIntValue]];
+    [detailString appendFormat:@"\tTarget Process Signing ID: %@\n", _targetSigningID];
+    [detailString appendFormat:@"\tTarget Process Team ID: %@\n", _targetTeamID];
+    [detailString appendFormat:@"\tTask Type: %@\n", _taskType];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_PROCESS_PROPERTY(target)
+        _taskType = [decoder decodeObjectForKey:@"taskType"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_PROCESS_PROPERTY(target)
+    [encoder encodeObject:_taskType forKey:@"taskType"];
+}
 
 @end
 

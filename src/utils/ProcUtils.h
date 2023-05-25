@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)getPathFromPid:(NSNumber *)pid;
 + (NSNumber *)getCreatetimeFromPid:(NSNumber *)pid;
 + (NSString *)getCmdlineFromPid:(NSNumber *)pid;
-+ (NSDictionary *)getCodeSigningFromPid:(NSString *)path;
++ (nullable NSDictionary *)getCodeSigningFromPid:(NSString *)path;
 
 @end
 
