@@ -249,7 +249,6 @@
 		35E84BCA2A0E234100E4921A /* ClientProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientProtocol.h; sourceTree = "<group>"; };
 		35E84BCB2A0E236200E4921A /* Event.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		35E84BCC2A0E236200E4921A /* Event.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
-		35F65EA429BCBAD000B6821C /* EventManagerStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventManagerStatus.h; sourceTree = "<group>"; };
 		35FE0C442993876300FDAB65 /* CoreManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreManager.h; sourceTree = "<group>"; };
 		35FE0C452993876300FDAB65 /* CoreManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreManager.m; sourceTree = "<group>"; };
 		DE54FA5F29E193E600D40F15 /* EventSubscibleTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventSubscibleTableCell.h; sourceTree = "<group>"; };
@@ -496,7 +495,6 @@
 			children = (
 				35A64B992993D00300D59F2A /* ProducerProtocol.h */,
 				35C7ADE929BC76E4001130C8 /* ConsumerProtocol.h */,
-				35F65EA429BCBAD000B6821C /* EventManagerStatus.h */,
 				35C7ADEA29BC76F9001130C8 /* EventManager.h */,
 				35C7ADEB29BC76F9001130C8 /* EventManager.m */,
 				35C7ADEF29BC811F001130C8 /* ProcessCache.h */,
@@ -869,7 +867,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -901,7 +899,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -930,7 +928,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -963,7 +961,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1001,7 +999,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1042,7 +1040,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1078,7 +1076,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1114,7 +1112,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1036;
+				CURRENT_PROJECT_VERSION = 1039;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (

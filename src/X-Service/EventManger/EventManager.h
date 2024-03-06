@@ -24,8 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)detachConsumer:(id<ConsumerProtocol>)consumer;
 
-- (void)decisionEvent:(BOOL)isAllow withEventHandle:(void *)eventIdentify withConsumer:(id<ConsumerProtocol>)consumer;
-
 @end
 
 NS_ASSUME_NONNULL_END

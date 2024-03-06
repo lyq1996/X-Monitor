@@ -31,7 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSNumber *eventIdentify;
 @property (nonatomic, copy) NSString *eventType;
-@property (nonatomic, copy) NSNumber *needDiscision;
 @property (nonatomic, copy) NSNumber *eventTime;
 @property (nonatomic, copy) NSNumber *pid;
 GEN_PROCESS_PROPERTY(process)

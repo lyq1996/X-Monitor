@@ -100,33 +100,24 @@ extern DDLogLevel ddLogLevel;
     }
 }
 
-- (void)decisionEvent:(BOOL)isAllow withEventHandle:(void *)eventIdentify withConsumer:(id<ConsumerProtocol>)consumer {
-    // todo
-    // call producer.handleAuth(eventIdentify, isAllow)
-    // need add cache for multi-consumer auth response
-}
-
 - (void)handleEvent:(Event *)event {
-
-    if ([event.needDiscision isEqualToNumber:@(NO)]) {
-        dispatch_async(notifyEventQueue, ^(){
-            // notify event
-            // fill process info from cache
-            
-            /*
-            NSLog(@"%@", [event shortInfo]);
-            NSLog(@"%@", [event detailInfo]);
-            NSLog(@"%@", [event jsonInfo]);
-            */
-             
-            [self->caches fillEventFromCache:event];
-            for (id<ConsumerProtocol> consumer in [self->consumers copy]) {
-                if ([consumer.subscribleEventTypes containsObject:event.eventType]) {
-                    [consumer consumeEvent:event];
-                }
+    dispatch_async(notifyEventQueue, ^(){
+        // notify event
+        // fill process info from cache
+        
+        /*
+        NSLog(@"%@", [event shortInfo]);
+        NSLog(@"%@", [event detailInfo]);
+        NSLog(@"%@", [event jsonInfo]);
+        */
+         
+        [self->caches fillEventFromCache:event];
+        for (id<ConsumerProtocol> consumer in [self->consumers copy]) {
+            if ([consumer.subscribleEventTypes containsObject:event.eventType]) {
+                [consumer consumeEvent:event];
             }
-        });
-    }
+        }
+    });
 }
 
 - (void)handleProducerStatus:(XProducerStatus)status withStatusString:(NSString *)statusString {

@@ -58,9 +58,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initProducerWithDelegate:(id<ProducerDelegate>)producerDelegate withErrorManager:(id<ProducerErrorDelegate>)producerErrorDelegate;
 - (void)subscribleEventType:(NSArray<NSString *> *)eventTypes;
 
-- (BOOL)denyEvent:(void *)handle;
-- (BOOL)allowEvent:(void *)handle;
-
 @end
 
 NS_ASSUME_NONNULL_END

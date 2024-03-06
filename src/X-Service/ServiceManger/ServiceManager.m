@@ -176,9 +176,6 @@ extern DDLogLevel ddLogLevel;
         case X_SERVICE_STOP:
             completion([self handleStopCmd:consumer], nil);
             break;
-
-        case X_SERVICE_DECISION_EVENT:
-            break;
         
         case X_SERVICE_GET_EVENT_TYPE:
             completion(YES, [NSKeyedArchiver archivedDataWithRootObject:eventManager.supportedEventType requiringSecureCoding:YES error:nil]);

@@ -41,10 +41,8 @@ extern ESEvent ESEvents[];
 }
 
 - (void)handleCommonEvent:(const es_message_t *)msg withEvent:(Event *)event {
-    
     event.eventIdentify = @((uint64_t)msg);
     event.eventType = ESEvents[msg->event_type].eventName;
-    event.needDiscision = @(msg->action_type == ES_ACTION_TYPE_AUTH ? YES : NO);
     event.eventTime = @(msg->time.tv_sec);
     event.pid = @(audit_token_to_pid(msg->process->audit_token));
     

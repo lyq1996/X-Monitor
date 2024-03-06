@@ -228,7 +228,6 @@ static NSSet *eventClassesSet;
     if (self) {
         _eventIdentify = @(-1);
         _eventType = @"";
-        _needDiscision = @(-1);
         _eventTime = @(-1);
         _pid = @(-1);
         INIT_PROCESS_PROPERTY(process)
@@ -249,7 +248,6 @@ static NSSet *eventClassesSet;
     NSMutableString *detailString = [NSMutableString string];
     [detailString appendFormat:@"Event ID: %@\n", _eventIdentify];
     [detailString appendFormat:@"Event Type: %@\n", _eventType];
-    [detailString appendFormat:@"Need Decision: %@\n", _needDiscision];
     [detailString appendFormat:@"Event Time: %@\n", _eventTime];
     [detailString appendFormat:@"Process ID: %@\n", _pid];
     [detailString appendFormat:@"Process Create Time: %@\n", _processCreateTime];
@@ -328,7 +326,6 @@ static NSSet *eventClassesSet;
     if (self = [super init]) {
         _eventIdentify = [decoder decodeObjectForKey:@"eventIdentify"];
         _eventType = [decoder decodeObjectForKey:@"eventType"];
-        _needDiscision = [decoder decodeObjectForKey:@"needDiscision"];
         _eventTime = [decoder decodeObjectForKey:@"eventTime"];
         _pid = [decoder decodeObjectForKey:@"pid"];
         DECODE_PROCESS_PROPERTY(process)
@@ -341,7 +338,6 @@ static NSSet *eventClassesSet;
 - (void)encodeWithCoder:(NSCoder *)encoder {
     [encoder encodeObject:_eventIdentify forKey:@"eventIdentify"];
     [encoder encodeObject:_eventType forKey:@"eventType"];
-    [encoder encodeObject:_needDiscision forKey:@"needDiscision"];
     [encoder encodeObject:_eventTime forKey:@"eventTime"];
     [encoder encodeObject:_pid forKey:@"pid"];
     ENCODE_PROCESS_PROPERTY(process)
