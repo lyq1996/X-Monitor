@@ -81,15 +81,6 @@ static NSSet *eventClassesSet;
 
 + (void)load {
     eventClasses = [NSDictionary dictionaryWithObjectsAndKeys:
-                    [ExecEvent class], @"auth_exec",
-                    [OpenEvent class], @"auth_open",
-                    [KextLoadEvent class], @"auth_kextload",
-                    [MmapEvent class], @"auth_mmap",
-                    [MprotectEvent class], @"auth_mprotect",
-                    [MountEvent class], @"auth_mount",
-                    [RenameEvent class], @"auth_rename",
-                    [SignalEvent class], @"auth_signal",
-                    [UnlinkEvent class], @"auth_unlink",
                     [ExecEvent class], @"notify_exec",
                     [OpenEvent class], @"notify_open",
                     [ForkEvent class], @"notify_fork",
@@ -115,76 +106,42 @@ static NSSet *eventClassesSet;
                     [SignalEvent class], @"notify_signal",
                     [UnlinkEvent class], @"notify_unlink",
                     [WriteEvent class], @"notify_write",
-                    [FileProviderMaterializeEvent class], @"auth_file_provider_materialize",
                     [FileProviderMaterializeEvent class], @"notify_file_provider_materialize",
-                    [FileProviderUpdateEvent class], @"auth_file_provider_update",
                     [FileProviderUpdateEvent class], @"notify_file_provider_update",
-                    [ReadlinkEvent class], @"auth_readlink",
                     [ReadlinkEvent class], @"notify_readlink",
-                    [TruncateEvent class], @"auth_truncate",
                     [TruncateEvent class], @"notify_truncate",
-                    [LinkEvent class], @"auth_link",
                     [LookupEvent class], @"notify_lookup",
-                    [CreateEvent class], @"auth_create",
-                    [SetAttrlistEvent class], @"auth_setattrlist",
-                    [SetExtAttrEvent class], @"auth_setextattr",
-                    [SetFlagsEvent class], @"auth_setflags",
-                    [SetModeEvent class], @"auth_setmode",
-                    [SetOwnerEvent class], @"auth_setowner",
                     // The following events are available beginning in macOS 10.15.1
-                    [ChdirEvent class], @"auth_chdir",
                     [ChdirEvent class], @"notify_chdir",
-                    [GetAttrlistEvent class], @"auth_getattrlist",
                     [GetAttrlistEvent class], @"notify_getattrlist",
                     [StatEvent class], @"notify_stat",
                     [AccessEvent class], @"notify_access",
-                    [ChrootEvent class], @"auth_chroot",
                     [ChrootEvent class], @"notify_chroot",
-                    [UtimesEvent class], @"auth_utimes",
                     [UtimesEvent class], @"notify_utimes",
-                    [CloneEvent class], @"auth_clone",
                     [CloneEvent class], @"notify_clone",
                     [FcntlEvent class], @"notify_fcntl",
-                    [GetExtAttrEvent class], @"auth_getextattr",
                     [GetExtAttrEvent class], @"notify_getextattr",
-                    [ListExtAttrEvent class], @"auth_listextattr",
                     [ListExtAttrEvent class], @"notify_listextattr",
-                    [ReaddirEvent class], @"auth_readdir",
                     [ReaddirEvent class], @"notify_readdir",
-                    [DeleteExtAttrEvent class], @"auth_deleteextattr",
                     [DeleteExtAttrEvent class], @"notify_deleteextattr",
-                    [FsGetPathEvent class], @"auth_fsgetpath",
                     [FsGetPathEvent class], @"notify_fsgetpath",
                     [DupEvent class], @"notify_dup",
-                    [SetTimeEvent class], @"auth_settime",
                     [SetTimeEvent class], @"notify_settime",
                     [UipcBindEvent class], @"notify_uipc_bind",
-                    [UipcBindEvent class], @"auth_uipc_bind",
                     [UipcConnectEvent class], @"notify_uipc_connect",
-                    [UipcConnectEvent class], @"auth_uipc_connect",
-                    [ExchangeDataEvent class], @"auth_exchangedata",
                     // The following events are available beginning in macOS 10.15.4
-                    [SetAclEvent class], @"auth_setacl",
                     [SetAclEvent class], @"notify_setacl",
                     [PtyGrantEvent class], @"notify_pty_grant",
                     [PtyCloseEvent class], @"notify_pty_close",
-                    [ProcCheckEvent class], @"auth_proc_check",
                     [ProcCheckEvent class], @"notify_proc_check",
-                    [GetTaskEvent class], @"auth_get_task",
-                    [SearchFsEvent class], @"auth_searchfs",
                     // The following events are available beginning in macOS 11.0
                     [SearchFsEvent class], @"notify_searchfs",
-                    [FcntlEvent class], @"auth_fcntl",
-                    [IOKitOpenEvent class], @"auth_iokit_open",
-                    [ProcSuspendResumeEvent class], @"auth_proc_suspend_resume",
                     [ProcSuspendResumeEvent class], @"notify_proc_suspend_resume",
                     [CsInvalidatedEvent class], @"notify_cs_invalidated",
                     [GetTaskNameEvent class], @"notify_get_task_name",
                     [TraceEvent class], @"notify_trace",
                     [RemoteThreadCreateEvent class], @"notify_remote_thread_create",
-                    [RemountEvent class], @"auth_remount",
                     [RemountEvent class], @"notify_remount",
-                    [GetTaskReadEvent class], @"auth_get_task_read",
                     // The following events are available beginning in macOS 11.3
                     [GetTaskReadEvent class], @"notify_get_task_read",
                     [GetTaskInspectEvent class], @"notify_get_task_inspect",
@@ -195,7 +152,6 @@ static NSSet *eventClassesSet;
                     [SetEgidEvent class], @"notify_setegid",
                     [SetReuidEvent class], @"notify_setreuid",
                     [SetRegidEvent class], @"notify_setregid",
-                    [CopyFileEvent class], @"auth_copyfile",
                     [CopyFileEvent class], @"notify_copyfile",
                     // The following events are available beginning in macOS 13.0
                     [AuthenticationEvent class], @"notify_authentication",
@@ -213,6 +169,7 @@ static NSSet *eventClassesSet;
                     [LoginLogoutEvent class], @"notify_login_logout",
                     [BtmLaunchItemAddEvent class], @"notify_btm_launch_item_add",
                     [BtmLaunchItemRemoveEvent class], @"notify_btm_launch_item_remove",
+                    
                     nil];
     eventClassesSet = [NSSet setWithArray:[eventClasses allValues]];
 }
@@ -466,14 +423,14 @@ static NSSet *eventClassesSet;
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _kextFilePath = @"";
+        _kextIdentifier = @"";
     }
     return self;
 }
 
 - (NSString *)shortInfo {
     NSMutableString *detailString = [NSMutableString string];
-    [detailString appendFormat:@"%@", _kextFilePath];
+    [detailString appendFormat:@"%@", _kextIdentifier];
     
     return detailString;
 }
@@ -482,7 +439,7 @@ static NSSet *eventClassesSet;
     NSMutableString *detailString = [[super detailInfo] mutableCopy];
 
     [detailString appendFormat:@"Event Details: {\n"];
-    [detailString appendFormat:@"\tKext Path: %@\n", _kextFilePath];
+    [detailString appendFormat:@"\tKext ID: %@\n", _kextIdentifier];
     [detailString appendFormat:@"}"];
 
     return detailString;
@@ -494,14 +451,14 @@ static NSSet *eventClassesSet;
 
 - (instancetype)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        _kextFilePath = [decoder decodeObjectForKey:@"kextFilePath"];
+        _kextIdentifier = [decoder decodeObjectForKey:@"kextIdentifier"];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder {
     [super encodeWithCoder:encoder];
-    [encoder encodeObject:_kextFilePath forKey:@"kextFilePath"];
+    [encoder encodeObject:_kextIdentifier forKey:@"_kextIdentifier"];
 }
 
 @end
@@ -1151,9 +1108,114 @@ static NSSet *eventClassesSet;
 
 @implementation KextUnloadEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _kextIdentifier = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _kextIdentifier];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tKext ID: %@\n", _kextIdentifier];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _kextIdentifier = [decoder decodeObjectForKey:@"kextIdentifier"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_kextIdentifier forKey:@"kextIdentifier"];
+}
+
 @end
 
 @implementation LinkEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(source)
+        INIT_FILE_PROPERTY(targetDir)
+        _targetFileName = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    NSString *link = [_targetDirFilePath stringByAppendingPathComponent:_targetFileName];
+    [detailString appendFormat:@"%@ -> %@", link, _sourceFilePath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tSource File UID: %@\n", _sourceFileUID];
+    [detailString appendFormat:@"\tSource File GID: %@\n", _sourceFileGID];
+    [detailString appendFormat:@"\tSource File Mode: %@\n", _sourceFileMode];
+    [detailString appendFormat:@"\tSource File Access Time: %@\n", _sourceFileAccessTime];
+    [detailString appendFormat:@"\tSource File Modify Time: %@\n", _sourceFileModifyTime];
+    [detailString appendFormat:@"\tSource File Create Time: %@\n", _sourceFileCreateTime];
+    [detailString appendFormat:@"\tSource File Path: %@\n", _sourceFilePath];
+    
+    [detailString appendFormat:@"\tTarget File Name: %@\n", _targetFileName];
+    [detailString appendFormat:@"\tTarget Dir File UID: %@\n", _targetDirFileUID];
+    [detailString appendFormat:@"\tTarget Dir File GID: %@\n", _targetDirFileGID];
+    [detailString appendFormat:@"\tTarget Dir File Mode: %@\n", _targetDirFileMode];
+    [detailString appendFormat:@"\tTarget Dir File Access Time: %@\n", _targetDirFileAccessTime];
+    [detailString appendFormat:@"\tTarget Dir File Modify Time: %@\n", _targetDirFileModifyTime];
+    [detailString appendFormat:@"\tTarget Dir File Create Time: %@\n", _targetDirFileCreateTime];
+    [detailString appendFormat:@"\tTarget Dir File Path: %@\n", _targetDirFilePath];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(source)
+        DECODE_FILE_PROPERTY(targetDir)
+        _targetFileName = [decoder decodeObjectForKey:@"targetFileName"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(source)
+    ENCODE_FILE_PROPERTY(targetDir)
+    [encoder encodeObject:_targetFileName forKey:@"targetFileName"];
+}
 
 @end
 

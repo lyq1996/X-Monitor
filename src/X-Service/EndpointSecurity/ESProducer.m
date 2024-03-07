@@ -6,7 +6,7 @@
 //
 
 #import "ESProducer.h"
-#import "ESEventHandler.h"
+#import "ESNotifyEventHandler.h"
 #import "ESDefination.h"
 #import "Event.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
@@ -71,21 +71,24 @@ extern DDLogLevel ddLogLevel;
     }
     
     NSSet *currentSupportedEventTypes = [NSSet setWithArray:@[
-        @"notify_exit",
         @"notify_exec",
-        @"notify_fork",
         @"notify_open",
+        @"notify_fork",
+        @"notify_close",
+        @"notify_create",
+        @"notify_exchangedata",
+        @"notify_exit",
+        @"notify_get_task",
+        @"notify_kextload",
+        @"notify_kextunload",
+        @"notify_link",
+
         @"notify_unlink",
         @"notify_rename",
-        @"notify_kextload",
-        @"notify_close",
         @"notify_mount",
         @"notify_signal",
         @"notify_mmap",
         @"notify_mprotect",
-        @"notify_create",
-        @"notify_exchangedata",
-        @"notify_get_task",
     ]];
     
     NSMutableArray *tmpSupportedEventTypes = [NSMutableArray array];
@@ -223,60 +226,51 @@ extern DDLogLevel ddLogLevel;
     return;
 }
 
-- (BOOL)allowEvent:(nonnull void *)handle {
-    return YES;
-}
-
-
-- (BOOL)denyEvent:(nonnull void *)handle {
-    return YES;
-}
-
 const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_EXEC] = {
         @"auth_exec",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_EXEC),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_OPEN] = {
         @"auth_open",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_OPEN),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_KEXTLOAD] = {
         @"auth_kextload",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_KEXTLOAD),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_MMAP] = {
         @"auth_mmap",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_MMAP),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_MPROTECT] = {
         @"auth_mprotect",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_MPROTECT),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_MOUNT] = {
         @"auth_mount",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_MOUNT),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_RENAME] = {
         @"auth_rename",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_RENAME),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_SIGNAL] = {
         @"auth_signal",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SIGNAL),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_UNLINK] = {
         @"auth_unlink",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_UNLINK),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_EXEC] = {
         @"notify_exec",
@@ -406,7 +400,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_FILE_PROVIDER_MATERIALIZE] = {
         @"auth_file_provider_materialize",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_FILE_PROVIDER_MATERIALIZE),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_FILE_PROVIDER_MATERIALIZE] = {
         @"notify_file_provider_materialize",
@@ -416,7 +410,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_FILE_PROVIDER_UPDATE] = {
         @"auth_file_provider_update",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_FILE_PROVIDER_UPDATE),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_FILE_PROVIDER_UPDATE] = {
         @"notify_file_provider_update",
@@ -426,7 +420,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_READLINK] = {
         @"auth_readlink",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_READLINK),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_READLINK] = {
         @"notify_readlink",
@@ -436,7 +430,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_TRUNCATE] = {
         @"auth_truncate",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_TRUNCATE),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_TRUNCATE] = {
         @"notify_truncate",
@@ -446,7 +440,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_LINK] = {
         @"auth_link",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_LINK),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_LOOKUP] = {
         @"notify_lookup",
@@ -456,38 +450,38 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_CREATE] = {
         @"auth_create",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_CREATE),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_SETATTRLIST] = {
         @"auth_setattrlist",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SETATTRLIST),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_SETEXTATTR] = {
         @"auth_setextattr",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SETEXTATTR),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_SETFLAGS] = {
         @"auth_setflags",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SETFLAGS),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_SETMODE] = {
         @"auth_setmode",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SETMODE),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_SETOWNER] = {
         @"auth_setowner",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SETOWNER),
+        NULL,
     },
     // The following events are available beginning in macOS 10.15.1
     [ES_EVENT_TYPE_AUTH_CHDIR] = {
         @"auth_chdir",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_CHDIR),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_CHDIR] = {
         @"notify_chdir",
@@ -497,7 +491,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_GETATTRLIST] = {
         @"auth_getattrlist",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_GETATTRLIST),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_GETATTRLIST] = {
         @"notify_getattrlist",
@@ -517,7 +511,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_CHROOT] = {
         @"auth_chroot",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_CHROOT),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_CHROOT] = {
         @"notify_chroot",
@@ -527,7 +521,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_UTIMES] = {
         @"auth_utimes",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_UTIMES),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_UTIMES] = {
         @"notify_utimes",
@@ -537,7 +531,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_CLONE] = {
         @"auth_clone",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_CLONE),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_CLONE] = {
         @"notify_clone",
@@ -552,7 +546,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_GETEXTATTR] = {
         @"auth_getextattr",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_GETEXTATTR),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_GETEXTATTR] = {
         @"notify_getextattr",
@@ -562,7 +556,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_LISTEXTATTR] = {
         @"auth_listextattr",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_LISTEXTATTR),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_LISTEXTATTR] = {
         @"notify_listextattr",
@@ -572,7 +566,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_READDIR] = {
         @"auth_readdir",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_READDIR),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_READDIR] = {
         @"notify_readdir",
@@ -582,7 +576,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_DELETEEXTATTR] = {
         @"auth_deleteextattr",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_DELETEEXTATTR),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_DELETEEXTATTR] = {
         @"notify_deleteextattr",
@@ -592,7 +586,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_FSGETPATH] = {
         @"auth_fsgetpath",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_FSGETPATH),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_FSGETPATH] = {
         @"notify_fsgetpath",
@@ -607,7 +601,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_SETTIME] = {
         @"auth_settime",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SETTIME),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_SETTIME] = {
         @"notify_settime",
@@ -622,7 +616,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_UIPC_BIND] = {
         @"auth_uipc_bind",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_UIPC_BIND),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_UIPC_CONNECT] = {
         @"notify_uipc_connect",
@@ -632,18 +626,18 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_UIPC_CONNECT] = {
         @"auth_uipc_connect",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_UIPC_CONNECT),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_EXCHANGEDATA] = {
         @"auth_exchangedata",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_EXCHANGEDATA),
+        NULL,
     },
     // The following events are available beginning in macOS 10.15.4
     [ES_EVENT_TYPE_AUTH_SETACL] = {
         @"auth_setacl",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SETACL),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_SETACL] = {
         @"notify_setacl",
@@ -663,7 +657,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_PROC_CHECK] = {
         @"auth_proc_check",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_PROC_CHECK),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_PROC_CHECK] = {
         @"notify_proc_check",
@@ -673,12 +667,12 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_GET_TASK] = {
         @"auth_get_task",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_GET_TASK),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_SEARCHFS] = {
         @"auth_searchfs",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_SEARCHFS),
+        NULL,
     },
     // The following events are available beginning in macOS 11.0
     [ES_EVENT_TYPE_NOTIFY_SEARCHFS] = {
@@ -689,17 +683,17 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_FCNTL] = {
         @"auth_fcntl",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_FCNTL),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_IOKIT_OPEN] = {
         @"auth_iokit_open",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_IOKIT_OPEN),
+        NULL,
     },
     [ES_EVENT_TYPE_AUTH_PROC_SUSPEND_RESUME] = {
         @"auth_proc_suspend_resume",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_PROC_SUSPEND_RESUME),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_PROC_SUSPEND_RESUME] = {
         @"notify_proc_suspend_resume",
@@ -729,7 +723,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_REMOUNT] = {
         @"auth_remount",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_REMOUNT),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_REMOUNT] = {
         @"notify_remount",
@@ -739,7 +733,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_GET_TASK_READ] = {
         @"auth_get_task_read",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_GET_TASK_READ),
+        NULL,
     },
     // The following events are available beginning in macOS 11.3
     [ES_EVENT_TYPE_NOTIFY_GET_TASK_READ] = {
@@ -786,7 +780,7 @@ const ESEvent ESEvents[] = {
     [ES_EVENT_TYPE_AUTH_COPYFILE] = {
         @"auth_copyfile",
         YES,
-        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_AUTH_COPYFILE),
+        NULL,
     },
     [ES_EVENT_TYPE_NOTIFY_COPYFILE] = {
         @"notify_copyfile",
@@ -869,12 +863,107 @@ const ESEvent ESEvents[] = {
         NO,
         GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_BTM_LAUNCH_ITEM_REMOVE),
     },
+    // The following events are available beginning in macOS 14.0
     [ES_EVENT_TYPE_NOTIFY_PROFILE_ADD] = {
         @"notify_profile_add",
         NO,
         GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_PROFILE_ADD),
     },
-    
+    [ES_EVENT_TYPE_NOTIFY_PROFILE_REMOVE] = {
+        @"notify_profile_remove",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_PROFILE_REMOVE),
+    },
+    [ES_EVENT_TYPE_NOTIFY_SU] = {
+        @"notify_su",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_SU),
+    },
+    [ES_EVENT_TYPE_NOTIFY_AUTHORIZATION_PETITION] = {
+        @"notify_authorization_petition",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_AUTHORIZATION_PETITION),
+    },
+    [ES_EVENT_TYPE_NOTIFY_AUTHORIZATION_JUDGEMENT] = {
+        @"notify_authorization_judgement",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_AUTHORIZATION_JUDGEMENT),
+    },
+    [ES_EVENT_TYPE_NOTIFY_SUDO] = {
+        @"notify_sudo",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_SUDO),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_GROUP_ADD] = {
+        @"notify_od_group_add",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_GROUP_ADD),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_GROUP_REMOVE] = {
+        @"notify_od_group_remove",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_GROUP_REMOVE),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_GROUP_SET] = {
+        @"notify_od_group_set",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_GROUP_SET),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_MODIFY_PASSWORD] = {
+        @"notify_od_modify_password",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_MODIFY_PASSWORD),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_DISABLE_USER] = {
+        @"notify_od_disable_user",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_DISABLE_USER),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_ENABLE_USER] = {
+        @"notify_od_enable_user",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_ENABLE_USER),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_VALUE_ADD] = {
+        @"notify_od_attribute_value_add",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_VALUE_ADD),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_VALUE_REMOVE] = {
+        @"notify_od_attribute_value_remove",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_VALUE_REMOVE),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_SET] = {
+        @"notify_od_attribute_set",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_SET),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_CREATE_USER] = {
+        @"notify_od_create_user",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_CREATE_USER),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_CREATE_GROUP] = {
+        @"notify_od_create_group",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_CREATE_GROUP),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_DELETE_USER] = {
+        @"notify_od_delete_user",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_DELETE_USER),
+    },
+    [ES_EVENT_TYPE_NOTIFY_OD_DELETE_GROUP] = {
+        @"notify_od_delete_group",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_OD_DELETE_GROUP),
+    },
+    [ES_EVENT_TYPE_NOTIFY_XPC_CONNECT] = {
+        @"notify_xpc_connect",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_XPC_CONNECT),
+    },
 };
 
 @end

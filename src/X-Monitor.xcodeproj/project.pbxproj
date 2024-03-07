@@ -52,7 +52,7 @@
 		DE54FA6429E1ABA000D40F15 /* MiscSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE54FA6329E1ABA000D40F15 /* MiscSettingViewController.m */; };
 		DE9A686029E160D20033F14B /* EventSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9A685F29E160D20033F14B /* EventSettingViewController.m */; };
 		DEB2CCE029EB8BBF0096EA15 /* EditCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB2CCDF29EB8BBF0096EA15 /* EditCategoryViewController.m */; };
-		DEBD991829F396690098A4F8 /* ESEventHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBD991729F396690098A4F8 /* ESEventHandler.m */; };
+		DEBD991829F396690098A4F8 /* ESNotifyEventHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBD991729F396690098A4F8 /* ESNotifyEventHandler.m */; };
 		DEBD991D2A077A490098A4F8 /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DEBD991B2A077A400098A4F8 /* libbsm.tbd */; };
 		DEBD99202A1078B10098A4F8 /* EventDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBD991F2A1078B10098A4F8 /* EventDataSource.m */; };
 		DEC5D5BE29EA403400EAB6D2 /* EventTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC5D5BD29EA403400EAB6D2 /* EventTableViewController.m */; };
@@ -260,8 +260,8 @@
 		DEA9ED0429738E6F00745109 /* libEndpointSecurity.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libEndpointSecurity.tbd; path = usr/lib/libEndpointSecurity.tbd; sourceTree = SDKROOT; };
 		DEB2CCDE29EB8BBF0096EA15 /* EditCategoryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditCategoryViewController.h; sourceTree = "<group>"; };
 		DEB2CCDF29EB8BBF0096EA15 /* EditCategoryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditCategoryViewController.m; sourceTree = "<group>"; };
-		DEBD991729F396690098A4F8 /* ESEventHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ESEventHandler.m; sourceTree = "<group>"; };
-		DEBD991929F396790098A4F8 /* ESEventHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESEventHandler.h; sourceTree = "<group>"; };
+		DEBD991729F396690098A4F8 /* ESNotifyEventHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ESNotifyEventHandler.m; sourceTree = "<group>"; };
+		DEBD991929F396790098A4F8 /* ESNotifyEventHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESNotifyEventHandler.h; sourceTree = "<group>"; };
 		DEBD991A2A0776210098A4F8 /* ESDefination.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESDefination.h; sourceTree = "<group>"; };
 		DEBD991B2A077A400098A4F8 /* libbsm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbsm.tbd; path = usr/lib/libbsm.tbd; sourceTree = SDKROOT; };
 		DEBD991E2A1078B10098A4F8 /* EventDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventDataSource.h; sourceTree = "<group>"; };
@@ -402,8 +402,8 @@
 			children = (
 				351F748B29DC10510048899E /* ESProducer.h */,
 				351F748C29DC10510048899E /* ESProducer.m */,
-				DEBD991929F396790098A4F8 /* ESEventHandler.h */,
-				DEBD991729F396690098A4F8 /* ESEventHandler.m */,
+				DEBD991929F396790098A4F8 /* ESNotifyEventHandler.h */,
+				DEBD991729F396690098A4F8 /* ESNotifyEventHandler.m */,
 				DEBD991A2A0776210098A4F8 /* ESDefination.h */,
 			);
 			path = EndpointSecurity;
@@ -815,7 +815,7 @@
 				3529879129D288B900434276 /* RemoteConsumer.m in Sources */,
 				35E84BCD2A0E236200E4921A /* Event.m in Sources */,
 				35C7ADF129BC811F001130C8 /* ProcessCache.m in Sources */,
-				DEBD991829F396690098A4F8 /* ESEventHandler.m in Sources */,
+				DEBD991829F396690098A4F8 /* ESNotifyEventHandler.m in Sources */,
 				35C7ADEC29BC76F9001130C8 /* EventManager.m in Sources */,
 				35E84BC42A0C7DCC00E4921A /* ProcUtils.m in Sources */,
 				3551D22729739E730088CE7F /* main.m in Sources */,
@@ -867,7 +867,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -899,7 +899,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -928,7 +928,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -961,7 +961,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -999,7 +999,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1040,7 +1040,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1076,7 +1076,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1112,7 +1112,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1049;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (

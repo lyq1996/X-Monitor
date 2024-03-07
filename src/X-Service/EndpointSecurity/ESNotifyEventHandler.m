@@ -5,7 +5,7 @@
 //  Created by lyq1996 on 2023/4/22.
 //
 
-#import "ESEventHandler.h"
+#import "ESNotifyEventHandler.h"
 #import "ESDefination.h"
 #import <bsm/libbsm.h>
 #import <CocoaLumberjack/CocoaLumberjack.h>
@@ -56,90 +56,6 @@ extern ESEvent ESEvents[];
     // should override
     Event *event = [EventFactory initEvent:ESEvents[msg->event_type].eventName];
     [self handleCommonEvent:msg withEvent:event];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_EXEC
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_OPEN
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_KEXTLOAD
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    KextLoadEvent *event = (KextLoadEvent *)[super handleEvent:msg];
-    event.kextFilePath = [NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_MMAP
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_MPROTECT
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_MOUNT
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_RENAME
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SIGNAL
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_UNLINK
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    UnlinkEvent *event = (UnlinkEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.unlink.target)
-    FILL_EVENT_FILE_INFO(event, parentDir, msg->event.unlink.parent_dir)
     return event;
 }
 
@@ -274,7 +190,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_KEXTLOAD
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    KextLoadEvent *event = (KextLoadEvent *)[super handleEvent:msg];
+    event.kextIdentifier = [NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]];
     return event;
 }
 
@@ -283,7 +200,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_KEXTUNLOAD
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    KextUnloadEvent *event = (KextUnloadEvent *)[super handleEvent:msg];
+    event.kextIdentifier = [NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]];
     return event;
 }
 
@@ -292,7 +210,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_LINK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    LinkEvent *event = (LinkEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, source, msg->event.link.source)
+    FILL_EVENT_FILE_INFO(event, targetDir, msg->event.link.target_dir)
+    event.targetFileName = [NSString stringWithUTF8String:[self getString:msg->event.link.target_filename]];
     return event;
 }
 
@@ -446,25 +367,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_FILE_PROVIDER_MATERIALIZE
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FILE_PROVIDER_MATERIALIZE
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_FILE_PROVIDER_UPDATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -482,25 +385,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_READLINK
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_READLINK
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_TRUNCATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -518,15 +403,6 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_LINK
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_LOOKUP
 
 - (Event *)handleEvent:(const es_message_t *)msg {
@@ -536,79 +412,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_CREATE
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SETATTRLIST
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SETEXTATTR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SETFLAGS
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SETMODE
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SETOWNER
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_CHDIR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CHDIR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_GETATTRLIST
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -644,15 +448,6 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_CHROOT
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CHROOT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
@@ -662,25 +457,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_UTIMES
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UTIMES
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_CLONE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -707,25 +484,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_GETEXTATTR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_GETEXTATTR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_LISTEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -743,15 +502,6 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_READDIR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_READDIR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
@@ -761,25 +511,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_DELETEEXTATTR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_DELETEEXTATTR
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_FSGETPATH
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -806,15 +538,6 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SETTIME
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETTIME
 
 - (Event *)handleEvent:(const es_message_t *)msg {
@@ -833,43 +556,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_UIPC_BIND
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UIPC_CONNECT
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_UIPC_CONNECT
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_EXCHANGEDATA
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SETACL
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -905,15 +592,6 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_PROC_CHECK
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PROC_CHECK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
@@ -923,52 +601,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_GET_TASK
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_SEARCHFS
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SEARCHFS
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_FCNTL
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_IOKIT_OPEN
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_PROC_SUSPEND_RESUME
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -1022,25 +655,7 @@ extern ESEvent ESEvents[];
 
 @end
 
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_REMOUNT
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_REMOUNT
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_GET_TASK_READ
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -1113,15 +728,6 @@ extern ESEvent ESEvents[];
 @end
 
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETREGID
-
-- (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
-    return event;
-}
-
-@end
-
-@implementation EventHandler_ES_EVENT_TYPE_AUTH_COPYFILE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
@@ -1319,6 +925,15 @@ extern ESEvent ESEvents[];
 
 @end
 
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SUDO
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_GROUP_ADD
 
 - (Event *)handleEvent:(const es_message_t *)msg {
@@ -1428,6 +1043,15 @@ extern ESEvent ESEvents[];
 @end
 
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_DELETE_GROUP
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_XPC_CONNECT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     Event *event = [super handleEvent:msg];
