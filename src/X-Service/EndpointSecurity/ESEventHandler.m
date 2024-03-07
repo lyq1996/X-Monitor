@@ -1273,3 +1273,165 @@ extern ESEvent ESEvents[];
 }
 
 @end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PROFILE_ADD
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PROFILE_REMOVE
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SU
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_AUTHORIZATION_PETITION
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_AUTHORIZATION_JUDGEMENT
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_GROUP_ADD
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_GROUP_REMOVE
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_GROUP_SET
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_MODIFY_PASSWORD
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_DISABLE_USER
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_ENABLE_USER
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_VALUE_ADD
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_VALUE_REMOVE
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_ATTRIBUTE_SET
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_CREATE_USER
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_CREATE_GROUP
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_DELETE_USER
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end
+
+@implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OD_DELETE_GROUP
+
+- (Event *)handleEvent:(const es_message_t *)msg {
+    Event *event = [super handleEvent:msg];
+    return event;
+}
+
+@end

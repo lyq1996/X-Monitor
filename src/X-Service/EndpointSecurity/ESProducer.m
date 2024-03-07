@@ -66,6 +66,9 @@ extern DDLogLevel ddLogLevel;
     if (@available(macOS 13.0, *)) {
         maxEventType = ES_EVENT_TYPE_NOTIFY_BTM_LAUNCH_ITEM_REMOVE;
     }
+    if (@available(macOS 14.0, *)) {
+        maxEventType = ES_EVENT_TYPE_NOTIFY_XPC_CONNECT;
+    }
     
     NSSet *currentSupportedEventTypes = [NSSet setWithArray:@[
         @"notify_exit",
@@ -865,7 +868,13 @@ const ESEvent ESEvents[] = {
         @"notify_btm_launch_item_remove",
         NO,
         GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_BTM_LAUNCH_ITEM_REMOVE),
-    }
+    },
+    [ES_EVENT_TYPE_NOTIFY_PROFILE_ADD] = {
+        @"notify_profile_add",
+        NO,
+        GEN_CREATE_EVENT_HANDLE(ES_EVENT_TYPE_NOTIFY_PROFILE_ADD),
+    },
+    
 };
 
 @end
