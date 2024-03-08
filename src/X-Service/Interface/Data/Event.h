@@ -161,6 +161,13 @@ DEFINE_DERIVE_EVENT_CLASS_START(IOKitOpenEvent)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SetAttrlistEvent)
+GEN_FILE_PROPERTY(target)
+@property (nonatomic, copy) NSNumber *bitmapCount;
+@property (nonatomic, copy) NSNumber *commonAttr;
+@property (nonatomic, copy) NSNumber *volAttr;
+@property (nonatomic, copy) NSNumber *dirAttr;
+@property (nonatomic, copy) NSNumber *fileAttr;
+@property (nonatomic, copy) NSNumber *forkAttr;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SetExtAttrEvent)
