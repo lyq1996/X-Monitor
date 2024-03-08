@@ -170,7 +170,26 @@ static NSSet *eventClassesSet;
                     [BtmLaunchItemAddEvent class], @"notify_btm_launch_item_add",
                     [BtmLaunchItemRemoveEvent class], @"notify_btm_launch_item_remove",
                     // The following events are available beginning in macOS 14.0
-
+                    [ProfileAddEvent class], @"notifyProfileAdd",
+                    [ProfileRemoveEvent class], @"notifyProfileRemove",
+                    [SuEvent class], @"notifySu",
+                    [AuthorizationPetitionEvent class], @"notifyAuthorizationPetition",
+                    [AuthorizationJudgementEvent class], @"notifyAuthorizationJudgement",
+                    [SudoEvent class], @"notifySudo",
+                    [OdGroupAddEvent class], @"notifyOdGroupAdd",
+                    [OdGroupRemoveEvent class], @"notifyOdGroupRemove",
+                    [OdGroupSetEvent class], @"notifyOdGroupSet",
+                    [OdModifyPasswordEvent class], @"notifyOdModifyPassword",
+                    [OdDisableUserEvent class], @"notifyOdDisableUser",
+                    [OdEnableUserEvent class], @"notifyOdEnableUser",
+                    [OdAttributeValueAddEvent class], @"notifyOdAttributeValueAdd",
+                    [OdAttributeValueRemoveEvent class], @"notifyOdAttributeValueRemove",
+                    [OdAttributeSetEvent class], @"notifyOdAttributeSet",
+                    [OdCreateUserEvent class], @"notifyOdCreateUser",
+                    [OdCreateGroupEvent class], @"notifyOdCreateGroup",
+                    [OdDeleteUserEvent class], @"notifyOdDeleteUser",
+                    [OdDeleteGroupEvent class], @"notifyOdDeleteGroup",
+                    [XpcConnectEvent class], @"notifyXpcConnect",
                     nil];
     eventClassesSet = [NSSet setWithArray:[eventClasses allValues]];
 }
@@ -1542,3 +1561,82 @@ static NSSet *eventClassesSet;
 
 @end
 
+@implementation ProfileAddEvent
+
+@end
+
+@implementation ProfileRemoveEvent
+
+@end
+
+@implementation SuEvent
+
+@end
+
+@implementation AuthorizationPetitionEvent
+
+@end
+
+@implementation AuthorizationJudgementEvent
+
+@end
+
+@implementation SudoEvent
+
+@end
+
+@implementation OdGroupAddEvent
+
+@end
+
+@implementation OdGroupRemoveEvent
+
+@end
+
+@implementation OdGroupSetEvent
+
+@end
+
+@implementation OdModifyPasswordEvent
+
+@end
+
+@implementation OdDisableUserEvent
+
+@end
+
+@implementation OdEnableUserEvent
+
+@end
+
+@implementation OdAttributeValueAddEvent
+
+@end
+
+@implementation OdAttributeValueRemoveEvent
+
+@end
+
+@implementation OdAttributeSetEvent
+
+@end
+
+@implementation OdCreateUserEvent
+
+@end
+
+@implementation OdCreateGroupEvent
+
+@end
+
+@implementation OdDeleteUserEvent
+
+@end
+
+@implementation OdDeleteGroupEvent
+
+@end
+
+@implementation XpcConnectEvent
+
+@end
