@@ -260,7 +260,14 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UNMOUNT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    UnmountEvent *event = (UnmountEvent *)[super handleEvent:msg];
+    event.fsID = [NSString stringWithFormat:@"%d %d", msg->event.mount.statfs->f_fsid.val[0], msg->event.unmount.statfs->f_fsid.val[1]];
+    event.fsType = [NSString stringWithUTF8String:msg->event.unmount.statfs->f_fstypename];
+    event.ownerUid = [NSNumber numberWithUnsignedInt:msg->event.unmount.statfs->f_owner];
+    event.mountFlags = [NSNumber numberWithUnsignedInt:msg->event.unmount.statfs->f_flags];
+    event.totalFiles = [NSNumber numberWithUnsignedLongLong:msg->event.unmount.statfs->f_files];
+    event.unmountPath = [NSString stringWithUTF8String:msg->event.unmount.statfs->f_mntonname];
+    event.sourcePath = [NSString stringWithUTF8String:msg->event.unmount.statfs->f_mntfromname];
     return event;
 }
 

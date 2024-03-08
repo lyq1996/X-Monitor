@@ -82,13 +82,14 @@ extern DDLogLevel ddLogLevel;
         @"notify_kextload",
         @"notify_kextunload",
         @"notify_link",
+        @"notify_mmap",
+        @"notify_mprotect",
+        @"notify_mount",
+        @"notify_unmount",
 
         @"notify_unlink",
         @"notify_rename",
-        @"notify_mount",
         @"notify_signal",
-        @"notify_mmap",
-        @"notify_mprotect",
     ]];
     
     NSMutableArray *tmpSupportedEventTypes = [NSMutableArray array];
@@ -212,9 +213,7 @@ extern DDLogLevel ddLogLevel;
             
     if (eventTypes == nil || eventTypes.count == 0) {
         // delete es client and stop producer
-        es_unsubscribe_all(notifyClient);
-#pragma mark [TODO] support auth event
-        
+        es_unsubscribe_all(notifyClient);        
         producerStatus = X_PRODUCER_STOPPED;
         producerStatusString = ProducerStatus2String[producerStatus];
         return;

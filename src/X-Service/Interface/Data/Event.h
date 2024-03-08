@@ -146,6 +146,13 @@ GEN_FILE_PROPERTY(targetDir)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(UnmountEvent)
+@property (nonatomic, copy) NSString *unmountPath;
+@property (nonatomic, copy) NSString *sourcePath;
+@property (nonatomic, copy) NSString *fsType;
+@property (nonatomic, copy) NSNumber *ownerUid;
+@property (nonatomic, copy) NSNumber *mountFlags;
+@property (nonatomic, copy) NSNumber *totalFiles;
+@property (nonatomic, copy) NSString *fsID;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(IOKitOpenEvent)

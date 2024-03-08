@@ -169,7 +169,8 @@ static NSSet *eventClassesSet;
                     [LoginLogoutEvent class], @"notify_login_logout",
                     [BtmLaunchItemAddEvent class], @"notify_btm_launch_item_add",
                     [BtmLaunchItemRemoveEvent class], @"notify_btm_launch_item_remove",
-                    
+                    // The following events are available beginning in macOS 14.0
+
                     nil];
     eventClassesSet = [NSSet setWithArray:[eventClasses allValues]];
 }
@@ -1220,6 +1221,68 @@ static NSSet *eventClassesSet;
 @end
 
 @implementation UnmountEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _unmountPath = @"";
+        _sourcePath = @"";
+        _fsType = @"";
+        _fsID = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _unmountPath];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tUnmount Path: %@\n", _unmountPath];
+    [detailString appendFormat:@"\tSource Path: %@\n", _sourcePath];
+    [detailString appendFormat:@"\tFile System Type: %@\n", _fsType];
+    [detailString appendFormat:@"\tFile System ID: %@\n", _fsID];
+    [detailString appendFormat:@"\tOwner UID: %@\n", _ownerUid];
+    [detailString appendFormat:@"\tMount Flags: %@\n", _mountFlags];
+    [detailString appendFormat:@"\tTotal Files: %@\n", _totalFiles];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _unmountPath = [decoder decodeObjectForKey:@"unmountPath"];
+        _sourcePath = [decoder decodeObjectForKey:@"sourcePath"];
+        _fsType = [decoder decodeObjectForKey:@"fsType"];
+        _fsID = [decoder decodeObjectForKey:@"fsID"];
+        _ownerUid = [decoder decodeObjectForKey:@"ownerUid"];
+        _mountFlags = [decoder decodeObjectForKey:@"mountFlags"];
+        _totalFiles = [decoder decodeObjectForKey:@"totalFiles"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_unmountPath forKey:@"unmountPath"];
+    [encoder encodeObject:_sourcePath forKey:@"sourcePath"];
+    [encoder encodeObject:_fsType forKey:@"fsType"];
+    [encoder encodeObject:_fsID forKey:@"fsID"];
+    [encoder encodeObject:_ownerUid forKey:@"ownerUid"];
+    [encoder encodeObject:_mountFlags forKey:@"mountFlags"];
+    [encoder encodeObject:_totalFiles forKey:@"totalFiles"];
+}
 
 @end
 
