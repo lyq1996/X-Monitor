@@ -319,7 +319,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    SetExtAttrEvent *event = (SetExtAttrEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.setextattr.target)
+    event.extAttr = [NSString stringWithUTF8String:[self getString:msg->event.setextattr.extattr]];
     return event;
 }
 

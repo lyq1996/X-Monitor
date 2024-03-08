@@ -89,6 +89,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_iokit_open",
         @"notify_rename",
         @"notify_setattrlist",
+        @"notify_setextattr",
         
         @"notify_unlink",
         @"notify_signal",
