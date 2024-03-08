@@ -30,12 +30,12 @@ You can use [NuwaStone](https://github.com/ConradSun/NuwaStone), this project su
 # Feature
 Current support:
 
-1. It currently supports: notify_exit, notify_exec, notify_fork, notify_open, notify_unlink, notify_rename events from the `Endpoint Security` framework.
+1. It currently supports: `notify_exec`,`notify_open`,`notify_fork`,`notify_close`,`notify_create`,`notify_exchangedata`,`notify_exit`,`notify_get_task`,`notify_kextload`,`notify_kextunload`,`notify_link`,`notify_mmap`,`notify_mprotect`,`notify_mount`,`notify_unmount`,`notify_iokit_open`,`notify_rename`,`notify_setattrlist`,`notify_unlink`,`notify_signal` events from the `Endpoint Security` framework.
 2. It support event classification according to the event type.
 
 It will support in the future:
 
-1. All events from the `Endpoint Security` framework. (H1 priority)
+1. All events from the `Endpoint Security` framework. (H1 priority)(X-Monitor is designed to be extensible, thus adding `events` is very easy. For example, [Add set extend attribute event](https://github.com/lyq1996/X-Monitor/commit/cd659bbb7fbf4d6a26abf675a7e623fd341f4855), it only requires completing the corresponding event class by adding unique event attributes, then describe how to serialize and display details in the event class implementation, and finally parser the event unique attribute in the event handler.)
 2. Event filter. (H1 priority)
 3. Process chain analysis. (H2 priority)
 4. Network connection and DNS events from the `Network Extension` framework. (H2 priority)

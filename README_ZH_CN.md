@@ -25,11 +25,11 @@
 
 # 功能
 它当前支持：
-1. 来自Endpoint Security框架的`notify_exit`, `notify_exec`, `notify_fork`, `notify_open`, `notify_unlink`, `notify_rename`事件。
+1. 来自Endpoint Security框架的`notify_exec`,`notify_open`,`notify_fork`,`notify_close`,`notify_create`,`notify_exchangedata`,`notify_exit`,`notify_get_task`,`notify_kextload`,`notify_kextunload`,`notify_link`,`notify_mmap`,`notify_mprotect`,`notify_mount`,`notify_unmount`,`notify_iokit_open`,`notify_rename`,`notify_setattrlist`,`notify_unlink`,`notify_signal`事件。
 2. 可根据事件类型进行分类。
 
 它未来将支持：
-1. 提供来自`Endpoint Security`框架的`所有事件`（H1优先级）（X-Monitor被设计为可拓展的，因此添加`事件`非常简单）；
+1. 提供来自`Endpoint Security`框架的`所有事件`（H1优先级）（X-Monitor被设计为可拓展的，因此添加`事件`非常简单，例如：[Add set extend attribute event](https://github.com/lyq1996/X-Monitor/commit/cd659bbb7fbf4d6a26abf675a7e623fd341f4855)，只需要完善对应的event类，添加特有事件属性，然后在对应event类实现中描述如何序列化和显示详情，最后在handle实现event属性的解析即可）；
 2. 实现事件过滤器（H1优先级）；
 3. 进程链分析（H2优先级）；
 4. 来自`Network Extension`框架的网络连接、DNS事件（H2优先级）；
