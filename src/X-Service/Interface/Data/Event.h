@@ -156,6 +156,8 @@ DEFINE_DERIVE_EVENT_CLASS_START(UnmountEvent)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(IOKitOpenEvent)
+@property (nonatomic, copy) NSNumber *userClientType;
+@property (nonatomic, copy) NSString *userClientClass;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SetAttrlistEvent)

@@ -276,7 +276,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_IOKIT_OPEN
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    IOKitOpenEvent *event = (IOKitOpenEvent *)[super handleEvent:msg];
+    event.userClientType = [NSNumber numberWithInt:msg->event.iokit_open.user_client_type];
+    event.userClientClass = [NSString stringWithUTF8String:[self getString:msg->event.iokit_open.user_client_class]];
     return event;
 }
 

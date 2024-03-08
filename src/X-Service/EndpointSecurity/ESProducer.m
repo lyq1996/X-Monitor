@@ -86,6 +86,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_mprotect",
         @"notify_mount",
         @"notify_unmount",
+        @"notify_iokit_open",
 
         @"notify_unlink",
         @"notify_rename",

@@ -1307,6 +1307,50 @@ static NSSet *eventClassesSet;
 
 @implementation IOKitOpenEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _userClientType = @(0);
+        _userClientClass = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"class: %@", _userClientClass];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tUser Client Type: %@\n", _userClientType];
+    [detailString appendFormat:@"\tUser Client Class: %@\n", _userClientClass];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _userClientType = [decoder decodeObjectForKey:@"userClientType"];
+        _userClientClass = [decoder decodeObjectForKey:@"userClientClass"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_userClientType forKey:@"userClientType"];
+    [encoder encodeObject:_userClientClass forKey:@"userClientClass"];
+}
 @end
 
 @implementation SetAttrlistEvent
