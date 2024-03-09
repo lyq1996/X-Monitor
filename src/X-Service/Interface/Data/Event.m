@@ -2664,6 +2664,53 @@ static NSSet *eventClassesSet;
 
 @implementation FsGetPathEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(target)
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _targetFilePath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget File UID: %@\n", _targetFileUID];
+    [detailString appendFormat:@"\tTarget File GID: %@\n", _targetFileGID];
+    [detailString appendFormat:@"\tTarget File Mode: %@\n", _targetFileMode];
+    [detailString appendFormat:@"\tTarget File Access Time: %@\n", _targetFileAccessTime];
+    [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
+    [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
+    [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(target)
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(target)
+}
+
+
 @end
 
 @implementation DupEvent
