@@ -1771,6 +1771,58 @@ static NSSet *eventClassesSet;
 
 @implementation FileProviderUpdateEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(source)
+        _targetFilePath = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@ -> %@", _sourceFilePath, _targetFilePath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+
+    [detailString appendFormat:@"\tSource File UID: %@\n", _sourceFileUID];
+    [detailString appendFormat:@"\tSource File GID: %@\n", _sourceFileGID];
+    [detailString appendFormat:@"\tSource File Mode: %@\n", _sourceFileMode];
+    [detailString appendFormat:@"\tSource File Access Time: %@\n", _sourceFileAccessTime];
+    [detailString appendFormat:@"\tSource File Modify Time: %@\n", _sourceFileModifyTime];
+    [detailString appendFormat:@"\tSource File Create Time: %@\n", _sourceFileCreateTime];
+    [detailString appendFormat:@"\tSource File Path: %@\n", _sourceFilePath];
+
+    [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(source)
+        _targetFilePath = [decoder decodeObjectForKey:@"targetFilePath"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(source)
+    [encoder encodeObject:_targetFilePath forKey:@"targetFilePath"];
+}
+
 @end
 
 @implementation ReadlinkEvent

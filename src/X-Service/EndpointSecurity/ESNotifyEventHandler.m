@@ -408,7 +408,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FILE_PROVIDER_UPDATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    FileProviderUpdateEvent *event = (FileProviderUpdateEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, source, msg->event.file_provider_update.source)
+    event.targetFilePath = [NSString stringWithUTF8String:[self getString:msg->event.file_provider_update.target_path]];
     return event;
 }
 
