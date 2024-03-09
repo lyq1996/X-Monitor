@@ -460,7 +460,14 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_GETATTRLIST
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    GetAttrlistEvent *event = (GetAttrlistEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.getattrlist.target)
+    event.bitmapCount = [NSNumber numberWithShort:msg->event.getattrlist.attrlist.bitmapcount];
+    event.commonAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.commonattr];
+    event.volAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.volattr];
+    event.dirAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.dirattr];
+    event.fileAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.fileattr];
+    event.forkAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.forkattr];
     return event;
 }
 
