@@ -110,6 +110,12 @@ extern DDLogLevel ddLogLevel;
         if (ret == YES) {
             result = X_CORE_SUCCESS;
             NSArray *array = [NSKeyedUnarchiver unarchivedObjectOfClasses:[NSSet setWithObjects:[NSArray class], [NSString class], nil] fromData:data error:nil];
+            // sort array
+            array = [array sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+                NSString *first = (NSString *)a;
+                NSString *second = (NSString *)b;
+                return [first compare:second];
+            }];
             DDLogVerbose(@"service support event: %@", array);
             result = X_CORE_SUCCESS;
             
