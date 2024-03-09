@@ -25,7 +25,7 @@
 
 # 功能
 它当前支持：
-1. 来自Endpoint Security框架的`notify_exec`,`notify_open`,`notify_fork`,`notify_close`,`notify_create`,`notify_exchangedata`,`notify_exit`,`notify_get_task`,`notify_kextload`,`notify_kextunload`,`notify_link`,`notify_mmap`,`notify_mprotect`,`notify_mount`,`notify_unmount`,`notify_iokit_open`,`notify_rename`,`notify_setattrlist`,`notify_unlink`,`notify_signal`事件。
+1. 来自Endpoint Security框架的`notify_exec`,`notify_open`,`notify_fork`,`notify_close`,`notify_create`,`notify_exchangedata`,`notify_exit`,`notify_get_task`,`notify_kextload`,`notify_kextunload`,`notify_link`,`notify_mmap`,`notify_mprotect`,`notify_mount`,`notify_unmount`,`notify_iokit_open`,`notify_rename`,`notify_setattrlist`,`notify_setextattr`,`notify_setflags`,`notify_setmode`,`notify_setowner`,`notify_signal`,`notify_unlink`,`notify_write`,`notify_file_provider_materialize`,`notify_file_provider_update`,`notify_readlink`,`notify_truncate`,`notify_lookup`,`notify_chdir`,`notify_getattrlist`,`notify_stat`,`notify_access`,`notify_chroot`,`notify_utimes`,`notify_clone`,`notify_fcntl`,`notify_getextattr`,`notify_listextattr`,`notify_readdir`,`notify_deleteextattr`,`notify_fsgetpath`,`notify_dup`事件。
 2. 可根据事件类型进行分类。
 
 它未来将支持：
@@ -69,4 +69,4 @@ X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 1. 单元测试；
 2. 文档编写；
 3. 系统拓展XPC对端签名校验（自实现）；
-4. 优化用于显示事件的NSTableView的性能。
+4. ~~优化用于显示事件的NSTableView的性能。~~(已完成)

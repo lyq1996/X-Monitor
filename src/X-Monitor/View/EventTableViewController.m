@@ -8,24 +8,25 @@
 #import "EventTableViewController.h"
 #import "GlobalObserverKey.h"
 #import "CoreManager.h"
+#import "ConfigManager.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
 extern DDLogLevel ddLogLevel;
 
+@interface EventTableViewController()<EventDataSourceDelagate>
+
+@end
+
 @implementation EventTableViewController {
     __weak IBOutlet NSTableView *eventTable;
+    
+    NSMutableArray<Event *> *allEvents;
+    NSMutableArray<Event *> *showedEvents;
+    
     CoreManager *manager;
     NSDateFormatter *dateFormatter;
     BOOL autoScroll;
-}
-
-- (void)updateEventTable {
-    NSIndexSet *indexs = eventTable.selectedRowIndexes;
-    [eventTable reloadData];
-    [eventTable selectRowIndexes:indexs byExtendingSelection:NO];
-    if (eventTable.numberOfRows > 0 && autoScroll) {
-        [eventTable scrollRowToVisible:eventTable.numberOfRows - 1];
-    }
+    NSString *searchText;
 }
 
 - (void)viewDidLoad {
@@ -35,16 +36,23 @@ extern DDLogLevel ddLogLevel;
     eventTable.target = self;
     eventTable.delegate = self;
     eventTable.dataSource = self;
+    
+    allEvents = [NSMutableArray array];
+    showedEvents = [NSMutableArray array];
+    
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
     autoScroll = YES;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(switchAutoScroll:) name:kNowClickKey object:nil];
+    searchText = @"";
     
-    NSDate *fireTime = [NSDate dateWithTimeIntervalSinceNow:1.0];
-    NSTimer *timer = [[NSTimer alloc] initWithFireDate:fireTime interval:1.0 target:self selector:@selector(updateEventTable) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-    [timer fire];
+    [manager.dataSource addEventSourceDelegate:self];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(switchAutoScroll:) name:kNowClickKey object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryChanged:) name:kCategorySetKey object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryEdited:) name:kCategoryEditKey object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearEvent:) name:kClearClickKey object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchChanged:) name:kSearchChangeKey object:nil];
 }
 
 - (void)switchAutoScroll:(id)sender {
@@ -59,7 +67,7 @@ extern DDLogLevel ddLogLevel;
 
 #pragma mark table view data source delegate
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return [[manager.dataSource Events2Show] count];
+    return [showedEvents count];
 }
 
 #pragma mark table view data delegate
@@ -72,11 +80,11 @@ extern DDLogLevel ddLogLevel;
         return nil;
     }
     
-    if (row > eventTable.numberOfRows || row > [[manager.dataSource Events2Show] count]) {
+    if (row > eventTable.numberOfRows || row > [showedEvents count]) {
         return nil;
     }
     
-    Event *event = [[manager.dataSource Events2Show] objectAtIndex:row];
+    Event *event = [showedEvents objectAtIndex:row];
     
     if (tableColumn == tableView.tableColumns[0]) {
         NSNumber *eventTime = event.eventTime;
@@ -111,16 +119,115 @@ extern DDLogLevel ddLogLevel;
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
-    if (eventTable.selectedRowIndexes.count < 0 || eventTable.selectedRow > [[manager.dataSource Events2Show] count]) {
+    if (eventTable.selectedRowIndexes.count < 0 || eventTable.selectedRow > [showedEvents count]) {
         return;
     }
 
-    Event *event = [[manager.dataSource Events2Show] objectAtIndex:eventTable.selectedRow];
+    Event *event = [showedEvents objectAtIndex:eventTable.selectedRow];
     
     NSDictionary *userInfo = @{
         @"detailInfo": [event detailInfo]
     };
     [[NSNotificationCenter defaultCenter] postNotificationName:kEventInfoSetKey object:self userInfo:userInfo];
+}
+
+#pragma mark clear button clicked
+- (void)clearEvent:(id)sender {
+    [allEvents removeAllObjects];
+    [showedEvents removeAllObjects];
+    [self clearTableRows];
+
+    DDLogDebug(@"table view rows cleared");
+}
+
+#pragma mark search changed
+- (void)searchChanged:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *newSearchText = userInfo[@"searchText"];
+    DDLogDebug(@"search text: %@", searchText);
+    
+    if (![searchText isEqualToString:newSearchText]) {
+        searchText = newSearchText;
+        [self updateShowedEvent];
+    }
+}
+
+#pragma mark category changed
+- (void)categoryChanged:(id)sender {
+    [self updateShowedEvent];
+}
+
+#pragma mark category edited
+- (void)categoryEdited:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    EventCategory *category = userInfo[@"editedCategory"];
+    DDLogDebug(@"edit category: %@", category.categoryName);
+    if (category == [ConfigManager shared].currentCategory) {
+        DDLogDebug(@"current data source edited: %@", category.categoryName);
+    }
+
+    [self updateShowedEvent];
+}
+
+- (void)updateShowedEvent {
+    EventCategory *category = [ConfigManager shared].currentCategory;
+    [showedEvents removeAllObjects];
+
+    for (Event *event in allEvents) {
+        if (category.categoryDependence == nil || [category.categoryDependence containsObject:event.eventType]) {
+            if ([searchText length] == 0 || [[event detailInfo] containsString:searchText]) {
+                [showedEvents addObject:event];
+            }
+        }
+    }
+    
+    [self clearTableRows];
+    [self addTableRows];
+    
+    DDLogDebug(@"category: %@, category dependence: %@, search: %@", category.categoryName, category.categoryDependence, searchText);
+}
+
+- (void)clearTableRows {
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    for (NSInteger i = 0; i < [eventTable numberOfRows]; ++i) {
+        [indexes addIndex:i];
+    }
+    
+    [eventTable beginUpdates];
+    [eventTable removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationSlideRight];
+    [eventTable endUpdates];
+}
+
+- (void)addTableRows {
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    for (NSInteger i = [eventTable numberOfRows]; i < [showedEvents count]; ++i) {
+        [indexes addIndex:i];
+    }
+    
+    [eventTable beginUpdates];
+    [eventTable insertRowsAtIndexes:indexes withAnimation:NSTableViewAnimationSlideRight];
+    [eventTable endUpdates];
+    
+    if (eventTable.numberOfRows > 0 && autoScroll) {
+        [eventTable scrollRowToVisible:eventTable.numberOfRows - 1];
+    }
+}
+
+#pragma mark EventDataSourceDelagate protocol
+- (void)OnEventDataSourceAdd:(nonnull Event *)event {
+    dispatch_async(dispatch_get_main_queue(), ^(){
+        [self->allEvents addObject:event];
+
+        NSString *eventType = event.eventType;
+        
+        EventCategory *category = [ConfigManager shared].currentCategory;
+        if (category.categoryDependence == nil || ([category.categoryDependence containsObject:eventType])) {
+            if ([self->searchText length] == 0 || [[event detailInfo] containsString:self->searchText]) {
+                [self->showedEvents addObject:event];
+                [self addTableRows];
+            }
+        }
+    });
 }
 
 @end

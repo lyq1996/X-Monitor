@@ -10,11 +10,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol EventDataSourceDelagate <NSObject>
+
+- (void)OnEventDataSourceAdd:(Event *)event;
+
+@end
+
 @interface EventDataSource : NSObject
 
-@property (readonly) NSMutableArray<Event *> *Events2Show;
-
 - (void)addEvent:(Event *)event;
+
+- (void)addEventSourceDelegate:(id<EventDataSourceDelagate>)delegate;
 
 @end
 

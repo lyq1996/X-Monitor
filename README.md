@@ -30,7 +30,7 @@ You can use [NuwaStone](https://github.com/ConradSun/NuwaStone), this project su
 # Feature
 Current support:
 
-1. It currently supports: `notify_exec`,`notify_open`,`notify_fork`,`notify_close`,`notify_create`,`notify_exchangedata`,`notify_exit`,`notify_get_task`,`notify_kextload`,`notify_kextunload`,`notify_link`,`notify_mmap`,`notify_mprotect`,`notify_mount`,`notify_unmount`,`notify_iokit_open`,`notify_rename`,`notify_setattrlist`,`notify_unlink`,`notify_signal` events from the `Endpoint Security` framework.
+1. It currently supports: `notify_exec`,`notify_open`,`notify_fork`,`notify_close`,`notify_create`,`notify_exchangedata`,`notify_exit`,`notify_get_task`,`notify_kextload`,`notify_kextunload`,`notify_link`,`notify_mmap`,`notify_mprotect`,`notify_mount`,`notify_unmount`,`notify_iokit_open`,`notify_rename`,`notify_setattrlist`,`notify_setextattr`,`notify_setflags`,`notify_setmode`,`notify_setowner`,`notify_signal`,`notify_unlink`,`notify_write`,`notify_file_provider_materialize`,`notify_file_provider_update`,`notify_readlink`,`notify_truncate`,`notify_lookup`,`notify_chdir`,`notify_getattrlist`,`notify_stat`,`notify_access`,`notify_chroot`,`notify_utimes`,`notify_clone`,`notify_fcntl`,`notify_getextattr`,`notify_listextattr`,`notify_readdir`,`notify_deleteextattr`,`notify_fsgetpath`,`notify_dup` events from the `Endpoint Security` framework.
 2. It support event classification according to the event type.
 
 It will support in the future:
@@ -75,4 +75,4 @@ If you encounter any issues while using X-Monitor, please feel free to submit an
 1. Unit testing.
 2. Documentation writing.
 3. Implement system extension XPC peer signing verification.
-4. Optimize performance of NSTableView used for displaying events.
+4. ~~Optimize performance of NSTableView used for displaying events.~~(Added)
