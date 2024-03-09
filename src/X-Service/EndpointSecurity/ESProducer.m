@@ -90,6 +90,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_rename",
         @"notify_setattrlist",
         @"notify_setextattr",
+        @"notify_setflags",
         
         @"notify_unlink",
         @"notify_signal",

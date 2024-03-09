@@ -330,7 +330,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETFLAGS
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    SetFlagsEvent *event = (SetFlagsEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.setflags.target)
+    event.flags = [NSNumber numberWithInt:msg->event.setflags.flags];
     return event;
 }
 
