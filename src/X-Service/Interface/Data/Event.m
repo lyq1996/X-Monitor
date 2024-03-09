@@ -1494,7 +1494,7 @@ static NSSet *eventClassesSet;
 
 - (NSString *)shortInfo {
     NSMutableString *detailString = [NSMutableString string];
-    [detailString appendFormat:@"%@ %@", _targetFilePath, _flags];
+    [detailString appendFormat:@"%@", _targetFilePath];
     return detailString;
 }
 
@@ -1509,7 +1509,7 @@ static NSSet *eventClassesSet;
     [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
     [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
     [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
-    [detailString appendFormat:@"\tFlags: %@\n", _flags];
+    [detailString appendFormat:@"\tNew Flags: %@\n", _flags];
     [detailString appendFormat:@"}"];
 
     return detailString;
@@ -1548,7 +1548,7 @@ static NSSet *eventClassesSet;
 
 - (NSString *)shortInfo {
     NSMutableString *detailString = [NSMutableString string];
-    [detailString appendFormat:@"%@ %@", _targetFilePath, _mode];
+    [detailString appendFormat:@"%@", _targetFilePath];
     return detailString;
 }
 
@@ -1563,7 +1563,7 @@ static NSSet *eventClassesSet;
     [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
     [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
     [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
-    [detailString appendFormat:@"\tMode: %@\n", _mode];
+    [detailString appendFormat:@"\tNew Mode: %@\n", _mode];
     [detailString appendFormat:@"}"];
 
     return detailString;
