@@ -1591,6 +1591,60 @@ static NSSet *eventClassesSet;
 
 @implementation SetOwnerEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(target)
+        _uid = @(0);
+        _gid = @(0);
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _targetFilePath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget File UID: %@\n", _targetFileUID];
+    [detailString appendFormat:@"\tTarget File GID: %@\n", _targetFileGID];
+    [detailString appendFormat:@"\tTarget File Mode: %@\n", _targetFileMode];
+    [detailString appendFormat:@"\tTarget File Access Time: %@\n", _targetFileAccessTime];
+    [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
+    [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
+    [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
+    [detailString appendFormat:@"\tNew UID: %@\n", _uid];
+    [detailString appendFormat:@"\tNew GID: %@\n", _gid];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(target)
+        _uid = [decoder decodeObjectForKey:@"uid"];
+        _gid = [decoder decodeObjectForKey:@"gid"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(target)
+    [encoder encodeObject:_uid forKey:@"uid"];
+    [encoder encodeObject:_gid forKey:@"gid"];
+}
+
 @end
 
 @implementation WriteEvent

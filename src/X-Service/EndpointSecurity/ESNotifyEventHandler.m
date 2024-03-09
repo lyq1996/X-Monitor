@@ -352,7 +352,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETOWNER
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    SetOwnerEvent *event = (SetOwnerEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.setowner.target)
+    event.uid = [NSNumber numberWithInt:msg->event.setowner.uid];
+    event.gid = [NSNumber numberWithInt:msg->event.setowner.gid];
     return event;
 }
 

@@ -186,6 +186,9 @@ GEN_FILE_PROPERTY(target)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SetOwnerEvent)
+GEN_FILE_PROPERTY(target)
+@property (nonatomic, copy) NSNumber *uid;
+@property (nonatomic, copy) NSNumber *gid;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(WriteEvent)
