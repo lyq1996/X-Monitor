@@ -486,7 +486,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_ACCESS
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    AccessEvent *event = (AccessEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.access.target)
+    event.mode = [NSNumber numberWithInt:msg->event.access.mode];
     return event;
 }
 
