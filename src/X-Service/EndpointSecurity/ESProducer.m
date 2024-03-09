@@ -91,6 +91,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_setattrlist",
         @"notify_setextattr",
         @"notify_setflags",
+        @"notify_setmode",
         
         @"notify_unlink",
         @"notify_signal",
