@@ -439,7 +439,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_LOOKUP
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    LookupEvent *event = (LookupEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, sourceDir, msg->event.lookup.source_dir)
+    event.relativeTargetFilePath = [NSString stringWithUTF8String:[self getString:msg->event.lookup.relative_target]];
     return event;
 }
 

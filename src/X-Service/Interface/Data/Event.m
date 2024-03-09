@@ -1931,6 +1931,58 @@ static NSSet *eventClassesSet;
 
 @implementation LookupEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(sourceDir)
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", [_sourceDirFilePath stringByAppendingPathComponent:_relativeTargetFilePath]];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+
+    [detailString appendFormat:@"\tSource Dir File UID: %@\n", _sourceDirFileUID];
+    [detailString appendFormat:@"\tSource Dir GID: %@\n", _sourceDirFileGID];
+    [detailString appendFormat:@"\tSource Dir Mode: %@\n", _sourceDirFileMode];
+    [detailString appendFormat:@"\tSource Dir Access Time: %@\n", _sourceDirFileAccessTime];
+    [detailString appendFormat:@"\tSource Dir Modify Time: %@\n", _sourceDirFileModifyTime];
+    [detailString appendFormat:@"\tSource Dir Create Time: %@\n", _sourceDirFileCreateTime];
+    [detailString appendFormat:@"\tSource Dir Path: %@\n", _sourceDirFilePath];
+
+    [detailString appendFormat:@"\tReleative Target File Path: %@\n", _relativeTargetFilePath];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(sourceDir)
+        _relativeTargetFilePath = [decoder decodeObjectForKey:@"relativeTargetFilePath"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(sourceDir)
+    [encoder encodeObject:_relativeTargetFilePath forKey:@"relativeTargetFilePath"];
+}
+
 @end
 
 @implementation ChdirEvent
