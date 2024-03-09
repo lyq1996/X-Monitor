@@ -573,7 +573,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_DELETEEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    DeleteExtAttrEvent *event = (DeleteExtAttrEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.deleteextattr.target)
+    event.extAttr = [NSString stringWithUTF8String:[self getString:msg->event.deleteextattr.extattr]];
     return event;
 }
 

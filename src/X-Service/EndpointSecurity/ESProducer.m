@@ -112,6 +112,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_getextattr",
         @"notify_listextattr",
         @"notify_readdir",
+        @"notify_deleteextattr",
     ]];
     
     NSMutableArray *tmpSupportedEventTypes = [NSMutableArray array];
