@@ -450,7 +450,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CHDIR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    ChdirEvent *event = (ChdirEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.chdir.target)
     return event;
 }
 
