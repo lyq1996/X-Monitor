@@ -396,7 +396,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FILE_PROVIDER_MATERIALIZE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    FileProviderMaterializeEvent *event = (FileProviderMaterializeEvent *)[super handleEvent:msg];
+    FILL_EVENT_PROCESS_INFO(event, instigator, msg->event.file_provider_materialize.instigator)
+    FILL_EVENT_FILE_INFO(event, target, msg->event.file_provider_materialize.source)
+    FILL_EVENT_FILE_INFO(event, target, msg->event.file_provider_materialize.target)
     return event;
 }
 

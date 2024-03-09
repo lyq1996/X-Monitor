@@ -1699,6 +1699,74 @@ static NSSet *eventClassesSet;
 
 @implementation FileProviderMaterializeEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_PROCESS_PROPERTY(instigator)
+        INIT_FILE_PROPERTY(source)
+        INIT_FILE_PROPERTY(target)
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@ -> %@", _sourceFilePath, _targetFilePath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+    
+    [detailString appendFormat:@"\tInstigator Process Create Time: %@\n", _instigatorCreateTime];
+    [detailString appendFormat:@"\tInstigator Process Path: %@\n", _instigatorPath];
+    [detailString appendFormat:@"\tInstigator Process Cmdline: %@\n", _instigatorCmdline];
+    [detailString appendFormat:@"\tInstigator Process Codesign Flag: 0x%X\n", [_instigatorCodesignFlag unsignedIntValue]];
+    [detailString appendFormat:@"\tInstigator Process Signing ID: %@\n", _instigatorSigningID];
+    [detailString appendFormat:@"\tInstigator Process Team ID: %@\n", _instigatorTeamID];
+    
+    [detailString appendFormat:@"\tSource File UID: %@\n", _sourceFileUID];
+    [detailString appendFormat:@"\tSource File GID: %@\n", _sourceFileGID];
+    [detailString appendFormat:@"\tSource File Mode: %@\n", _sourceFileMode];
+    [detailString appendFormat:@"\tSource File Access Time: %@\n", _sourceFileAccessTime];
+    [detailString appendFormat:@"\tSource File Modify Time: %@\n", _sourceFileModifyTime];
+    [detailString appendFormat:@"\tSource File Create Time: %@\n", _sourceFileCreateTime];
+    [detailString appendFormat:@"\tSource File Path: %@\n", _sourceFilePath];
+    
+    [detailString appendFormat:@"\tTarget File UID: %@\n", _targetFileUID];
+    [detailString appendFormat:@"\tTarget File GID: %@\n", _targetFileGID];
+    [detailString appendFormat:@"\tTarget File Mode: %@\n", _targetFileMode];
+    [detailString appendFormat:@"\tTarget File Access Time: %@\n", _targetFileAccessTime];
+    [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
+    [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
+    [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_PROCESS_PROPERTY(instigator)
+        DECODE_FILE_PROPERTY(source)
+        DECODE_FILE_PROPERTY(target)
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_PROCESS_PROPERTY(instigator)
+    ENCODE_FILE_PROPERTY(source)
+    ENCODE_FILE_PROPERTY(target)
+}
+
 @end
 
 @implementation FileProviderUpdateEvent
