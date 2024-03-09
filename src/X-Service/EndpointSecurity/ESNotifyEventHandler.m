@@ -553,7 +553,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_LISTEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    ListExtAttrEvent *event = (ListExtAttrEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.listextattr.target)
     return event;
 }
 
