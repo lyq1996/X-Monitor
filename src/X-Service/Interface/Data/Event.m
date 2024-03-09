@@ -2332,6 +2332,70 @@ static NSSet *eventClassesSet;
 
 @implementation CloneEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(source)
+        INIT_FILE_PROPERTY(targetDir)
+        _targetFileName = @"";
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    NSString *link = [_targetDirFilePath stringByAppendingPathComponent:_targetFileName];
+    [detailString appendFormat:@"%@ -> %@", _sourceFilePath, link];
+    
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tSource File UID: %@\n", _sourceFileUID];
+    [detailString appendFormat:@"\tSource File GID: %@\n", _sourceFileGID];
+    [detailString appendFormat:@"\tSource File Mode: %@\n", _sourceFileMode];
+    [detailString appendFormat:@"\tSource File Access Time: %@\n", _sourceFileAccessTime];
+    [detailString appendFormat:@"\tSource File Modify Time: %@\n", _sourceFileModifyTime];
+    [detailString appendFormat:@"\tSource File Create Time: %@\n", _sourceFileCreateTime];
+    [detailString appendFormat:@"\tSource File Path: %@\n", _sourceFilePath];
+    
+    [detailString appendFormat:@"\tTarget File Name: %@\n", _targetFileName];
+    [detailString appendFormat:@"\tTarget Dir File UID: %@\n", _targetDirFileUID];
+    [detailString appendFormat:@"\tTarget Dir File GID: %@\n", _targetDirFileGID];
+    [detailString appendFormat:@"\tTarget Dir File Mode: %@\n", _targetDirFileMode];
+    [detailString appendFormat:@"\tTarget Dir File Access Time: %@\n", _targetDirFileAccessTime];
+    [detailString appendFormat:@"\tTarget Dir File Modify Time: %@\n", _targetDirFileModifyTime];
+    [detailString appendFormat:@"\tTarget Dir File Create Time: %@\n", _targetDirFileCreateTime];
+    [detailString appendFormat:@"\tTarget Dir File Path: %@\n", _targetDirFilePath];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(source)
+        DECODE_FILE_PROPERTY(targetDir)
+        _targetFileName = [decoder decodeObjectForKey:@"targetFileName"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(source)
+    ENCODE_FILE_PROPERTY(targetDir)
+    [encoder encodeObject:_targetFileName forKey:@"targetFileName"];
+}
+
 @end
 
 @implementation FcntlEvent

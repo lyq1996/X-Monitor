@@ -519,7 +519,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CLONE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    CloneEvent *event = (CloneEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, source, msg->event.clone.source)
+    FILL_EVENT_FILE_INFO(event, targetDir, msg->event.clone.target_dir)
+    event.targetFileName = [NSString stringWithUTF8String:[self getString:msg->event.clone.target_name]];
     return event;
 }
 
