@@ -507,7 +507,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UTIMES
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    UtimesEvent *event = (UtimesEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.utimes.target)
+    event.aTime = [NSNumber numberWithLongLong:msg->event.utimes.atime.tv_sec];
+    event.mTime = [NSNumber numberWithLongLong:msg->event.utimes.mtime.tv_sec];
     return event;
 }
 

@@ -247,6 +247,9 @@ GEN_FILE_PROPERTY(target)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(UtimesEvent)
+GEN_FILE_PROPERTY(target)
+@property (nonatomic, copy) NSNumber *aTime;
+@property (nonatomic, copy) NSNumber *mTime;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(CloneEvent)
