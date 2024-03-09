@@ -109,6 +109,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_utimes",
         @"notify_clone",
         @"notify_fcntl",
+        @"notify_getextattr",
     ]];
     
     NSMutableArray *tmpSupportedEventTypes = [NSMutableArray array];
