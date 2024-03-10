@@ -53,6 +53,11 @@ extern DDLogLevel ddLogLevel;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryEdited:) name:kCategoryEditKey object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearEvent:) name:kClearClickKey object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchChanged:) name:kSearchChangeKey object:nil];
+    
+    NSDate *fireTime = [NSDate dateWithTimeIntervalSinceNow:1.0];
+    NSTimer *timer = [[NSTimer alloc] initWithFireDate:fireTime interval:1.0 target:self selector:@selector(addTableRows) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+    [timer fire];
 }
 
 - (void)switchAutoScroll:(id)sender {
@@ -221,12 +226,15 @@ extern DDLogLevel ddLogLevel;
         NSString *eventType = event.eventType;
         
         EventCategory *category = [ConfigManager shared].currentCategory;
-        if (category.categoryDependence == nil || ([category.categoryDependence containsObject:eventType])) {
-            if ([self->searchText length] == 0 || [[event detailInfo] containsString:self->searchText]) {
-                [self->showedEvents addObject:event];
-                [self addTableRows];
-            }
+        if (category.categoryDependence != nil && ![category.categoryDependence containsObject:eventType]) {
+            return;
         }
+        
+        if ([self->searchText length] != 0 && ![[event detailInfo] containsString:self->searchText]) {
+            return;
+        }
+        
+        [self->showedEvents addObject:event];
     });
 }
 
