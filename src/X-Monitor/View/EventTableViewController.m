@@ -213,6 +213,11 @@ extern DDLogLevel ddLogLevel;
     [eventTable insertRowsAtIndexes:indexes withAnimation:NSTableViewAnimationSlideRight];
     [eventTable endUpdates];
     
+    NSDictionary *userInfo = @{
+        @"counts": @([showedEvents count])
+    };
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCountsSetKey object:self userInfo:userInfo];
+    
     if (eventTable.numberOfRows > 0 && autoScroll) {
         [eventTable scrollRowToVisible:eventTable.numberOfRows - 1];
     }

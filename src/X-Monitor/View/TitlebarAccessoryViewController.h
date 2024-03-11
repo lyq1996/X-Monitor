@@ -15,8 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TitlebarAccessoryViewController : NSTitlebarAccessoryViewController
 
-@property(nonatomic) int eventCounts;
-
 @end
 
 NS_ASSUME_NONNULL_END
