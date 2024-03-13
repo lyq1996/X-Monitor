@@ -684,7 +684,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PROC_CHECK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    ProcCheckEvent *event = (ProcCheckEvent *)[super handleEvent:msg];
+    if (msg->event.proc_check.target) {
+        FILL_EVENT_PROCESS_INFO(event, target, msg->event.proc_check.target)
+    }
+    event.checkType = [NSNumber numberWithInt:msg->event.proc_check.type];
+    event.flavor = [NSNumber numberWithInt:msg->event.proc_check.flavor];
     return event;
 }
 

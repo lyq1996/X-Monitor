@@ -320,6 +320,9 @@ DEFINE_DERIVE_EVENT_CLASS_START(PtyCloseEvent)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(ProcCheckEvent)
+GEN_PROCESS_PROPERTY(target)
+@property (nonatomic, copy) NSNumber *checkType;
+@property (nonatomic, copy) NSNumber *flavor;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SearchFsEvent)
