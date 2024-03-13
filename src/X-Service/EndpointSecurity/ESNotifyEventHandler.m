@@ -674,7 +674,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PTY_CLOSE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    PtyCloseEvent *event = (PtyCloseEvent *)[super handleEvent:msg];
+    event.device = [NSNumber numberWithInt:msg->event.pty_close.dev];
     return event;
 }
 
