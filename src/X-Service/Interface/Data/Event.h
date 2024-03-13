@@ -306,6 +306,9 @@ GEN_FILE_PROPERTY(target)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SetAclEvent)
+GEN_FILE_PROPERTY(target)
+@property (nonatomic, copy) NSNumber *setOrClear;
+@property (nonatomic, copy) NSString *acl;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(PtyGrantEvent)

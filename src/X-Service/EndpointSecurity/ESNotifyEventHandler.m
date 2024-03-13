@@ -638,7 +638,24 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETACL
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    SetAclEvent *event = (SetAclEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.setacl.target)
+    if (msg->event.setacl.set_or_clear == ES_SET) {
+        event.setOrClear = @(1);
+    }
+    
+    if (msg->event.setacl.set_or_clear == ES_CLEAR) {
+        event.setOrClear = @(0);
+    }
+    
+    acl_t acl = acl_dup(msg->event.setacl.acl.set);
+    char *aclStr = acl_to_text(acl, NULL);
+    if (aclStr != NULL) {
+        event.acl = [NSString stringWithUTF8String:aclStr];
+    }
+    
+    free(aclStr);
+    acl_free(acl);
     return event;
 }
 
