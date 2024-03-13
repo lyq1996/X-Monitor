@@ -118,7 +118,7 @@ extern DDLogLevel ddLogLevel;
     ]];
     
     NSMutableArray *tmpSupportedEventTypes = [NSMutableArray array];
-    for (int i=0; i<maxEventType; ++i) {
+    for (int i=0; i<=maxEventType; ++i) {
 #pragma mark [TODO] support auth event
         if (ESEvents[i].isAuthEvent) {
             continue;
