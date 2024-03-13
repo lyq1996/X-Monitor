@@ -293,9 +293,16 @@ DEFINE_DERIVE_EVENT_CLASS_START(SetTimeEvent)
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(UipcBindEvent)
+GEN_FILE_PROPERTY(targetDir)
+@property (nonatomic, copy) NSString *targetFileName;
+@property (nonatomic, copy) NSNumber *mode;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(UipcConnectEvent)
+GEN_FILE_PROPERTY(target)
+@property (nonatomic, copy) NSNumber *domain;
+@property (nonatomic, copy) NSNumber *type;
+@property (nonatomic, copy) NSNumber *protocol;
 DEFINE_DERIVE_EVENT_CLASS_END
 
 DEFINE_DERIVE_EVENT_CLASS_START(SetAclEvent)

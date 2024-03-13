@@ -613,7 +613,10 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UIPC_BIND
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    UipcBindEvent *event = (UipcBindEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, targetDir, msg->event.uipc_bind.dir)
+    event.targetFileName = [NSString stringWithUTF8String:[self getString:msg->event.uipc_bind.filename]];
+    event.mode = [NSNumber numberWithInt:msg->event.uipc_bind.mode];
     return event;
 }
 
@@ -622,7 +625,11 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UIPC_CONNECT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    UipcConnectEvent *event = (UipcConnectEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.uipc_connect.file)
+    event.domain = [NSNumber numberWithInt:msg->event.uipc_connect.domain];
+    event.type = [NSNumber numberWithInt:msg->event.uipc_connect.type];
+    event.protocol = [NSNumber numberWithInt:msg->event.uipc_connect.protocol];
     return event;
 }
 

@@ -2764,13 +2764,158 @@ static NSSet *eventClassesSet;
 
 @implementation SetTimeEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    return @"";
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+}
+
 @end
 
 @implementation UipcBindEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(targetDir)
+        _targetFileName = @"";
+        _mode = @(0);
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    NSString *path = [_targetDirFilePath stringByAppendingPathComponent:_targetFileName];
+    [detailString appendFormat:@"%@", path];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget File Mode: %@\n", _mode];
+    [detailString appendFormat:@"\tTarget File Name: %@\n", _targetFileName];
+    [detailString appendFormat:@"\tTarget Dir File UID: %@\n", _targetDirFileUID];
+    [detailString appendFormat:@"\tTarget Dir File GID: %@\n", _targetDirFileGID];
+    [detailString appendFormat:@"\tTarget Dir File Mode: %@\n", _targetDirFileMode];
+    [detailString appendFormat:@"\tTarget Dir File Access Time: %@\n", _targetDirFileAccessTime];
+    [detailString appendFormat:@"\tTarget Dir File Modify Time: %@\n", _targetDirFileModifyTime];
+    [detailString appendFormat:@"\tTarget Dir File Create Time: %@\n", _targetDirFileCreateTime];
+    [detailString appendFormat:@"\tTarget Dir File Path: %@\n", _targetDirFilePath];
+
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(targetDir)
+        _targetFileName = [decoder decodeObjectForKey:@"targetFileName"];
+        _mode = [decoder decodeObjectForKey:@"mode"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(targetDir)
+    [encoder encodeObject:_targetFileName forKey:@"targetFileName"];
+    [encoder encodeObject:_mode forKey:@"mode"];
+}
+
 @end
 
 @implementation UipcConnectEvent
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(target)
+        _domain = @(0);
+        _type = @(0);
+        _protocol = @(0);
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _targetFilePath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tSocket Domain: %@\n", _domain];
+    [detailString appendFormat:@"\tSocket Type: %@\n", _type];
+    [detailString appendFormat:@"\tSocket Protocol: %@\n", _protocol];
+
+    [detailString appendFormat:@"\tTarget File UID: %@\n", _targetFileUID];
+    [detailString appendFormat:@"\tTarget File GID: %@\n", _targetFileGID];
+    [detailString appendFormat:@"\tTarget File Mode: %@\n", _targetFileMode];
+    [detailString appendFormat:@"\tTarget File Access Time: %@\n", _targetFileAccessTime];
+    [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
+    [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
+    [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(target)
+        _domain = [decoder decodeObjectForKey:@"domain"];
+        _type = [decoder decodeObjectForKey:@"type"];
+        _protocol = [decoder decodeObjectForKey:@"protocol"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(target)
+    [encoder encodeObject:_domain forKey:@"domain"];
+    [encoder encodeObject:_type forKey:@"type"];
+    [encoder encodeObject:_protocol forKey:@"protocol"];
+}
 
 @end
 
