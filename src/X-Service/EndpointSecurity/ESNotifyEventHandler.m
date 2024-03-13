@@ -664,7 +664,8 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PTY_GRANT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    PtyGrantEvent *event = (PtyGrantEvent *)[super handleEvent:msg];
+    event.device = [NSNumber numberWithInt:msg->event.pty_grant.dev];
     return event;
 }
 

@@ -2980,6 +2980,46 @@ static NSSet *eventClassesSet;
 
 @implementation PtyGrantEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _device = @(-1);
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _device];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tDevice: %@\n", _device];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        _device = [decoder decodeObjectForKey:@"device"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    [encoder encodeObject:_device forKey:@"device"];
+}
+
 @end
 
 @implementation PtyCloseEvent
