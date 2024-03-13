@@ -52,16 +52,19 @@ extern DDLogLevel ddLogLevel;
 - (void)initSupportEventType {
     int maxEventType = ES_EVENT_TYPE_AUTH_SETOWNER;
     if (@available(macOS 10.15.1, *)) {
-        maxEventType = ES_EVENT_TYPE_AUTH_EXCHANGEDATA;
+        maxEventType = ES_EVENT_TYPE_NOTIFY_SETACL;
     }
     if (@available(macOS 10.15.4, *)) {
-        maxEventType = ES_EVENT_TYPE_AUTH_SEARCHFS;
+        maxEventType = ES_EVENT_TYPE_AUTH_GET_TASK;
     }
     if (@available(macOS 11.0, *)) {
-        maxEventType = ES_EVENT_TYPE_AUTH_GET_TASK_READ;
+        maxEventType = ES_EVENT_TYPE_NOTIFY_REMOUNT;
     }
     if (@available(macOS 11.3, *)) {
         maxEventType = ES_EVENT_TYPE_NOTIFY_GET_TASK_INSPECT;
+    }
+    if (@available(macOS 12.0, *)) {
+        maxEventType = ES_EVENT_TYPE_NOTIFY_COPYFILE;
     }
     if (@available(macOS 13.0, *)) {
         maxEventType = ES_EVENT_TYPE_NOTIFY_BTM_LAUNCH_ITEM_REMOVE;
