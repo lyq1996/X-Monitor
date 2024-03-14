@@ -1310,7 +1310,7 @@ static NSSet *eventClassesSet;
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _userClientType = @(0);
+        _userClientType = @(-1);
         _userClientClass = @"";
     }
     return self;
@@ -1359,12 +1359,12 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _bitmapCount = @(0);
-        _commonAttr = @(0);
-        _volAttr = @(0);
-        _dirAttr = @(0);
-        _fileAttr = @(0);
-        _forkAttr = @(0);
+        _bitmapCount = @(-1);
+        _commonAttr = @(-1);
+        _volAttr = @(-1);
+        _dirAttr = @(-1);
+        _fileAttr = @(-1);
+        _forkAttr = @(-1);
     }
     return self;
 }
@@ -1487,7 +1487,7 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _flags = @(0);
+        _flags = @(-1);
     }
     return self;
 }
@@ -1541,7 +1541,7 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _mode = @(0);
+        _mode = @(-1);
     }
     return self;
 }
@@ -1595,8 +1595,8 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _uid = @(0);
-        _gid = @(0);
+        _uid = @(-1);
+        _gid = @(-1);
     }
     return self;
 }
@@ -2043,12 +2043,12 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _bitmapCount = @(0);
-        _commonAttr = @(0);
-        _volAttr = @(0);
-        _dirAttr = @(0);
-        _fileAttr = @(0);
-        _forkAttr = @(0);
+        _bitmapCount = @(-1);
+        _commonAttr = @(-1);
+        _volAttr = @(-1);
+        _dirAttr = @(-1);
+        _fileAttr = @(-1);
+        _forkAttr = @(-1);
     }
     return self;
 }
@@ -2169,7 +2169,7 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _mode = @(0);
+        _mode = @(-1);
     }
     return self;
 }
@@ -2275,8 +2275,8 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _aTime = @(0);
-        _mTime = @(0);
+        _aTime = @(-1);
+        _mTime = @(-1);
     }
     return self;
 }
@@ -2404,7 +2404,7 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _fcntlCmd = @(0);
+        _fcntlCmd = @(-1);
     }
     return self;
 }
@@ -2803,7 +2803,7 @@ static NSSet *eventClassesSet;
     if (self) {
         INIT_FILE_PROPERTY(targetDir)
         _targetFileName = @"";
-        _mode = @(0);
+        _mode = @(-1);
     }
     return self;
 }
@@ -2862,9 +2862,9 @@ static NSSet *eventClassesSet;
     self = [super init];
     if (self) {
         INIT_FILE_PROPERTY(target)
-        _domain = @(0);
-        _type = @(0);
-        _protocol = @(0);
+        _domain = @(-1);
+        _type = @(-1);
+        _protocol = @(-1);
     }
     return self;
 }
