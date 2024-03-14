@@ -204,6 +204,10 @@ extern DDLogLevel ddLogLevel;
 }
 
 - (void)addTableRows {
+    if ([eventTable numberOfRows] == [showedEvents count]) {
+        return;
+    }
+    
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     for (NSInteger i = [eventTable numberOfRows]; i < [showedEvents count]; ++i) {
         [indexes addIndex:i];
