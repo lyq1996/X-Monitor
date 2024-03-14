@@ -725,7 +725,7 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CS_INVALIDATED
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    CsInvalidatedEvent *event = (CsInvalidatedEvent *)[super handleEvent:msg];
     return event;
 }
 

@@ -3252,6 +3252,36 @@ static NSSet *eventClassesSet;
 
 @implementation CsInvalidatedEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    return @"";
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+}
+
 @end
 
 @implementation GetTaskNameEvent
