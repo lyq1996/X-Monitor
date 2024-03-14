@@ -714,7 +714,9 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PROC_SUSPEND_RESUME
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    ProcSuspendResumeEvent *event = (ProcSuspendResumeEvent *)[super handleEvent:msg];
+    FILL_EVENT_PROCESS_INFO(event, target, msg->event.proc_suspend_resume.target)
+    event.resumeType = [NSNumber numberWithInt:msg->event.proc_suspend_resume.type];
     return event;
 }
 
