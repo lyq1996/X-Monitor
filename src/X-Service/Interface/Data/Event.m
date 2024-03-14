@@ -3125,6 +3125,76 @@ static NSSet *eventClassesSet;
 
 @implementation SearchFsEvent
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        INIT_FILE_PROPERTY(target)
+        _bitmapCount = @(-1);
+        _commonAttr = @(-1);
+        _volAttr = @(-1);
+        _dirAttr = @(-1);
+        _fileAttr = @(-1);
+        _forkAttr = @(-1);
+    }
+    return self;
+}
+
+- (NSString *)shortInfo {
+    NSMutableString *detailString = [NSMutableString string];
+    [detailString appendFormat:@"%@", _targetFilePath];
+    return detailString;
+}
+
+- (NSString *)detailInfo {
+    NSMutableString *detailString = [[super detailInfo] mutableCopy];
+    
+    [detailString appendFormat:@"Event Details: {\n"];
+    [detailString appendFormat:@"\tTarget File UID: %@\n", _targetFileUID];
+    [detailString appendFormat:@"\tTarget File GID: %@\n", _targetFileGID];
+    [detailString appendFormat:@"\tTarget File Mode: %@\n", _targetFileMode];
+    [detailString appendFormat:@"\tTarget File Access Time: %@\n", _targetFileAccessTime];
+    [detailString appendFormat:@"\tTarget File Modify Time: %@\n", _targetFileModifyTime];
+    [detailString appendFormat:@"\tTarget File Create Time: %@\n", _targetFileCreateTime];
+    [detailString appendFormat:@"\tTarget File Path: %@\n", _targetFilePath];
+    [detailString appendFormat:@"\tBitMap Count: %@\n", _bitmapCount];
+    [detailString appendFormat:@"\tCommon Attribute Count: %@\n", _commonAttr];
+    [detailString appendFormat:@"\tVolume Attribute Group: %@\n", _volAttr];
+    [detailString appendFormat:@"\tDirectory Attribute Group: %@\n", _dirAttr];
+    [detailString appendFormat:@"\tFile Attribute Group : %@\n", _fileAttr];
+    [detailString appendFormat:@"\tFork Attribute Group: %@\n", _forkAttr];
+    [detailString appendFormat:@"}"];
+
+    return detailString;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        DECODE_FILE_PROPERTY(target)
+        _bitmapCount = [decoder decodeObjectForKey:@"bitmapCount"];
+        _commonAttr = [decoder decodeObjectForKey:@"commonAttr"];
+        _volAttr = [decoder decodeObjectForKey:@"volAttr"];
+        _dirAttr = [decoder decodeObjectForKey:@"dirAttr"];
+        _fileAttr = [decoder decodeObjectForKey:@"fileAttr"];
+        _forkAttr = [decoder decodeObjectForKey:@"forkAttr"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [super encodeWithCoder:encoder];
+    ENCODE_FILE_PROPERTY(target)
+    [encoder encodeObject:_bitmapCount forKey:@"bitmapCount"];
+    [encoder encodeObject:_commonAttr forKey:@"commonAttr"];
+    [encoder encodeObject:_volAttr forKey:@"volAttr"];
+    [encoder encodeObject:_dirAttr forKey:@"dirAttr"];
+    [encoder encodeObject:_fileAttr forKey:@"fileAttr"];
+    [encoder encodeObject:_forkAttr forKey:@"forkAttr"];
+}
+
 @end
 
 @implementation ProcSuspendResumeEvent

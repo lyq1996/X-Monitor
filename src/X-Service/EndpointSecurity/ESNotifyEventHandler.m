@@ -698,7 +698,14 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SEARCHFS
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    Event *event = [super handleEvent:msg];
+    SearchFsEvent *event = (SearchFsEvent *)[super handleEvent:msg];
+    FILL_EVENT_FILE_INFO(event, target, msg->event.searchfs.target)
+    event.bitmapCount = [NSNumber numberWithShort:msg->event.searchfs.attrlist.bitmapcount];
+    event.commonAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.commonattr];
+    event.volAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.volattr];
+    event.dirAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.dirattr];
+    event.fileAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.fileattr];
+    event.forkAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.forkattr];
     return event;
 }
 

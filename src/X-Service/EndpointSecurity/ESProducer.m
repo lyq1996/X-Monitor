@@ -125,6 +125,7 @@ extern DDLogLevel ddLogLevel;
         @"notify_pty_grant",
         @"notify_pty_close",
         @"notify_proc_check",
+        @"notify_searchfs",
     ]];
     
     NSMutableArray *tmpSupportedEventTypes = [NSMutableArray array];
