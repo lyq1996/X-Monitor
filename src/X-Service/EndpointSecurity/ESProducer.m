@@ -24,6 +24,7 @@ extern DDLogLevel ddLogLevel;
 @implementation ESProducer {
     es_client_t *notifyClient;
     dispatch_queue_t notifyEventQueue;
+    pid_t selfPid;
 }
 
 @synthesize producerName;
@@ -43,6 +44,7 @@ extern DDLogLevel ddLogLevel;
         producerStatus = X_PRODUCER_STOPPED;
         producerStatusString = ProducerStatus2String[producerStatus];
         notifyEventQueue = dispatch_queue_create(kESProducerNotifyQueue, NULL);
+        selfPid = getpid();
         [self initSupportEventType];
         [self initES];
     }
@@ -163,17 +165,24 @@ extern DDLogLevel ddLogLevel;
         else {
             event = (es_message_t *)es_copy_message(event);
         }
-        dispatch_async(self->notifyEventQueue, ^(){
+        dispatch_async(self->notifyEventQueue, ^() {
             es_event_type_t type = event->event_type;
             BaseEventHandler *eventHandler = ESEvents[type].createEventHandle(client, event);
             Event *notifyEvent = [eventHandler handleEvent:event];
+            
+            // mute system extension self event to avoid event cycle
+            if ([notifyEvent.pid intValue] == self->selfPid) {
+                es_mute_process(client, &event->process->audit_token);
+            } else {
+                [self->delegate handleEvent:notifyEvent];
+            }
+
             if (@available(macOS 11.0, *)) {
                 es_release_message(event);
             }
             else {
                 es_free_message((es_message_t *)event);
             }
-            [self->delegate handleEvent:notifyEvent];
         });
         
     });
