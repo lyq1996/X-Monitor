@@ -1,0 +1,658 @@
+{
+  "notify_exec": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetProcess",
+        "ProcessPath"
+      ]
+    }
+  ],
+  "notify_open": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFileInfo",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_fork": [
+    {
+      "type": "static",
+      "value": "ChildPid: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "ChildPid"
+      ]
+    }
+  ],
+  "notify_close": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFilePath"
+      ]
+    }
+  ],
+  "notify_create": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFilePath"
+      ]
+    }
+  ],
+  "notify_exchangedata": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "File1",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "static",
+      "value": " <-> "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "File2",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_exit": [
+    {
+      "type": "static",
+      "value": "Status: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "Status"
+      ]
+    }
+  ],
+  "notify_get_task": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetProcess",
+        "ProcessPath"
+      ]
+    }
+  ],
+  "notify_kextload": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "KextIdentifier"
+      ]
+    }
+  ],
+  "notify_kextunload": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "KextIdentifier"
+      ]
+    }
+  ],
+  "notify_link": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "static",
+      "value": " <-> "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetDirectory",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFileName"
+      ]
+    }
+  ],
+  "notify_mmap": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_mprotect": [
+    {
+      "type": "static",
+      "value": "Protection: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "Protection"
+      ]
+    },
+    {
+      "type": "static",
+      "value": " Address: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "Address"
+      ]
+    },
+    {
+      "type": "static",
+      "value": " Size: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "Size"
+      ]
+    }
+  ],
+  "notify_mount": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "MountPath"
+      ]
+    }
+  ],
+  "notify_unmount": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "MountPath"
+      ]
+    }
+  ],
+  "notify_iokit_open": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "UserClientClass"
+      ]
+    }
+  ],
+  "notify_rename": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "static",
+      "value": " <-> "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFilePath"
+      ]
+    }
+  ],
+  "notify_setattrlist": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_setextattr": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_setflags": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_setmode": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_setowner": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_signal": [
+    {
+      "type": "static",
+      "value": "Signal: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "Signal"
+      ]
+    },
+    {
+      "type": "static",
+      "value": "TargetProcess: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetProcess",
+        "ProcessPath"
+      ]
+    }
+  ],
+  "notify_unlink": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_write": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_file_provider_materialize": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "static",
+      "value": " -> "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_file_provider_update": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_readlink": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_truncate": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_lookup": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetDirectory",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFilePath"
+      ]
+    }
+  ],
+  "notify_chdir": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_getattrlist": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_stat": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_access": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_chroot": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_utimes": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_clone": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "SourceFile",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "static",
+      "value": " <-> "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetDirectory",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFileName"
+      ]
+    }
+  ],
+  "notify_fcntl": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_getextattr": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_listextattr": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_readdir": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_deleteextattr": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_fsgetpath": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_dup": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_settime": [
+  ],
+  "notify_uipc_bind": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetDirectory",
+        "FilePath"
+      ]
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFileName"
+      ]
+    }
+  ],
+  "notify_uipc_connect": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_setacl": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_pty_grant": [
+    {
+      "type": "static",
+      "value": "Device: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "Device"
+      ]
+    }
+  ],
+  "notify_pty_close": [
+    {
+      "type": "static",
+      "value": "Device: "
+    },
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "Device"
+      ]
+    }
+  ],
+  "notify_proc_check": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetProcess",
+        "ProcessPath"
+      ]
+    }
+  ],
+  "notify_searchfs": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetFile",
+        "FilePath"
+      ]
+    }
+  ],
+  "notify_proc_suspend_resume": [
+    {
+      "type": "dynamic",
+      "value": [
+        "EventInfo",
+        "TargetProcess",
+        "ProcessPath"
+      ]
+    }
+  ],
+  "notify_cs_invalidated": [
+  ]
+}

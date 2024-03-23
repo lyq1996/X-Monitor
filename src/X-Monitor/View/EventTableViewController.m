@@ -14,6 +14,126 @@
 
 extern DDLogLevel ddLogLevel;
 
+@interface infoParser : NSObject
+
++ (NSString *)genJsonInfo:(Event *)event withBetterOutput:(BOOL)better;
++ (NSString *)genShortInfo:(Event *)event;
+
+@end
+
+@implementation infoParser
+
++ (NSDictionary *)handleDictionary:(Event *)event {
+    NSMutableDictionary *baseProperties = [NSMutableDictionary dictionary];
+    unsigned int propertyCount;
+    objc_property_t *properties = class_copyPropertyList([Event class], &propertyCount);
+    for (int i = 0; i < propertyCount; i++) {
+        objc_property_t property = properties[i];
+        const char *propertyName = property_getName(property);
+        NSString *key = [NSString stringWithUTF8String:propertyName];
+        id value = [event valueForKey:key];
+        if (value) {
+            [baseProperties setObject:value forKey:key];
+        } else {
+            continue;
+        }
+    }
+    free(properties);
+    return baseProperties;
+}
+
++ (NSString *)genJsonInfo:(Event *)event withBetterOutput:(BOOL)better {
+    NSDictionary *dictionary = [infoParser handleDictionary:event];
+    NSError *error = nil;
+    NSData *eventJson = [NSJSONSerialization dataWithJSONObject:dictionary
+                                                        options:better? NSJSONWritingPrettyPrinted | NSJSONWritingWithoutEscapingSlashes: NSJSONWritingWithoutEscapingSlashes
+                                                          error:&error];
+    if (error) {
+        DDLogError(@"Error converting event object to JSON: %@", error.localizedDescription);
+        return @"";
+    }
+    else {
+        return [[NSString alloc] initWithData:eventJson encoding:NSUTF8StringEncoding];
+    }
+}
+
++ (NSDictionary *)shortInfoModel {
+    static NSDictionary *model = nil;
+    if (!model) {
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"ShortInfoModel" ofType:@"json"];
+        NSData *data = [NSData dataWithContentsOfFile:filePath];
+        NSError *error;
+        model = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        if (error) {
+            NSLog(@"Error reading JSON file: %@", error);
+            model = [NSDictionary dictionary];
+        }
+    }
+    return model;
+}
+
++ (NSString *)genShortInfo:(Event *)event {
+    NSArray *shortInfoModel = [[infoParser shortInfoModel] objectForKey:event.EventType];
+    if (shortInfoModel == nil) {
+        DDLogError(@"can not generate short info, maybe event is missmatch between X-Service and X-Monitor");
+        return @"";
+    }
+    
+    NSMutableString *info = [NSMutableString string];
+    for (NSDictionary *subModel in shortInfoModel) {
+        id type = subModel[@"type"];
+        id value = subModel[@"value"];
+
+        if (type == nil || value == nil) {
+            DDLogError(@"can not generate short info, type or value not found in sub model");
+            continue;
+        }
+        
+        if (![type isKindOfClass:[NSString class]]) {
+            DDLogError(@"can not generate short info, type not NSString");
+            continue;
+        }
+
+        if ([type isEqualToString:@"static"] && [value isKindOfClass:[NSString class]]) {
+            [info appendString:value];
+        } else if ([type isEqualToString:@"dynamic"] && [value isKindOfClass:[NSArray class]]) {
+            id currentField = event;
+            
+            for (id field in value) {
+                if (![field isKindOfClass:[NSString class]]) {
+                    DDLogError(@"can not generate short info, field not NSString");
+                    currentField = nil;
+                    break;
+                }
+                
+                if (![currentField isKindOfClass:[NSDictionary class]] && ![currentField respondsToSelector:NSSelectorFromString(field)]) {
+                    DDLogError(@"can not generate short info, field: %@ not found", field);
+                    currentField = nil;
+                    break;
+                }
+                
+                currentField = [currentField valueForKey:field];
+                if (currentField == nil) {
+                    DDLogError(@"can not found: %@ in: %@", field, [currentField class]);
+                    break;
+                }
+            }
+            
+            if (currentField == nil) {
+                DDLogError(@"can not generate short info");
+                continue;
+            }
+            
+            [info appendFormat:@"%@", currentField];
+        }
+    }
+    
+    return info;
+}
+
+@end
+
+
 @interface EventWrapper : NSObject
 
 @property (nonatomic, strong) Event *event;
@@ -28,59 +148,10 @@ extern DDLogLevel ddLogLevel;
     self = [super init];
     if (self) {
         _event = event;
-        _detailInfo = [self genJsonInfo:YES];
-        _shortInfo = [self genShortInfo];
+        _detailInfo = [infoParser genJsonInfo:event withBetterOutput:YES];
+        _shortInfo = [infoParser genShortInfo:event];
     }
     return self;
-}
-
-- (NSDictionary *)handleDictionary {
-    NSMutableDictionary *baseProperties = [NSMutableDictionary dictionary];
-    unsigned int propertyCount;
-    objc_property_t *properties = class_copyPropertyList([Event class], &propertyCount);
-    for (int i = 0; i < propertyCount; i++) {
-        objc_property_t property = properties[i];
-        const char *propertyName = property_getName(property);
-        NSString *key = [NSString stringWithUTF8String:propertyName];
-        id value = [_event valueForKey:key];
-        if (value) {
-            [baseProperties setObject:value forKey:key];
-        } else {
-            continue;
-        }
-    }
-    free(properties);
-    return baseProperties;
-}
-
-- (NSString *)genJsonInfo:(BOOL)betterOutput {
-    NSDictionary *dictionary = [self handleDictionary];
-    NSError *error = nil;
-    NSData *eventJson = [NSJSONSerialization dataWithJSONObject:dictionary
-                                                        options:betterOutput? NSJSONWritingPrettyPrinted | NSJSONWritingWithoutEscapingSlashes: NSJSONWritingWithoutEscapingSlashes
-                                                          error:&error];
-    if (error) {
-        DDLogError(@"Error converting event object to JSON: %@", error.localizedDescription);
-        return @"";
-    }
-    else {
-        return [[NSString alloc] initWithData:eventJson encoding:NSUTF8StringEncoding];
-    }
-}
-
-- (NSString *)genShortInfo {
-    NSDictionary *dictionary = _event.EventInfo;
-    NSError *error = nil;
-    NSData *eventJson = [NSJSONSerialization dataWithJSONObject:dictionary
-                                                        options:NSJSONWritingWithoutEscapingSlashes
-                                                          error:&error];
-    if (error) {
-        DDLogError(@"Error converting event object to JSON: %@", error.localizedDescription);
-        return @"";
-    }
-    else {
-        return [[NSString alloc] initWithData:eventJson encoding:NSUTF8StringEncoding];
-    }
 }
 
 @end
@@ -274,6 +345,11 @@ extern DDLogLevel ddLogLevel;
     [eventTable beginUpdates];
     [eventTable removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationSlideRight];
     [eventTable endUpdates];
+    
+    NSDictionary *userInfo = @{
+        @"counts": @([showedEvents count])
+    };
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCountsSetKey object:self userInfo:userInfo];
 }
 
 - (void)addTableRows {

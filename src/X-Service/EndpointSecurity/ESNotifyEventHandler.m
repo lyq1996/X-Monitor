@@ -30,6 +30,14 @@ extern DDLogLevel ddLogLevel;
     [DICTIONARY setValue:[NSString stringWithUTF8String:[self getString:TARGET->signing_id]] forKey:@"ProcessSigningID"]; \
     [DICTIONARY setValue:[NSString stringWithUTF8String:[self getString:TARGET->team_id]] forKey:@"ProcessTeamID"];
 
+#define FILL_EMPTY_PROCESS_INFO(DICTIONARY) \
+    [DICTIONARY setValue:@(-1) forKey:@"Pid"]; \
+    [DICTIONARY setValue:@(-1) forKey:@"ProcessCreateTime"]; \
+    [DICTIONARY setValue:@"" forKey:@"ProcessPath"]; \
+    [DICTIONARY setValue:@(-1) forKey:@"ProcessCodesignFlag"]; \
+    [DICTIONARY setValue:@"" forKey:@"ProcessSigningID"]; \
+    [DICTIONARY setValue:@"" forKey:@"ProcessTeamID"];
+
 @implementation BaseEventHandler
 
 - (const char *)getString:(const es_string_token_t)token {
@@ -1041,6 +1049,8 @@ extern DDLogLevel ddLogLevel;
     NSMutableDictionary *targetProcess = [NSMutableDictionary dictionary];
     if (msg->event.proc_check.target) {
         FILL_PROCESS_INFO(targetProcess, msg->event.proc_check.target)
+    } else {
+        FILL_EMPTY_PROCESS_INFO(targetProcess)
     }
     [eventInfo setValue:targetProcess forKey:@"TargetProcess"];
     
@@ -1120,7 +1130,11 @@ extern DDLogLevel ddLogLevel;
     NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
 
     NSMutableDictionary *targetProcess = [NSMutableDictionary dictionary];
-    FILL_PROCESS_INFO(targetProcess, msg->event.proc_suspend_resume.target)
+    if (msg->event.proc_suspend_resume.target) {
+        FILL_PROCESS_INFO(targetProcess, msg->event.proc_suspend_resume.target)
+    } else {
+        FILL_EMPTY_PROCESS_INFO(targetProcess)
+    }
     [eventInfo setValue:targetProcess forKey:@"TargetProcess"];
 
     switch (msg->event.proc_suspend_resume.type) {
