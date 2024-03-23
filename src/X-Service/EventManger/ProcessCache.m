@@ -5,39 +5,56 @@
 //  Created by lyq1996 on 2023/3/11.
 //
 
+#import <os/lock.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
 #import "ProcessCache.h"
 #import "ProcUtils.h"
-#import <CocoaLumberjack/CocoaLumberjack.h>
 
 extern DDLogLevel ddLogLevel;
 
-
-/*
+/* 
  cache key:  (NSNumber *)pid
  cache value: (ProcessInfo *)process info
 
 {
-  1683446185,
-  "/usr/bin/zsh",
-  "/usr/bin/zsh",
-  570492929,
-  "com.apple.zsh",
-  "",
+  ppid: 1,
+  createTime: 1683446185,
+  path: "/usr/bin/zsh",
+  cmdline: "/usr/bin/zsh",
+  csFlag: 570492929,
+  signingID: "com.apple.zsh",
+  teamID: "",
+  stale: YES,
 }
 */
 
-@interface ProcessInfo : NSObject <NSCopying>
+@interface Cache : NSObject<NSCopying>
 
-@property (nonatomic, copy) NSNumber *createTime;
-@property (nonatomic, copy) NSString *path;
-@property (nonatomic, copy) NSString *cmdline;
-@property (nonatomic, copy) NSNumber *csFlag;
-@property (nonatomic, copy) NSString *signingID;
-@property (nonatomic, copy) NSString *teamID;
+@property (nonatomic, copy, nullable) NSNumber *ppid;
+@property (nonatomic, copy, nullable) NSNumber *createTime;
+@property (nonatomic, copy, nullable) NSString *path;
+@property (nonatomic, copy, nullable) NSString *cmdline;
+@property (nonatomic, copy, nullable) NSNumber *csFlag;
+@property (nonatomic, copy, nullable) NSString *signingID;
+@property (nonatomic, copy, nullable) NSString *teamID;
 
 @end
 
-@implementation ProcessInfo
+@implementation Cache
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _ppid = nil;
+        _createTime = nil;
+        _path = nil;
+        _cmdline = nil;
+        _csFlag = nil;
+        _signingID = nil;
+        _teamID = nil;
+    }
+    return self;
+}
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"createTime: %@, path: %@, cmdline: %@, csFlag: 0x%ux, signingID: %@, teamID: %@",
@@ -50,7 +67,8 @@ extern DDLogLevel ddLogLevel;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    ProcessInfo *copy = [[[self class] allocWithZone:zone] init];
+    Cache *copy = [[[self class] allocWithZone:zone] init];
+    copy.ppid = self.ppid;
     copy.createTime = self.createTime;
     copy.path = self.path;
     copy.cmdline = self.cmdline;
@@ -59,11 +77,11 @@ extern DDLogLevel ddLogLevel;
     copy.teamID = self.teamID;
     return copy;
 }
-
 @end
 
 @implementation ProcessCache {
-    NSMutableDictionary<NSNumber *, ProcessInfo *> *caches;
+    NSMutableDictionary<NSNumber *, Cache *> *caches;
+    os_unfair_lock cacheLock;
 }
 
 @synthesize subscribleEventTypes;
@@ -71,9 +89,14 @@ extern DDLogLevel ddLogLevel;
 - (instancetype)init {
     self = [super init];
     if (self) {
-        caches = [NSMutableDictionary dictionary];
+        [self initCaches];
+        cacheLock = OS_UNFAIR_LOCK_INIT;
     }
     return self;
+}
+
+- (void)initCaches {
+    caches = [NSMutableDictionary dictionary];
 }
 
 - (void)consumeEvent:(Event *)event {
@@ -82,200 +105,283 @@ extern DDLogLevel ddLogLevel;
     return;
 }
 
-- (void)updateProcCache:(NSNumber *)pid withProcInfo:(ProcessInfo *)info {
-    @synchronized (caches) {
-        [caches setObject:info forKey:pid];
+- (void)updateProcCache:(NSNumber *)pid withProcInfo:(Cache *)info {
+    [caches setObject:info forKey:pid];
+}
+
+- (Cache *)getCache:(NSNumber *)pid {
+    return [caches objectForKey:pid];
+}
+
+- (void)fillCacheFromAnotherCache:(Cache *)tofill withAnother:(Cache *)another {
+    if (tofill.ppid == nil) {
+        tofill.ppid = another.ppid;
+    }
+    if (tofill.path == nil) {
+        tofill.path = another.path;
+    }
+    if (tofill.createTime == nil) {
+        tofill.createTime = another.createTime;
+    }
+    if (tofill.cmdline == nil) {
+        tofill.cmdline = another.cmdline;
+    }
+    if (tofill.csFlag == nil) {
+        tofill.csFlag = another.csFlag;
+    }
+    if (tofill.signingID == nil) {
+        tofill.signingID = another.signingID;
+    }
+    if (tofill.teamID == nil) {
+        tofill.teamID = another.teamID;
     }
 }
 
-- (BOOL)fillProcessInfo:(ProcessInfo *)info withPid:(NSNumber *)pid {
-
-    ProcessInfo *cacheInfo = nil;
-    @synchronized (caches) {
-        cacheInfo = [[caches objectForKey:pid] copy];
+- (void)fillCacheFromPid:(Cache *)tofill withPid:(NSNumber *)pid {
+    if (tofill.ppid == nil) {
+        tofill.ppid = [ProcUtils getParentPidFromPid:pid];
     }
-
-    if (cacheInfo != nil) {
-        DDLogDebug(@"cache hit, pid: %@, process info: %@", pid, cacheInfo);
-        
-        if ([info.path isEqualToString:@""]) {
-            info.path = cacheInfo.path;
-        }
-        if ([info.createTime isEqualToNumber:@-1]) {
-            info.createTime = cacheInfo.createTime;
-        }
-        if ([info.cmdline isEqualToString:@""]) {
-            info.cmdline = cacheInfo.cmdline;
-        }
-        if ([info.csFlag isEqualToNumber:@-1]) {
-            info.csFlag = cacheInfo.csFlag;
-        }
-        if ([info.signingID isEqualToString:@""]) {
-            info.signingID = cacheInfo.signingID;
-        }
-        if ([info.teamID isEqualToString:@""]) {
-            info.teamID = cacheInfo.teamID;
-        }
-        
-        return YES;
+    if (tofill.path == nil) {
+        tofill.path = [ProcUtils getPathFromPid:pid];
     }
-    else {
-        DDLogDebug(@"cache not hit, pid: %@ not found", pid);
-        // update process cache
-        if ([info.path isEqualToString:@""]) {
-            info.path = [ProcUtils getPathFromPid:pid];
-        }
-        if ([info.createTime isEqualToNumber:@-1]) {
-            info.createTime = [ProcUtils getCreatetimeFromPid:pid];
-        }
-        if ([info.cmdline isEqualToString:@""]) {
-            info.cmdline = [ProcUtils getCmdlineFromPid:pid];
-        }
-        NSDictionary *codeSigningInfo = [ProcUtils getCodeSigningFromPid:info.path];
-        if ([info.csFlag isEqualToNumber:@-1]) {
-            NSNumber *csFlag = [codeSigningInfo objectForKey:(__bridge NSString *)kSecCodeInfoFlags];
-            if (csFlag != nil) {
-                info.csFlag = csFlag;
-            }
-        }
-        if ([info.signingID isEqualToString:@""]) {
-            NSString *signingID = [codeSigningInfo objectForKey:(__bridge NSString *)kSecCodeInfoIdentifier];
-            if (signingID != nil) {
-                info.signingID = signingID;
-            }
-        }
-        if ([info.teamID isEqualToString:@""]) {
-            NSString *teamID = [codeSigningInfo objectForKey:(__bridge NSString *)kSecCodeInfoTeamIdentifier];
-            if (teamID != nil) {
-                info.teamID = teamID;
-            }
-        }
-        
-        cacheInfo = [info copy];
-        [self updateProcCache:pid withProcInfo:cacheInfo];
-        
-        return NO;
+    if (tofill.createTime == nil) {
+        tofill.createTime = [ProcUtils getCreatetimeFromPid:pid];
     }
-}
-
-#define FILL_EVENT_INFO(PREFIX) \
-if ([event.PREFIX##Path isEqualToString:@""]) { \
-    event.PREFIX##Path = info.path; \
-} \
-if ([event.PREFIX##CreateTime isEqualToNumber:@-1]) { \
-    event.PREFIX##CreateTime = info.createTime; \
-} \
-if ([event.PREFIX##Cmdline isEqualToString:@""]) { \
-    event.PREFIX##Cmdline = info.cmdline; \
-} \
-if ([event.PREFIX##CodesignFlag isEqualToNumber:@-1]) { \
-    event.PREFIX##CodesignFlag = info.csFlag; \
-} \
-if ([event.PREFIX##SigningID isEqualToString:@""]) { \
-    event.PREFIX##SigningID = info.signingID; \
-} \
-if ([event.parentTeamID isEqualToString:@""]) { \
-    event.PREFIX##TeamID = info.teamID; \
-}
-
-- (void)fillEventUseProcInfo:(Event *)event withProcInfo:(ProcessInfo *)info withIsParent:(BOOL)isParent{
-    if (isParent) {
-        FILL_EVENT_INFO(parent)
+    if (tofill.cmdline == nil) {
+        tofill.cmdline = [ProcUtils getCmdlineFromPid:pid];
     }
-    else {
-        FILL_EVENT_INFO(process)
+    NSDictionary *codeSigningInfo = [ProcUtils getCodeSigningFromPid:tofill.path];
+    if (tofill.csFlag == nil) {
+        NSNumber *csFlag = [codeSigningInfo objectForKey:(__bridge NSString *)kSecCodeInfoFlags];
+        if (csFlag != nil) {
+            tofill.csFlag = csFlag;
+        } else {
+            tofill.csFlag = @(-1);
+        }
     }
-}
-
-- (void)updateCacheUsingForkEvent:(Event *)event {
-    // update cache use properties from a fork event
-    NSString *eventType = event.eventType;
-    if ([eventType isEqualToString:@"notify_fork"]) {
-        ProcessInfo *info = [[ProcessInfo alloc] init];
-        info.path = event.processPath;
-        info.createTime = event.processCreateTime;
-        info.cmdline = event.processCmdline;
-        info.csFlag = event.processCodesignFlag;
-        info.signingID = event.processSigningID;
-        info.teamID = event.processTeamID;
-        
-        NSNumber *pid = ((ForkEvent *)event).childPid;
-        NSNumber *ppid = event.pid;
-        
-        BOOL cacheHit = [self fillProcessInfo:info withPid:ppid];
-        DDLogDebug(@"update pid: %@, info: %@ to cache", pid, info);
-        // update child process cache
-        [self updateProcCache:pid withProcInfo:info];
-        // if parent pid is not in cache, update it also
-        if (!cacheHit) {
-            [self updateProcCache:ppid withProcInfo:info];
+    if (tofill.signingID == nil) {
+        NSString *signingID = [codeSigningInfo objectForKey:(__bridge NSString *)kSecCodeInfoIdentifier];
+        if (signingID != nil) {
+            tofill.signingID = signingID;
+        } else {
+            tofill.signingID = @"";
+        }
+    }
+    if (tofill.teamID == nil) {
+        NSString *teamID = [codeSigningInfo objectForKey:(__bridge NSString *)kSecCodeInfoTeamIdentifier];
+        if (teamID != nil) {
+            tofill.teamID = teamID;
+        } else {
+            tofill.teamID = @"";
         }
     }
 }
 
-- (void)updateCacheUsingExecEvent:(Event *)event {
-    // update cache use properties from an execve event
-    NSString *eventType = event.eventType;
-    if ([eventType isEqualToString:@"notify_exec"]) {
-        ProcessInfo *info = [[ProcessInfo alloc] init];
-        info.path = ((ExecEvent *)event).targetPath;
-        info.createTime = ((ExecEvent *)event).targetCreateTime;
-        info.cmdline = ((ExecEvent *)event).targetCmdline;
-        info.csFlag = ((ExecEvent *)event).targetCodesignFlag;
-        info.signingID = ((ExecEvent *)event).targetSigningID;
-        info.teamID = ((ExecEvent *)event).targetTeamID;
-        
-        NSNumber *pid = event.pid;
-        DDLogDebug(@"update pid: %@, info: %@ to cache", pid, info);
-        [self updateProcCache:pid withProcInfo:info];
+- (NSDictionary *)fillProcessInfoFromCache:(Cache *)cache withInfo:(NSDictionary *)processInfo {
+    NSMutableDictionary *newInfo = [NSMutableDictionary dictionaryWithDictionary:processInfo];
+    if ([newInfo objectForKey:@"ProcessPath"] == nil) {
+        [newInfo setObject:cache.path forKey:@"ProcessPath"];
     }
+    if ([newInfo objectForKey:@"ProcessCreateTime"] == nil) {
+        [newInfo setObject:cache.createTime forKey:@"ProcessCreateTime"];
+    }
+    if ([newInfo objectForKey:@"ProcessCodesignFlag"] == nil) {
+        [newInfo setObject:cache.csFlag forKey:@"ProcessCodesignFlag"];
+    }
+    if ([newInfo objectForKey:@"ProcessSigningID"] == nil) {
+        [newInfo setObject:cache.signingID forKey:@"ProcessSigningID"];
+    }
+    if ([newInfo objectForKey:@"ProcessCmdline"] == nil) {
+        [newInfo setObject:cache.cmdline forKey:@"ProcessCmdline"];
+    }
+    if ([newInfo objectForKey:@"ProcessTeamID"] == nil) {
+        [newInfo setObject:cache.teamID forKey:@"ProcessTeamID"];
+    }
+
+    return newInfo;
+}
+
+- (void)updateCacheFromExec:(NSDictionary *)eventInfo
+                    withPid:(NSNumber *)pid
+              withParentPid:(NSNumber *)ppid {
+
+    NSDictionary *processInfo = [eventInfo objectForKey:@"TargetProcess"];
+
+    Cache *cache = [self getCache:pid];
+    if (cache == nil) {
+        cache = [[Cache alloc] init];
+    }
+    
+    cache.path = [processInfo valueForKey:@"ProcessPath"];
+    cache.createTime = [processInfo valueForKey:@"ProcessCreateTime"];
+    cache.cmdline = [processInfo valueForKey:@"ProcessCmdline"];
+    cache.csFlag = [processInfo valueForKey:@"ProcessCodesignFlag"];
+    cache.signingID = [processInfo valueForKey:@"ProcessSigningID"];
+    cache.teamID = [processInfo valueForKey:@"ProcessTeamID"];
+    cache.ppid = ppid;
+
+    DDLogDebug(@"update pid: %@, info: %@ to cache", pid, cache);
+    [self updateProcCache:pid withProcInfo:cache];
+}
+
+- (void)updateCacheFromFork:(NSDictionary *)processInfo
+              withEventInfo:(NSDictionary *)eventInfo
+                    withPid:(NSNumber *)pid
+              withParentPid:(NSNumber *)ppid{
+    
+    NSNumber *childPid = [eventInfo objectForKey:@"ChildPid"];
+    if (childPid == nil) {
+        DDLogError(@"update cache from fork failed, no child pid in event info");
+        return;
+    }
+    
+
+    Cache *cache = [self getCache:childPid];
+    if (cache == nil) {
+        cache = [[Cache alloc] init];
+    }
+    
+    cache.path = [processInfo valueForKey:@"ProcessPath"];
+    cache.createTime = [processInfo valueForKey:@"ProcessCreateTime"];
+    cache.cmdline =  [processInfo valueForKey:@"ProcessCmdline"];
+    cache.csFlag = [processInfo valueForKey:@"ProcessCodesignFlag"];
+    cache.signingID = [processInfo valueForKey:@"ProcessSigningID"];
+    cache.teamID = [processInfo valueForKey:@"ProcessTeamID"];
+    cache.ppid = pid;
+
+    DDLogDebug(@"update pid: %@, info: %@ to cache", childPid, cache);
+
+    Cache *parentCache = [self getCache:pid];
+    if (parentCache != nil) {
+        [self fillCacheFromAnotherCache:cache withAnother:parentCache];
+    } else {
+        // parent pid not in cache, use pid to get missing info
+        [self fillCacheFromPid:cache withPid:childPid];
+    }
+
+    // update child process cache
+    [self updateProcCache:childPid withProcInfo:cache];
+    
+    if (parentCache == nil) {
+        // parent not hit the cache, update parent into cache also.
+        // ppid need to be changed to parent ppid.
+        parentCache = [cache copy];
+        parentCache.ppid = ppid;
+        [self updateProcCache:pid withProcInfo:parentCache];
+    }
+}
+
+- (void)handleKernelTask {
+    Cache *cache = [self getCache:@(0)];
+    if (cache) {
+        return;
+    }
+    
+    // add kernel task into cache
+    DDLogDebug(@"generate kernel task process cache");
+    cache = [[Cache alloc] init];
+    cache.path = @"kernel_task";
+    cache.createTime = [ProcUtils getSystemBootTime];
+    cache.cmdline = @"kernel_task";
+    cache.csFlag = @(-1);
+    cache.signingID = @"";
+    cache.teamID = @"";
+    cache.ppid = @(0);
+    
+    [self updateProcCache:@(0) withProcInfo:cache];
 }
 
 - (void)fillEventFromCache:(Event *)event {
-    [self updateCacheUsingForkEvent:event];
+    NSString *eventType = event.EventType;
+    NSDictionary *processInfo = event.EventProcess;
+    NSDictionary *parentProcessInfo = event.EventParentProcess;
+    NSDictionary *eventInfo = event.EventInfo;
     
-    NSNumber *pid = event.pid;
-    if ([pid isEqualToNumber:@-1]) {
-        DDLogWarn(@"pid is -1, skip fill event from cache!");
+    // pid and ppid must not nil in dictionary,
+    // if pid can not be fetched, it will be @(-1).
+    NSNumber *pid = [processInfo valueForKey:@"Pid"];
+    NSNumber *ppid = [parentProcessInfo valueForKey:@"Pid"];
+    
+    // 1. update child process cache using fork event.
+    // In pid reuse scenario, it's necessary to determine which PIDs have started
+    // or exited and update the cache accordingly using exit or fork events.
+    // Here I choose fork event, because because fork events can delay the performance cost.
+    if ([eventType isEqualToString:@"notify_fork"]) {
+        [self updateCacheFromFork:processInfo withEventInfo:eventInfo withPid:pid withParentPid:ppid];
+    }
+
+    // 2: using cache to fill process info.
+    if ([pid isEqualToNumber:@(-1)]) {
+        DDLogWarn(@"pid is nil, skip fill event from cache!");
+    } else {
+        Cache *cache = [self getCache:pid];
+        if (cache == nil) {
+            // cache not hit
+            cache = [[Cache alloc] init];
+            cache.path = [processInfo valueForKey:@"ProcessPath"];
+            cache.createTime = [processInfo valueForKey:@"ProcessCreateTime"];
+            cache.cmdline = [processInfo valueForKey:@"ProcessCmdline"];
+            cache.csFlag = [processInfo valueForKey:@"ProcessCodesignFlag"];
+            cache.signingID = [processInfo valueForKey:@"ProcessSigningID"];
+            cache.teamID = [processInfo valueForKey:@"ProcessTeamID"];
+            if (![ppid isEqualToNumber:@(-1)]) {
+                cache.ppid = ppid;
+            } else {
+                cache.ppid = nil;
+            }
+            
+            [self fillCacheFromPid:cache withPid:pid];
+            [self updateProcCache:pid withProcInfo:cache];
+        }
+        
+        NSDictionary *newProcessInfo = [self fillProcessInfoFromCache:cache withInfo:processInfo];
+        event.EventProcess = newProcessInfo;
+        
+        // parent pid could be -1, get it from cache.
+        if ([ppid isEqualToNumber:@(-1)]) {
+            ppid = cache.ppid;
+            [parentProcessInfo setValue:ppid forKey:@"Pid"];
+        }
+    }
+    
+    // 3: using cache to fill parent process info.
+    if ([ppid isEqualToNumber:@(-1)]) {
+        DDLogWarn(@"ppid is nil, skip fill event from cache!");
     }
     else {
-        ProcessInfo *info = [[ProcessInfo alloc] init];
-        info.path = event.processPath;
-        info.createTime = event.processCreateTime;
-        info.cmdline = event.processCmdline;
-        info.csFlag = event.processCodesignFlag;
-        info.signingID = event.processSigningID;
-        info.teamID = event.processTeamID;
-        [self fillProcessInfo:info withPid:pid];
-        [self fillEventUseProcInfo:event withProcInfo:info withIsParent:NO];
+        if ([ppid isEqualToNumber:@(0)]) {
+            [self handleKernelTask];
+        }
+        
+        Cache *cache = [self getCache:ppid];
+        if (cache == nil) {
+            // cache not hit
+            cache = [[Cache alloc] init];
+            cache.path = [parentProcessInfo valueForKey:@"ProcessPath"];
+            cache.createTime = [parentProcessInfo valueForKey:@"ProcessCreateTime"];
+            cache.cmdline = [parentProcessInfo valueForKey:@"ProcessCmdline"];
+            cache.csFlag = [parentProcessInfo valueForKey:@"ProcessCodesignFlag"];
+            cache.signingID = [parentProcessInfo valueForKey:@"ProcessSigningID"];
+            cache.teamID = [parentProcessInfo valueForKey:@"ProcessTeamID"];
+            cache.ppid = nil;
+            
+            [self fillCacheFromPid:cache withPid:ppid];
+            [self updateProcCache:ppid withProcInfo:cache];
+        }
+        
+        NSDictionary *newProcessInfo = [self fillProcessInfoFromCache:cache withInfo:parentProcessInfo];
+        event.EventParentProcess = newProcessInfo;
     }
-    
-    NSNumber *ppid = event.ppid;
-    if ([ppid isEqualToNumber:@-1]) {
-        DDLogWarn(@"ppid is -1, skip fill event from cache!");
+
+    // 4: if the event is execute event, target process info can be fetched here,
+    if ([eventType isEqualToString:@"notify_exec"]) {
+        [self updateCacheFromFork:processInfo withEventInfo:eventInfo withPid:pid withParentPid:ppid];
     }
-    else if ([ppid isEqualToNumber:@0]) {
-        DDLogDebug(@"ppid is kernel_task, skip fill event from cache!");
-    }
-    else {
-        ProcessInfo *info = [[ProcessInfo alloc] init];
-        info.path = event.parentPath;
-        info.createTime = event.parentCreateTime;
-        info.cmdline = event.parentCmdline;
-        info.csFlag = event.parentCodesignFlag;
-        info.signingID = event.parentSigningID;
-        info.teamID = event.parentTeamID;
-        [self fillProcessInfo:info withPid:ppid];
-        [self fillEventUseProcInfo:event withProcInfo:info withIsParent:YES];
-    }
-    
-    [self updateCacheUsingExecEvent:event];
 }
 
 - (void)clearCache {
-    @synchronized (caches) {
-        [caches removeAllObjects];
-    }
+    // mark all cache as staled.
+    [caches removeAllObjects];
 }
 
 @end

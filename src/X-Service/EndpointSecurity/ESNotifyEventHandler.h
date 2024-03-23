@@ -8,7 +8,7 @@
 #ifndef ESNotifyEventHandler_h
 #define ESNotifyEventHandler_h
 
-#import "Event.h"
+#import "EventPrivate.h"
 #import <EndpointSecurity/EndpointSecurity.h>
 #import <Foundation/Foundation.h>
 

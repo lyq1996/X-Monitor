@@ -8,7 +8,7 @@
 #ifndef ProcessCache_h
 #define ProcessCache_h
 
-#import "Event.h"
+#import "EventPrivate.h"
 #import "ConsumerProtocol.h"
 #import <Foundation/Foundation.h>
 

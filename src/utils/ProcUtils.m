@@ -8,8 +8,33 @@
 #import "ProcUtils.h"
 #import <libproc.h>
 #import <sys/sysctl.h>
+#import <time.h>
 
 @implementation ProcUtils
+
++ (NSNumber *)getSystemBootTime {
+    struct timeval boottime;
+    size_t len = sizeof(boottime);
+    int mib[2] = {CTL_KERN, KERN_BOOTTIME};
+    if (sysctl(mib, 2, &boottime, &len, NULL, 0) == 0) {
+        return @(boottime.tv_sec);
+    }
+    return @(-1);
+}
+
++ (NSNumber *)getParentPidFromPid:(NSNumber *)pid {
+    pid_t c_pid = [pid intValue];
+
+    int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID, c_pid};
+    struct kinfo_proc info;
+    size_t size = sizeof(info);
+
+    if (sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0) == -1) {
+        return @(-1);
+    }
+
+    return @(info.kp_eproc.e_ppid);
+}
 
 + (NSString *)getPathFromPid:(NSNumber *)pid {
     pid_t c_pid = [pid intValue];

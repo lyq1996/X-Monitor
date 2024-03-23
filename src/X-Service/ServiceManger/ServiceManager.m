@@ -141,7 +141,7 @@ extern DDLogLevel ddLogLevel;
 
 - (BOOL)handleStartCmd:(RemoteConsumer *)consumer {
     DDLogDebug(@"handle start cmd from consumer: %@", consumer);
-    [eventManager addConsumer:consumer];
+    [eventManager attachConsumer:consumer];
     return YES;
 }
 

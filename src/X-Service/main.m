@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     ESProducer *esProducer = [[ESProducer alloc] initProducerWithDelegate:manager withErrorManager:service];
     
     // add producer to event manager
-    [manager addProducer:esProducer];
+    [manager attachProducer:esProducer];
     
     // start xpc listener
     [service start];

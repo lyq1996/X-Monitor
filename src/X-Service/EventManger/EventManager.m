@@ -44,39 +44,43 @@ extern DDLogLevel ddLogLevel;
     return producers.allKeys;
 }
 
-- (void)addProducer:(id<ProducerProtocol>)producer {
+- (void)attachProducer:(id<ProducerProtocol>)producer {
     for (NSString *type in producer.supportedEventTypes) {
         [producers setObject:producer forKey:type];
         DDLogVerbose(@"add producer: %@ for event type: %@", producer.producerName, type);
     }
 }
 
-- (void)addConsumer:(id<ConsumerProtocol>)consumer {
-    if (![consumers containsObject:consumer]) {
-        DDLogDebug(@"add consumer: %@ into consumers", consumer);
-        [consumers addObject:consumer];
-        
-        if (![consumers containsObject:caches]) {
-            DDLogDebug(@"add cache consumer into consumers");
-            [consumers addObject:caches];
+- (void)attachConsumer:(id<ConsumerProtocol>)consumer {
+    @synchronized (consumers) {
+        if (![consumers containsObject:consumer]) {
+            DDLogDebug(@"add consumer: %@ into consumers", consumer);
+            [consumers addObject:consumer];
+            
+            if (![consumers containsObject:caches]) {
+                DDLogDebug(@"add cache consumer into consumers");
+                [consumers addObject:caches];
+            }
+            
+            [self updateProducerEventType];
         }
-        
-        [self updateProducerEventType];
     }
 }
 
 - (void)detachConsumer:(id<ConsumerProtocol>)consumer {
-    if ([consumers containsObject:consumer]) {
-        DDLogDebug(@"detach consumer: %@ from consumers", consumer);
-        [consumers removeObject:consumer];
-        
-        if ([consumers count] == 1 && [consumers containsObject:caches]) {
-            DDLogDebug(@"current consumer count is 1, detach cache consumer from consumers");
-            [consumers removeObject:caches];
-            [caches clearCache];
+    @synchronized (consumers) {
+        if ([consumers containsObject:consumer]) {
+            DDLogDebug(@"detach consumer: %@ from consumers", consumer);
+            [consumers removeObject:consumer];
+            
+            if ([consumers count] == 1 && [consumers containsObject:caches]) {
+                DDLogDebug(@"current consumer count is 1, detach cache consumer from consumers");
+                [consumers removeObject:caches];
+                [caches clearCache];
+            }
+            
+            [self updateProducerEventType];
         }
-        
-        [self updateProducerEventType];
     }
 }
 
@@ -102,19 +106,17 @@ extern DDLogLevel ddLogLevel;
 
 - (void)handleEvent:(Event *)event {
     dispatch_async(notifyEventQueue, ^(){
-        // notify event
-        // fill process info from cache
-        
-        /*
-        NSLog(@"%@", [event shortInfo]);
-        NSLog(@"%@", [event detailInfo]);
-        NSLog(@"%@", [event jsonInfo]);
-        */
-         
-        [self->caches fillEventFromCache:event];
-        for (id<ConsumerProtocol> consumer in [self->consumers copy]) {
-            if ([consumer.subscribleEventTypes containsObject:event.eventType]) {
-                [consumer consumeEvent:event];
+        @synchronized (self->consumers) {
+            if ([self->consumers count] == 0) {
+                return;
+            }
+
+            [self->caches fillEventFromCache:event];
+            
+            for (id<ConsumerProtocol> consumer in self->consumers) {
+                if ([consumer.subscribleEventTypes containsObject:event.EventType]) {
+                    [consumer consumeEvent:event];
+                }
             }
         }
     });

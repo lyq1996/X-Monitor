@@ -308,9 +308,11 @@ extern DDLogLevel ddLogLevel;
         
         NSError *error = nil;
         
-        NSMutableSet *allowClasses = [[EventFactory getAllClasses] mutableCopy];
+        NSMutableSet *allowClasses = [NSMutableSet set];
         [allowClasses addObject:[NSString class]];
         [allowClasses addObject:[NSNumber class]];
+        [allowClasses addObject:[NSDictionary class]];
+        [allowClasses addObject:[Event class]];
         Event *event = [NSKeyedUnarchiver unarchivedObjectOfClasses:allowClasses fromData:data error:nil];
 
         if (error != nil) {

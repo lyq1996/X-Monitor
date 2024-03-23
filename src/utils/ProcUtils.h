@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ProcUtils : NSObject
 
++ (NSNumber *)getSystemBootTime;
++ (NSNumber *)getParentPidFromPid:(NSNumber *)pid;
 + (NSString *)getPathFromPid:(NSNumber *)pid;
 + (NSNumber *)getCreatetimeFromPid:(NSNumber *)pid;
 + (NSString *)getCmdlineFromPid:(NSNumber *)pid;

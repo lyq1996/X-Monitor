@@ -18,9 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly) NSArray<NSString *> *supportedEventType;
 
-- (void)addProducer:(id<ProducerProtocol>)producer;
+- (void)attachProducer:(id<ProducerProtocol>)producer;
 
-- (void)addConsumer:(id<ConsumerProtocol>)consumer;
+- (void)attachConsumer:(id<ConsumerProtocol>)consumer;
 
 - (void)detachConsumer:(id<ConsumerProtocol>)consumer;
 

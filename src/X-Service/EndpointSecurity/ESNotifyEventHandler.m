@@ -12,24 +12,23 @@
 #import <Foundation/Foundation.h>
 
 extern DDLogLevel ddLogLevel;
-extern ESEvent ESEvents[];
 
-#define FILL_EVENT_FILE_INFO(EVENT, PREFIX, TARGET) \
-    EVENT.PREFIX##FileUID = @(TARGET->stat.st_uid); \
-    EVENT.PREFIX##FileGID = @(TARGET->stat.st_gid); \
-    EVENT.PREFIX##FileMode = @(TARGET->stat.st_mode); \
-    EVENT.PREFIX##FileAccessTime = @(TARGET->stat.st_atimespec.tv_sec); \
-    EVENT.PREFIX##FileModifyTime = @(TARGET->stat.st_mtimespec.tv_sec); \
-    EVENT.PREFIX##FileCreateTime = @(TARGET->stat.st_ctimespec.tv_sec); \
-    EVENT.PREFIX##FilePath = [NSString stringWithUTF8String:[self getString:TARGET->path]];
+#define FILL_FILE_INFO(DICTIONARY, TARGET) \
+    [DICTIONARY setValue:@(TARGET->stat.st_uid) forKey:@"FileUID"]; \
+    [DICTIONARY setValue:@(TARGET->stat.st_gid) forKey:@"FileGID"]; \
+    [DICTIONARY setValue:@(TARGET->stat.st_mode) forKey:@"FileMode"]; \
+    [DICTIONARY setValue:@(TARGET->stat.st_atimespec.tv_sec) forKey:@"FileAccessTime"]; \
+    [DICTIONARY setValue:@(TARGET->stat.st_mtimespec.tv_sec) forKey:@"FileModifyTime"]; \
+    [DICTIONARY setValue:@(TARGET->stat.st_ctimespec.tv_sec) forKey:@"FileCreateTime"]; \
+    [DICTIONARY setValue:[NSString stringWithUTF8String:[self getString:TARGET->path]] forKey:@"FilePath"];
 
-#define FILL_EVENT_PROCESS_INFO(EVENT, PREFIX, TARGET) \
-    EVENT.PREFIX##CreateTime = @(TARGET->start_time.tv_sec); \
-    EVENT.PREFIX##Path = [NSString stringWithUTF8String:[self getString:TARGET->executable->path]]; \
-    EVENT.PREFIX##CodesignFlag = @(TARGET->codesigning_flags); \
-    EVENT.PREFIX##SigningID = [NSString stringWithUTF8String:[self getString:TARGET->signing_id]]; \
-    EVENT.PREFIX##TeamID = [NSString stringWithUTF8String:[self getString:TARGET->team_id]];
-
+#define FILL_PROCESS_INFO(DICTIONARY, TARGET) \
+    [DICTIONARY setValue:@(audit_token_to_pid(TARGET->audit_token)) forKey:@"Pid"]; \
+    [DICTIONARY setValue:@(TARGET->start_time.tv_sec) forKey:@"ProcessCreateTime"]; \
+    [DICTIONARY setValue:[NSString stringWithUTF8String:[self getString:TARGET->executable->path]] forKey:@"ProcessPath"]; \
+    [DICTIONARY setValue:@(TARGET->codesigning_flags) forKey:@"ProcessCodesignFlag"]; \
+    [DICTIONARY setValue:[NSString stringWithUTF8String:[self getString:TARGET->signing_id]] forKey:@"ProcessSigningID"]; \
+    [DICTIONARY setValue:[NSString stringWithUTF8String:[self getString:TARGET->team_id]] forKey:@"ProcessTeamID"];
 
 @implementation BaseEventHandler
 
@@ -41,20 +40,23 @@ extern ESEvent ESEvents[];
 }
 
 - (void)handleCommonEvent:(const es_message_t *)msg withEvent:(Event *)event {
-    event.eventIdentify = @((uint64_t)msg);
-    event.eventType = ESEvents[msg->event_type].eventName;
-    event.eventTime = @(msg->time.tv_sec);
-    event.pid = @(audit_token_to_pid(msg->process->audit_token));
+    event.EventIdentify = @((uint64_t)msg);
+    event.EventType = ESEvents[msg->event_type].eventName;
+    event.EventTime = @(msg->time.tv_sec);
     
-    FILL_EVENT_PROCESS_INFO(event, process, msg->process)
+    NSMutableDictionary *processInfo = [NSMutableDictionary dictionary];
+    FILL_PROCESS_INFO(processInfo, msg->process)
+    event.EventProcess = processInfo;
 
-    event.ppid = @(msg->process->ppid);
+    NSMutableDictionary *parentProcessInfo = [NSMutableDictionary dictionary];
+    [parentProcessInfo setValue:@(msg->process->ppid) forKey:@"Pid"];
+    event.EventParentProcess = parentProcessInfo;
     return;
 }
 
 - (Event *)handleEvent:(const es_message_t *)msg {
     // should override
-    Event *event = [EventFactory initEvent:ESEvents[msg->event_type].eventName];
+    Event *event = [[Event alloc] init];
     [self handleCommonEvent:msg withEvent:event];
     return event;
 }
@@ -64,11 +66,13 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_EXEC
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ExecEvent *event = (ExecEvent *)[super handleEvent:msg];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
     
-    FILL_EVENT_FILE_INFO(event, target, msg->event.exec.target->executable)
-    FILL_EVENT_PROCESS_INFO(event, target, msg->event.exec.target)
-    
+    NSMutableDictionary *targetProcessInfo = [NSMutableDictionary dictionary];
+    FILL_PROCESS_INFO(targetProcessInfo, msg->event.exec.target)
+
     NSString *cmdline = [NSString string];
     int argv_count = es_exec_arg_count(&msg->event.exec);
     for(int i=0; i<argv_count; ++i) {
@@ -79,7 +83,14 @@ extern ESEvent ESEvents[];
             cmdline = [cmdline stringByAppendingString:@" "];
         }
     }
-    event.targetCmdline = cmdline;
+    [targetProcessInfo setValue:cmdline forKey:@"ProcessCmdline"];
+    [eventInfo setValue:targetProcessInfo forKey:@"TargetProcess"];
+    
+    NSMutableDictionary *targetFileInfo = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFileInfo, msg->event.exec.target->executable)
+    [eventInfo setValue:targetFileInfo forKey:@"TargetFileInfo"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -88,9 +99,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_OPEN
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    OpenEvent *event = (OpenEvent *)[super handleEvent:msg];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFileInfo = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFileInfo, msg->event.open.file)
+    [eventInfo setValue:targetFileInfo forKey:@"TargetFileInfo"];
     
-    FILL_EVENT_FILE_INFO(event, target, msg->event.open.file)
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -99,10 +116,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FORK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ForkEvent *event = (ForkEvent *)[super handleEvent:msg];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    [eventInfo setValue:@(audit_token_to_pid(msg->event.fork.child->audit_token)) forKey:@"ChildPid"];
     
-    event.childPid = @(audit_token_to_pid(msg->event.fork.child->audit_token));
-    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -111,8 +130,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CLOSE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    CloseEvent *event = (CloseEvent *)[super handleEvent:msg];
-    event.targetFilePath = [NSString stringWithUTF8String:[super getString:msg->event.close.target->path]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    [eventInfo setValue:[NSString stringWithUTF8String:[super getString:msg->event.close.target->path]] forKey:@"TargetFilePath"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -121,12 +144,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CREATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    CreateEvent *event = (CreateEvent *)[super handleEvent:msg];
-    
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
     NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.dir->path]];
     [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.filename]]];
-    event.destinationFilePath = destination;
+    [eventInfo setValue:destination forKey:@"TargetFilePath"];
     
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -135,9 +161,19 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_EXCHANGEDATA
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ExchangeDataEvent *event = (ExchangeDataEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, file1, msg->event.exchangedata.file1)
-    FILL_EVENT_FILE_INFO(event, file2, msg->event.exchangedata.file2)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *file1Info = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(file1Info, msg->event.exchangedata.file1)
+    [eventInfo setValue:file1Info forKey:@"File1"];
+    
+    NSMutableDictionary *file2Info = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(file2Info, msg->event.exchangedata.file2)
+    [eventInfo setValue:file2Info forKey:@"File1"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -146,9 +182,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_EXIT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ExitEvent *event = (ExitEvent *)[super handleEvent:msg];
+    Event *event = [super handleEvent:msg];
 
-    event.status = @(msg->event.exit.stat);
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    [eventInfo setValue:@(msg->event.exit.stat) forKey:@"Status"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -157,31 +196,38 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_GET_TASK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    GetTaskEvent *event = (GetTaskEvent *)[super handleEvent:msg];
-    FILL_EVENT_PROCESS_INFO(event, target, msg->event.get_task.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    
+    NSMutableDictionary *targetProcessInfo = [NSMutableDictionary dictionary];
+    FILL_PROCESS_INFO(targetProcessInfo, msg->event.get_task.target)
+    [eventInfo setValue:targetProcessInfo forKey:@"TargetProcess"];
+
     if (msg->version >= 5) {
         switch (msg->event.get_task.type) {
             case ES_GET_TASK_TYPE_TASK_FOR_PID:
-                event.taskType = @"ES_GET_TASK_TYPE_TASK_FOR_PID";
+                [eventInfo setValue:@"ES_GET_TASK_TYPE_TASK_FOR_PID" forKey:@"TaskType"];
                 break;
             
             case ES_GET_TASK_TYPE_EXPOSE_TASK:
-                event.taskType = @"ES_GET_TASK_TYPE_EXPOSE_TASK";
+                [eventInfo setValue:@"ES_GET_TASK_TYPE_EXPOSE_TASK" forKey:@"TaskType"];
                 break;
             
             case ES_GET_TASK_TYPE_IDENTITY_TOKEN:
-                event.taskType = @"ES_GET_TASK_TYPE_IDENTITY_TOKEN";
+                [eventInfo setValue:@"ES_GET_TASK_TYPE_IDENTITY_TOKEN" forKey:@"TaskType"];
                 break;
                 
             default:
-                event.taskType = @"";
+                [eventInfo setValue:@"" forKey:@"TaskType"];
                 break;
         }
     }
     else {
-        event.taskType = @"";
+        [eventInfo setValue:@"" forKey:@"TaskType"];
     }
     
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -190,8 +236,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_KEXTLOAD
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    KextLoadEvent *event = (KextLoadEvent *)[super handleEvent:msg];
-    event.kextIdentifier = [NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]] forKey:@"KextIdentifier"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -200,8 +250,12 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_KEXTUNLOAD
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    KextUnloadEvent *event = (KextUnloadEvent *)[super handleEvent:msg];
-    event.kextIdentifier = [NSString stringWithUTF8String:[self getString:msg->event.kextload.identifier]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.kextunload.identifier]] forKey:@"KextIdentifier"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -210,10 +264,21 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_LINK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    LinkEvent *event = (LinkEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, source, msg->event.link.source)
-    FILL_EVENT_FILE_INFO(event, targetDir, msg->event.link.target_dir)
-    event.targetFileName = [NSString stringWithUTF8String:[self getString:msg->event.link.target_filename]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.link.source)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
+    
+    NSMutableDictionary *targetDir = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetDir, msg->event.link.target_dir)
+    [eventInfo setValue:targetDir forKey:@"TargetDirectory"];
+    
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.link.target_filename]] forKey:@"TargetFileName"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -222,8 +287,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MMAP
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    MmapEvent *event = (MmapEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, source, msg->event.mmap.source)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.mmap.source)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -232,10 +304,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MPROTECT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    MprotectEvent *event = (MprotectEvent *)[super handleEvent:msg];
-    event.protection = [NSNumber numberWithInt:msg->event.mprotect.protection];
-    event.address = [NSNumber numberWithUnsignedLongLong:msg->event.mprotect.address];
-    event.size = [NSNumber numberWithUnsignedLongLong:msg->event.mprotect.size];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    [eventInfo setValue:@(msg->event.mprotect.protection) forKey:@"Protection"];
+    [eventInfo setValue:@(msg->event.mprotect.address) forKey:@"Address"];
+    [eventInfo setValue:@(msg->event.mprotect.size) forKey:@"Size"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -244,14 +321,19 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_MOUNT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    MountEvent *event = (MountEvent *)[super handleEvent:msg];
-    event.fsID = [NSString stringWithFormat:@"%d %d", msg->event.mount.statfs->f_fsid.val[0], msg->event.mount.statfs->f_fsid.val[1]];
-    event.fsType = [NSString stringWithUTF8String:msg->event.mount.statfs->f_fstypename];
-    event.ownerUid = [NSNumber numberWithUnsignedInt:msg->event.mount.statfs->f_owner];
-    event.mountFlags = [NSNumber numberWithUnsignedInt:msg->event.mount.statfs->f_flags];
-    event.totalFiles = [NSNumber numberWithUnsignedLongLong:msg->event.mount.statfs->f_files];
-    event.mountPath = [NSString stringWithUTF8String:msg->event.mount.statfs->f_mntonname];
-    event.sourcePath = [NSString stringWithUTF8String:msg->event.mount.statfs->f_mntfromname];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    [eventInfo setValue:[NSString stringWithFormat:@"%d %d", msg->event.mount.statfs->f_fsid.val[0], msg->event.mount.statfs->f_fsid.val[1]] forKey:@"FileSystemID"];
+    [eventInfo setValue:[NSString stringWithUTF8String:msg->event.mount.statfs->f_fstypename] forKey:@"FileSystemType"];
+    [eventInfo setValue:@(msg->event.mount.statfs->f_owner) forKey:@"OwnerUID"];
+    [eventInfo setValue:@(msg->event.mount.statfs->f_flags) forKey:@"MountFlags"];
+    [eventInfo setValue:@(msg->event.mount.statfs->f_files) forKey:@"TotalFiles"];
+    [eventInfo setValue:[NSString stringWithUTF8String:msg->event.mount.statfs->f_mntonname] forKey:@"MountPath"];
+    [eventInfo setValue:[NSString stringWithUTF8String:msg->event.mount.statfs->f_mntfromname] forKey:@"SourcePath"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -260,14 +342,19 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UNMOUNT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    UnmountEvent *event = (UnmountEvent *)[super handleEvent:msg];
-    event.fsID = [NSString stringWithFormat:@"%d %d", msg->event.mount.statfs->f_fsid.val[0], msg->event.unmount.statfs->f_fsid.val[1]];
-    event.fsType = [NSString stringWithUTF8String:msg->event.unmount.statfs->f_fstypename];
-    event.ownerUid = [NSNumber numberWithUnsignedInt:msg->event.unmount.statfs->f_owner];
-    event.mountFlags = [NSNumber numberWithUnsignedInt:msg->event.unmount.statfs->f_flags];
-    event.totalFiles = [NSNumber numberWithUnsignedLongLong:msg->event.unmount.statfs->f_files];
-    event.unmountPath = [NSString stringWithUTF8String:msg->event.unmount.statfs->f_mntonname];
-    event.sourcePath = [NSString stringWithUTF8String:msg->event.unmount.statfs->f_mntfromname];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    [eventInfo setValue:[NSString stringWithFormat:@"%d %d", msg->event.unmount.statfs->f_fsid.val[0], msg->event.mount.statfs->f_fsid.val[1]] forKey:@"FileSystemID"];
+    [eventInfo setValue:[NSString stringWithUTF8String:msg->event.unmount.statfs->f_fstypename] forKey:@"FileSystemType"];
+    [eventInfo setValue:@(msg->event.unmount.statfs->f_owner) forKey:@"OwnerUID"];
+    [eventInfo setValue:@(msg->event.unmount.statfs->f_flags) forKey:@"MountFlags"];
+    [eventInfo setValue:@(msg->event.unmount.statfs->f_files) forKey:@"TotalFiles"];
+    [eventInfo setValue:[NSString stringWithUTF8String:msg->event.unmount.statfs->f_mntonname] forKey:@"MountPath"];
+    [eventInfo setValue:[NSString stringWithUTF8String:msg->event.unmount.statfs->f_mntfromname] forKey:@"SourcePath"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -276,9 +363,13 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_IOKIT_OPEN
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    IOKitOpenEvent *event = (IOKitOpenEvent *)[super handleEvent:msg];
-    event.userClientType = [NSNumber numberWithInt:msg->event.iokit_open.user_client_type];
-    event.userClientClass = [NSString stringWithUTF8String:[self getString:msg->event.iokit_open.user_client_class]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    [eventInfo setValue:@(msg->event.iokit_open.user_client_type) forKey:@"UserClientType"];
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.iokit_open.user_client_class]] forKey:@"UserClientClass"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -287,14 +378,19 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_RENAME
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    RenameEvent *event = (RenameEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, source, msg->event.rename.source)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.rename.source)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
     
     NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.rename.destination.new_path.dir->path]];
     [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.rename.destination.new_path.filename]]];
+    [eventInfo setValue:destination forKey:@"TargetFilePath"];
     
-    event.destinationFilePath = destination;
-    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -303,14 +399,22 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETATTRLIST
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SetAttrlistEvent *event = (SetAttrlistEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.setattrlist.target)
-    event.bitmapCount = [NSNumber numberWithShort:msg->event.setattrlist.attrlist.bitmapcount];
-    event.commonAttr = [NSNumber numberWithInt:msg->event.setattrlist.attrlist.commonattr];
-    event.volAttr = [NSNumber numberWithInt:msg->event.setattrlist.attrlist.volattr];
-    event.dirAttr = [NSNumber numberWithInt:msg->event.setattrlist.attrlist.dirattr];
-    event.fileAttr = [NSNumber numberWithInt:msg->event.setattrlist.attrlist.fileattr];
-    event.forkAttr = [NSNumber numberWithInt:msg->event.setattrlist.attrlist.forkattr];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.setattrlist.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.setattrlist.attrlist.bitmapcount) forKey:@"BitmapCount"];
+    [eventInfo setValue:@(msg->event.setattrlist.attrlist.commonattr) forKey:@"CommonAttr"];
+    [eventInfo setValue:@(msg->event.setattrlist.attrlist.volattr) forKey:@"VolAttr"];
+    [eventInfo setValue:@(msg->event.setattrlist.attrlist.dirattr) forKey:@"DirAttr"];
+    [eventInfo setValue:@(msg->event.setattrlist.attrlist.fileattr) forKey:@"FileAttr"];
+    [eventInfo setValue:@(msg->event.setattrlist.attrlist.forkattr) forKey:@"ForkAttr"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -319,9 +423,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SetExtAttrEvent *event = (SetExtAttrEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.setextattr.target)
-    event.extAttr = [NSString stringWithUTF8String:[self getString:msg->event.setextattr.extattr]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.setextattr.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.setextattr.extattr]] forKey:@"ExtAttr"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -330,9 +442,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETFLAGS
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SetFlagsEvent *event = (SetFlagsEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.setflags.target)
-    event.flags = [NSNumber numberWithInt:msg->event.setflags.flags];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.setflags.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.setflags.flags) forKey:@"Flags"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -341,9 +461,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETMODE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SetModeEvent *event = (SetModeEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.setmode.target)
-    event.mode = [NSNumber numberWithInt:msg->event.setmode.mode];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.setmode.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.setmode.mode) forKey:@"Mode"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -352,10 +480,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETOWNER
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SetOwnerEvent *event = (SetOwnerEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.setowner.target)
-    event.uid = [NSNumber numberWithInt:msg->event.setowner.uid];
-    event.gid = [NSNumber numberWithInt:msg->event.setowner.gid];
+    Event *event = [super handleEvent:msg];
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.setowner.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.setowner.uid) forKey:@"UID"];
+    [eventInfo setValue:@(msg->event.setowner.gid) forKey:@"UID"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -364,9 +499,16 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SIGNAL
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SignalEvent *event = (SignalEvent *)[super handleEvent:msg];
-    event.signal = [NSNumber numberWithInt:msg->event.signal.sig];
-    FILL_EVENT_PROCESS_INFO(event, target, msg->event.signal.target)
+    Event *event = [super handleEvent:msg];
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetProcess = [NSMutableDictionary dictionary];
+    FILL_PROCESS_INFO(targetProcess, msg->event.signal.target)
+    [eventInfo setValue:targetProcess forKey:@"TargetProcess"];
+    
+    [eventInfo setValue:@(msg->event.signal.sig) forKey:@"Signal"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -375,9 +517,19 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UNLINK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    UnlinkEvent *event = (UnlinkEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.unlink.target)
-    FILL_EVENT_FILE_INFO(event, parentDir, msg->event.unlink.parent_dir)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.unlink.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    NSMutableDictionary *parentDir = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(parentDir, msg->event.unlink.parent_dir)
+    [eventInfo setValue:parentDir forKey:@"ParentDirectory"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -386,8 +538,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_WRITE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    WriteEvent *event = (WriteEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.write.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.write.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -396,10 +555,23 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FILE_PROVIDER_MATERIALIZE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    FileProviderMaterializeEvent *event = (FileProviderMaterializeEvent *)[super handleEvent:msg];
-    FILL_EVENT_PROCESS_INFO(event, instigator, msg->event.file_provider_materialize.instigator)
-    FILL_EVENT_FILE_INFO(event, target, msg->event.file_provider_materialize.source)
-    FILL_EVENT_FILE_INFO(event, target, msg->event.file_provider_materialize.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *instigatorProcess = [NSMutableDictionary dictionary];
+    FILL_PROCESS_INFO(instigatorProcess, msg->event.file_provider_materialize.instigator)
+    [eventInfo setValue:instigatorProcess forKey:@"InstigatorProcess"];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.file_provider_materialize.source)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.file_provider_materialize.target)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -408,9 +580,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FILE_PROVIDER_UPDATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    FileProviderUpdateEvent *event = (FileProviderUpdateEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, source, msg->event.file_provider_update.source)
-    event.targetFilePath = [NSString stringWithUTF8String:[self getString:msg->event.file_provider_update.target_path]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.file_provider_update.target_path]] forKey:@"TargetFilePath"];
+
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.file_provider_update.source)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -419,8 +599,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_READLINK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ReadlinkEvent *event = (ReadlinkEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, source, msg->event.readlink.source)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.readlink.source)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -429,8 +616,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_TRUNCATE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    TruncateEvent *event = (TruncateEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.truncate.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.truncate.target)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -439,9 +633,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_LOOKUP
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    LookupEvent *event = (LookupEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, sourceDir, msg->event.lookup.source_dir)
-    event.relativeTargetFilePath = [NSString stringWithUTF8String:[self getString:msg->event.lookup.relative_target]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetDir = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetDir, msg->event.lookup.source_dir)
+    [eventInfo setValue:targetDir forKey:@"TargetDirectory"];
+
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.lookup.relative_target]] forKey:@"TargetFilePath"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -450,8 +652,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CHDIR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ChdirEvent *event = (ChdirEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.chdir.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.chdir.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -460,14 +669,22 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_GETATTRLIST
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    GetAttrlistEvent *event = (GetAttrlistEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.getattrlist.target)
-    event.bitmapCount = [NSNumber numberWithShort:msg->event.getattrlist.attrlist.bitmapcount];
-    event.commonAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.commonattr];
-    event.volAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.volattr];
-    event.dirAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.dirattr];
-    event.fileAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.fileattr];
-    event.forkAttr = [NSNumber numberWithInt:msg->event.getattrlist.attrlist.forkattr];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.getattrlist.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.getattrlist.attrlist.bitmapcount) forKey:@"BitmapCount"];
+    [eventInfo setValue:@(msg->event.getattrlist.attrlist.commonattr) forKey:@"CommonAttr"];
+    [eventInfo setValue:@(msg->event.getattrlist.attrlist.volattr) forKey:@"VolAttr"];
+    [eventInfo setValue:@(msg->event.getattrlist.attrlist.dirattr) forKey:@"DirAttr"];
+    [eventInfo setValue:@(msg->event.getattrlist.attrlist.fileattr) forKey:@"FileAttr"];
+    [eventInfo setValue:@(msg->event.getattrlist.attrlist.forkattr) forKey:@"ForkAttr"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -476,8 +693,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_STAT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    StatEvent *event = (StatEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.stat.target)
+    Event *event = [super handleEvent:msg];
+    
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.stat.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -486,9 +710,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_ACCESS
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    AccessEvent *event = (AccessEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.access.target)
-    event.mode = [NSNumber numberWithInt:msg->event.access.mode];
+    Event *event = [super handleEvent:msg];
+    
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.access.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.access.mode) forKey:@"Mode"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -497,8 +729,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CHROOT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ChrootEvent *event = (ChrootEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.chroot.target)
+    Event *event = [super handleEvent:msg];
+    
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.chroot.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -507,10 +746,18 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UTIMES
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    UtimesEvent *event = (UtimesEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.utimes.target)
-    event.aTime = [NSNumber numberWithLongLong:msg->event.utimes.atime.tv_sec];
-    event.mTime = [NSNumber numberWithLongLong:msg->event.utimes.mtime.tv_sec];
+    Event *event = [super handleEvent:msg];
+    
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.utimes.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.utimes.atime.tv_sec) forKey:@"FileAccessTime"];
+    [eventInfo setValue:@(msg->event.utimes.mtime.tv_sec) forKey:@"FileModifyTime"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -519,10 +766,21 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CLONE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    CloneEvent *event = (CloneEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, source, msg->event.clone.source)
-    FILL_EVENT_FILE_INFO(event, targetDir, msg->event.clone.target_dir)
-    event.targetFileName = [NSString stringWithUTF8String:[self getString:msg->event.clone.target_name]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *sourceFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(sourceFile, msg->event.clone.source)
+    [eventInfo setValue:sourceFile forKey:@"SourceFile"];
+    
+    NSMutableDictionary *targetDir = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetDir, msg->event.clone.target_dir)
+    [eventInfo setValue:targetDir forKey:@"TargetDirectory"];
+    
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.clone.target_name]] forKey:@"TargetFileName"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -531,9 +789,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FCNTL
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    FcntlEvent *event = (FcntlEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.fcntl.target)
-    event.fcntlCmd = [NSNumber numberWithInt:msg->event.fcntl.cmd];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.fcntl.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.fcntl.cmd) forKey:@"CMD"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -542,9 +808,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_GETEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    GetExtAttrEvent *event = (GetExtAttrEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.getextattr.target)
-    event.extAttr = [NSString stringWithUTF8String:[self getString:msg->event.getextattr.extattr]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.getextattr.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.getextattr.extattr]] forKey:@"ExtAttr"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -553,8 +827,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_LISTEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ListExtAttrEvent *event = (ListExtAttrEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.listextattr.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.listextattr.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -563,8 +844,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_READDIR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ReaddirEvent *event = (ReaddirEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.readdir.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.readdir.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -573,9 +861,17 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_DELETEEXTATTR
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    DeleteExtAttrEvent *event = (DeleteExtAttrEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.deleteextattr.target)
-    event.extAttr = [NSString stringWithUTF8String:[self getString:msg->event.deleteextattr.extattr]];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.deleteextattr.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.deleteextattr.extattr]] forKey:@"ExtAttr"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -584,8 +880,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_FSGETPATH
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    FsGetPathEvent *event = (FsGetPathEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.fsgetpath.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.fsgetpath.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -594,8 +897,15 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_DUP
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    DupEvent *event = (DupEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.dup.target)
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.dup.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -613,10 +923,18 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UIPC_BIND
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    UipcBindEvent *event = (UipcBindEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, targetDir, msg->event.uipc_bind.dir)
-    event.targetFileName = [NSString stringWithUTF8String:[self getString:msg->event.uipc_bind.filename]];
-    event.mode = [NSNumber numberWithInt:msg->event.uipc_bind.mode];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+    
+    NSMutableDictionary *targetDir = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetDir, msg->event.uipc_bind.dir)
+    [eventInfo setValue:targetDir forKey:@"TargetDirectory"];
+    
+    [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.uipc_bind.filename]] forKey:@"TargetFileName"];
+    [eventInfo setValue:@(msg->event.uipc_bind.mode) forKey:@"Mode"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -625,11 +943,19 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_UIPC_CONNECT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    UipcConnectEvent *event = (UipcConnectEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.uipc_connect.file)
-    event.domain = [NSNumber numberWithInt:msg->event.uipc_connect.domain];
-    event.type = [NSNumber numberWithInt:msg->event.uipc_connect.type];
-    event.protocol = [NSNumber numberWithInt:msg->event.uipc_connect.protocol];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.uipc_connect.file)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.uipc_connect.domain) forKey:@"Domain"];
+    [eventInfo setValue:@(msg->event.uipc_connect.type) forKey:@"Type"];
+    [eventInfo setValue:@(msg->event.uipc_connect.protocol) forKey:@"Protocol"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -638,24 +964,30 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SETACL
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SetAclEvent *event = (SetAclEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.setacl.target)
-    if (msg->event.setacl.set_or_clear == ES_SET) {
-        event.setOrClear = @(1);
-    }
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.setacl.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
     
-    if (msg->event.setacl.set_or_clear == ES_CLEAR) {
-        event.setOrClear = @(0);
+    if (msg->event.setacl.set_or_clear == ES_SET) {
+        [eventInfo setValue:@(1) forKey:@"SetOrClear"];
+    } else {
+        [eventInfo setValue:@(0) forKey:@"SetOrClear"];
     }
     
     acl_t acl = acl_dup(msg->event.setacl.acl.set);
     char *aclStr = acl_to_text(acl, NULL);
     if (aclStr != NULL) {
-        event.acl = [NSString stringWithUTF8String:aclStr];
+        [eventInfo setValue:[NSString stringWithUTF8String:aclStr] forKey:@"ACL"];
     }
     
     free(aclStr);
     acl_free(acl);
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -664,8 +996,13 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PTY_GRANT
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    PtyGrantEvent *event = (PtyGrantEvent *)[super handleEvent:msg];
-    event.device = [NSNumber numberWithInt:msg->event.pty_grant.dev];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    [eventInfo setValue:@(msg->event.pty_grant.dev) forKey:@"Device"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -674,8 +1011,13 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PTY_CLOSE
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    PtyCloseEvent *event = (PtyCloseEvent *)[super handleEvent:msg];
-    event.device = [NSNumber numberWithInt:msg->event.pty_close.dev];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    [eventInfo setValue:@(msg->event.pty_close.dev) forKey:@"Device"];
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -684,12 +1026,55 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PROC_CHECK
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ProcCheckEvent *event = (ProcCheckEvent *)[super handleEvent:msg];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetProcess = [NSMutableDictionary dictionary];
     if (msg->event.proc_check.target) {
-        FILL_EVENT_PROCESS_INFO(event, target, msg->event.proc_check.target)
+        FILL_PROCESS_INFO(targetProcess, msg->event.proc_check.target)
     }
-    event.checkType = [NSNumber numberWithInt:msg->event.proc_check.type];
-    event.flavor = [NSNumber numberWithInt:msg->event.proc_check.flavor];
+    [eventInfo setValue:targetProcess forKey:@"TargetProcess"];
+    
+    [eventInfo setValue:@(msg->event.proc_check.flavor) forKey:@"Flavor"];
+    
+    switch (msg->event.proc_check.type) {
+        case ES_PROC_CHECK_TYPE_LISTPIDS:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_LISTPIDS" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_PIDINFO:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_PIDINFO" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_PIDFDINFO:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_PIDFDINFO" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_KERNMSGBUF:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_KERNMSGBUF" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_SETCONTROL:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_SETCONTROL" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_PIDFILEPORTINFO:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_PIDFILEPORTINFO" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_TERMINATE:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_TERMINATE" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_DIRTYCONTROL:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_DIRTYCONTROL" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_PIDRUSAGE:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_PIDRUSAGE" forKey:@"CheckType"];
+            break;
+        case ES_PROC_CHECK_TYPE_UDATA_INFO:
+            [eventInfo setValue:@"ES_PROC_CHECK_TYPE_UDATA_INFO" forKey:@"CheckType"];
+            break;
+        default:
+            [eventInfo setValue:@"" forKey:@"CheckType"];
+            break;
+    }
+    
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -698,14 +1083,22 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_SEARCHFS
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    SearchFsEvent *event = (SearchFsEvent *)[super handleEvent:msg];
-    FILL_EVENT_FILE_INFO(event, target, msg->event.searchfs.target)
-    event.bitmapCount = [NSNumber numberWithShort:msg->event.searchfs.attrlist.bitmapcount];
-    event.commonAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.commonattr];
-    event.volAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.volattr];
-    event.dirAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.dirattr];
-    event.fileAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.fileattr];
-    event.forkAttr = [NSNumber numberWithInt:msg->event.searchfs.attrlist.forkattr];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetFile = [NSMutableDictionary dictionary];
+    FILL_FILE_INFO(targetFile, msg->event.searchfs.target)
+    [eventInfo setValue:targetFile forKey:@"TargetFile"];
+    
+    [eventInfo setValue:@(msg->event.searchfs.attrlist.bitmapcount) forKey:@"BitmapCount"];
+    [eventInfo setValue:@(msg->event.searchfs.attrlist.commonattr) forKey:@"CommonAttr"];
+    [eventInfo setValue:@(msg->event.searchfs.attrlist.volattr) forKey:@"VolAttr"];
+    [eventInfo setValue:@(msg->event.searchfs.attrlist.dirattr) forKey:@"DirAttr"];
+    [eventInfo setValue:@(msg->event.searchfs.attrlist.fileattr) forKey:@"FileAttr"];
+    [eventInfo setValue:@(msg->event.searchfs.attrlist.forkattr) forKey:@"ForkAttr"];
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -714,9 +1107,30 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_PROC_SUSPEND_RESUME
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    ProcSuspendResumeEvent *event = (ProcSuspendResumeEvent *)[super handleEvent:msg];
-    FILL_EVENT_PROCESS_INFO(event, target, msg->event.proc_suspend_resume.target)
-    event.resumeType = [NSNumber numberWithInt:msg->event.proc_suspend_resume.type];
+    Event *event = [super handleEvent:msg];
+
+    NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
+
+    NSMutableDictionary *targetProcess = [NSMutableDictionary dictionary];
+    FILL_PROCESS_INFO(targetProcess, msg->event.proc_suspend_resume.target)
+    [eventInfo setValue:targetProcess forKey:@"TargetProcess"];
+
+    switch (msg->event.proc_suspend_resume.type) {
+        case ES_PROC_SUSPEND_RESUME_TYPE_SUSPEND:
+            [eventInfo setValue:@"ES_PROC_SUSPEND_RESUME_TYPE_SUSPEND" forKey:@"ResumeType"];
+            break;
+        case ES_PROC_SUSPEND_RESUME_TYPE_RESUME:
+            [eventInfo setValue:@"ES_PROC_SUSPEND_RESUME_TYPE_RESUME" forKey:@"ResumeType"];
+            break;
+        case ES_PROC_SUSPEND_RESUME_TYPE_SHUTDOWN_SOCKETS:
+            [eventInfo setValue:@"ES_PROC_SUSPEND_RESUME_TYPE_SHUTDOWN_SOCKETS" forKey:@"ResumeType"];
+            break;
+        default:
+            [eventInfo setValue:@"" forKey:@"ResumeType"];
+            break;
+    }
+
+    event.EventInfo = eventInfo;
     return event;
 }
 
@@ -725,7 +1139,7 @@ extern ESEvent ESEvents[];
 @implementation EventHandler_ES_EVENT_TYPE_NOTIFY_CS_INVALIDATED
 
 - (Event *)handleEvent:(const es_message_t *)msg {
-    CsInvalidatedEvent *event = (CsInvalidatedEvent *)[super handleEvent:msg];
+    Event *event = [super handleEvent:msg];
     return event;
 }
 

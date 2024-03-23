@@ -233,6 +233,7 @@
 		3585EBB32994872C002E70C6 /* ServiceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceManager.m; sourceTree = "<group>"; };
 		3585EBBC29948EA5002E70C6 /* ServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceProtocol.h; sourceTree = "<group>"; };
 		35A64B992993D00300D59F2A /* ProducerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProducerProtocol.h; sourceTree = "<group>"; };
+		35C5F1DE2BAC741F002D88F9 /* EventPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventPrivate.h; sourceTree = "<group>"; };
 		35C7ADE929BC76E4001130C8 /* ConsumerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConsumerProtocol.h; sourceTree = "<group>"; };
 		35C7ADEA29BC76F9001130C8 /* EventManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventManager.h; sourceTree = "<group>"; };
 		35C7ADEB29BC76F9001130C8 /* EventManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventManager.m; sourceTree = "<group>"; };
@@ -499,6 +500,7 @@
 				35C7ADEB29BC76F9001130C8 /* EventManager.m */,
 				35C7ADEF29BC811F001130C8 /* ProcessCache.h */,
 				35C7ADF029BC811F001130C8 /* ProcessCache.m */,
+				35C5F1DE2BAC741F002D88F9 /* EventPrivate.h */,
 			);
 			path = EventManger;
 			sourceTree = "<group>";
@@ -867,7 +869,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -899,7 +901,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -928,7 +930,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -961,7 +963,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -999,7 +1001,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1040,7 +1042,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1076,7 +1078,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1112,7 +1114,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1051;
+				CURRENT_PROJECT_VERSION = 1110;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (

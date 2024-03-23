@@ -10,8 +10,80 @@
 #import "CoreManager.h"
 #import "ConfigManager.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
+#import <objc/runtime.h>
 
 extern DDLogLevel ddLogLevel;
+
+@interface EventWrapper : NSObject
+
+@property (nonatomic, strong) Event *event;
+@property (nonatomic, copy) NSString *detailInfo;
+@property (nonatomic, copy) NSString *shortInfo;
+
+@end
+
+@implementation EventWrapper
+
+- (instancetype)initWithEvent:(Event *)event {
+    self = [super init];
+    if (self) {
+        _event = event;
+        _detailInfo = [self genJsonInfo:YES];
+        _shortInfo = [self genShortInfo];
+    }
+    return self;
+}
+
+- (NSDictionary *)handleDictionary {
+    NSMutableDictionary *baseProperties = [NSMutableDictionary dictionary];
+    unsigned int propertyCount;
+    objc_property_t *properties = class_copyPropertyList([Event class], &propertyCount);
+    for (int i = 0; i < propertyCount; i++) {
+        objc_property_t property = properties[i];
+        const char *propertyName = property_getName(property);
+        NSString *key = [NSString stringWithUTF8String:propertyName];
+        id value = [_event valueForKey:key];
+        if (value) {
+            [baseProperties setObject:value forKey:key];
+        } else {
+            continue;
+        }
+    }
+    free(properties);
+    return baseProperties;
+}
+
+- (NSString *)genJsonInfo:(BOOL)betterOutput {
+    NSDictionary *dictionary = [self handleDictionary];
+    NSError *error = nil;
+    NSData *eventJson = [NSJSONSerialization dataWithJSONObject:dictionary
+                                                        options:betterOutput? NSJSONWritingPrettyPrinted | NSJSONWritingWithoutEscapingSlashes: NSJSONWritingWithoutEscapingSlashes
+                                                          error:&error];
+    if (error) {
+        DDLogError(@"Error converting event object to JSON: %@", error.localizedDescription);
+        return @"";
+    }
+    else {
+        return [[NSString alloc] initWithData:eventJson encoding:NSUTF8StringEncoding];
+    }
+}
+
+- (NSString *)genShortInfo {
+    NSDictionary *dictionary = _event.EventInfo;
+    NSError *error = nil;
+    NSData *eventJson = [NSJSONSerialization dataWithJSONObject:dictionary
+                                                        options:NSJSONWritingWithoutEscapingSlashes
+                                                          error:&error];
+    if (error) {
+        DDLogError(@"Error converting event object to JSON: %@", error.localizedDescription);
+        return @"";
+    }
+    else {
+        return [[NSString alloc] initWithData:eventJson encoding:NSUTF8StringEncoding];
+    }
+}
+
+@end
 
 @interface EventTableViewController()<EventDataSourceDelagate>
 
@@ -20,8 +92,8 @@ extern DDLogLevel ddLogLevel;
 @implementation EventTableViewController {
     __weak IBOutlet NSTableView *eventTable;
     
-    NSMutableArray<Event *> *allEvents;
-    NSMutableArray<Event *> *showedEvents;
+    NSMutableArray<EventWrapper *> *allEvents;
+    NSMutableArray<EventWrapper *> *showedEvents;
     
     CoreManager *manager;
     NSDateFormatter *dateFormatter;
@@ -89,26 +161,27 @@ extern DDLogLevel ddLogLevel;
         return nil;
     }
     
-    Event *event = [showedEvents objectAtIndex:row];
+    EventWrapper *wrapper = [showedEvents objectAtIndex:row];
+    Event *event = wrapper.event;
     
     if (tableColumn == tableView.tableColumns[0]) {
-        NSNumber *eventTime = event.eventTime;
+        NSNumber *eventTime = event.EventTime;
         NSDate *textTime = [NSDate dateWithTimeIntervalSince1970:[eventTime longLongValue]];
         text = [dateFormatter stringFromDate:textTime];
     }
     else if (tableColumn == tableView.tableColumns[1]) {
-        text = event.eventType;
+        text = event.EventType;
     }
     else if (tableColumn == tableView.tableColumns[2]) {
-        NSNumber *pid = event.pid;
+        NSNumber *pid = [event.EventProcess objectForKey:@"Pid"];
         text = [NSString stringWithFormat:@"%d", [pid intValue]];
     }
     else if (tableColumn == tableView.tableColumns[3]) {
-        NSString *path = [event.processPath lastPathComponent];
+        NSString *path = [[event.EventProcess objectForKey:@"ProcessPath"] lastPathComponent];
         text = path;
     }
     else if (tableColumn == tableView.tableColumns[4]) {
-        text = [event shortInfo];
+        text = wrapper.shortInfo;
     }
     else {
         text = @"";
@@ -128,10 +201,10 @@ extern DDLogLevel ddLogLevel;
         return;
     }
 
-    Event *event = [showedEvents objectAtIndex:eventTable.selectedRow];
+    EventWrapper *wrapper = [showedEvents objectAtIndex:eventTable.selectedRow];
     
     NSDictionary *userInfo = @{
-        @"detailInfo": [event detailInfo]
+        @"detailInfo": wrapper.detailInfo
     };
     [[NSNotificationCenter defaultCenter] postNotificationName:kEventInfoSetKey object:self userInfo:userInfo];
 }
@@ -178,10 +251,10 @@ extern DDLogLevel ddLogLevel;
     EventCategory *category = [ConfigManager shared].currentCategory;
     [showedEvents removeAllObjects];
 
-    for (Event *event in allEvents) {
-        if (category.categoryDependence == nil || [category.categoryDependence containsObject:event.eventType]) {
-            if ([searchText length] == 0 || [[event detailInfo] containsString:searchText]) {
-                [showedEvents addObject:event];
+    for (EventWrapper *eventWrapper in allEvents) {
+        if (category.categoryDependence == nil || [category.categoryDependence containsObject:eventWrapper.event.EventType]) {
+            if ([searchText length] == 0 || [[eventWrapper detailInfo] containsString:searchText]) {
+                [showedEvents addObject:eventWrapper];
             }
         }
     }
@@ -230,20 +303,22 @@ extern DDLogLevel ddLogLevel;
 #pragma mark EventDataSourceDelagate protocol
 - (void)OnEventDataSourceAdd:(nonnull Event *)event {
     dispatch_async(dispatch_get_main_queue(), ^(){
-        [self->allEvents addObject:event];
+        EventWrapper *wrapper = [[EventWrapper alloc] initWithEvent:event];
+        
+        [self->allEvents addObject:wrapper];
 
-        NSString *eventType = event.eventType;
+        NSString *eventType = event.EventType;
         
         EventCategory *category = [ConfigManager shared].currentCategory;
         if (category.categoryDependence != nil && ![category.categoryDependence containsObject:eventType]) {
             return;
         }
         
-        if ([self->searchText length] != 0 && ![[event detailInfo] containsString:self->searchText]) {
+        if ([self->searchText length] != 0 && ![wrapper.detailInfo containsString:self->searchText]) {
             return;
         }
         
-        [self->showedEvents addObject:event];
+        [self->showedEvents addObject:wrapper];
     });
 }
 
