@@ -122,8 +122,4 @@ extern DDLogLevel ddLogLevel;
     });
 }
 
-- (void)handleProducerStatus:(XProducerStatus)status withStatusString:(NSString *)statusString {
-    // todo
-}
-
 @end

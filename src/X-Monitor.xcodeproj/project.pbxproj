@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		35077FC12977F3EC002F9587 /* KextController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35077FC02977F3EC002F9587 /* KextController.m */; };
 		35077FC42977F70F002F9587 /* HelperManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35077FC32977F70F002F9587 /* HelperManager.m */; };
 		35095E9C29BC9C7D00BD9914 /* ServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3585EBB32994872C002E70C6 /* ServiceManager.m */; };
 		3509E072297A3398001BF18A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3509E071297A3398001BF18A /* main.m */; };
@@ -52,6 +51,7 @@
 		DE54FA6429E1ABA000D40F15 /* MiscSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE54FA6329E1ABA000D40F15 /* MiscSettingViewController.m */; };
 		DE9A686029E160D20033F14B /* EventSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9A685F29E160D20033F14B /* EventSettingViewController.m */; };
 		DEB2CCE029EB8BBF0096EA15 /* EditCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB2CCDF29EB8BBF0096EA15 /* EditCategoryViewController.m */; };
+		DEB7A9F12BAEA24B0036E2C4 /* ShortInfoModel.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB7A9F02BAEA24B0036E2C4 /* ShortInfoModel.json */; };
 		DEBD991829F396690098A4F8 /* ESNotifyEventHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBD991729F396690098A4F8 /* ESNotifyEventHandler.m */; };
 		DEBD991D2A077A490098A4F8 /* libbsm.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DEBD991B2A077A400098A4F8 /* libbsm.tbd */; };
 		DEBD99202A1078B10098A4F8 /* EventDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBD991F2A1078B10098A4F8 /* EventDataSource.m */; };
@@ -175,7 +175,6 @@
 		35077FB92977E48D002F9587 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		35077FBA2977E4F3002F9587 /* SMJobBlessUtil.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = SMJobBlessUtil.py; sourceTree = "<group>"; };
 		35077FBB2977E4F3002F9587 /* Uninstall.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Uninstall.sh; sourceTree = "<group>"; };
-		35077FC02977F3EC002F9587 /* KextController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KextController.m; sourceTree = "<group>"; };
 		35077FC32977F70F002F9587 /* HelperManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelperManager.m; sourceTree = "<group>"; };
 		3509E05E29783053001BF18A /* HelperManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelperManager.h; sourceTree = "<group>"; };
 		3509E05F2978FF27001BF18A /* HelperConst.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelperConst.h; sourceTree = "<group>"; };
@@ -261,6 +260,7 @@
 		DEA9ED0429738E6F00745109 /* libEndpointSecurity.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libEndpointSecurity.tbd; path = usr/lib/libEndpointSecurity.tbd; sourceTree = SDKROOT; };
 		DEB2CCDE29EB8BBF0096EA15 /* EditCategoryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditCategoryViewController.h; sourceTree = "<group>"; };
 		DEB2CCDF29EB8BBF0096EA15 /* EditCategoryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditCategoryViewController.m; sourceTree = "<group>"; };
+		DEB7A9F02BAEA24B0036E2C4 /* ShortInfoModel.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ShortInfoModel.json; sourceTree = "<group>"; };
 		DEBD991729F396690098A4F8 /* ESNotifyEventHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ESNotifyEventHandler.m; sourceTree = "<group>"; };
 		DEBD991929F396790098A4F8 /* ESNotifyEventHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESNotifyEventHandler.h; sourceTree = "<group>"; };
 		DEBD991A2A0776210098A4F8 /* ESDefination.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESDefination.h; sourceTree = "<group>"; };
@@ -424,6 +424,7 @@
 				3551D20F29739DB10088CE7F /* AppDelegate.m */,
 				3551D20E29739DB10088CE7F /* AppDelegate.h */,
 				3519F2F329DFBBEC00DD76F0 /* README.md */,
+				DEB7A9F02BAEA24B0036E2C4 /* ShortInfoModel.json */,
 			);
 			path = "X-Monitor";
 			sourceTree = "<group>";
@@ -539,7 +540,6 @@
 				35FE0C452993876300FDAB65 /* CoreManager.m */,
 				3526659A2973C61200EE814E /* ExtensionController.h */,
 				352665952973B86600EE814E /* SextController.m */,
-				35077FC02977F3EC002F9587 /* KextController.m */,
 				35077FC32977F70F002F9587 /* HelperManager.m */,
 				3509E05E29783053001BF18A /* HelperManager.h */,
 				DEBD991E2A1078B10098A4F8 /* EventDataSource.h */,
@@ -729,6 +729,7 @@
 				350A0F84297A771C003C10E5 /* X-Helper.app in Resources */,
 				3551D21529739DB10088CE7F /* Assets.xcassets in Resources */,
 				3551D21829739DB10088CE7F /* Main.storyboard in Resources */,
+				DEB7A9F12BAEA24B0036E2C4 /* ShortInfoModel.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -798,7 +799,6 @@
 				3551D21029739DB10088CE7F /* AppDelegate.m in Sources */,
 				DE54FA6429E1ABA000D40F15 /* MiscSettingViewController.m in Sources */,
 				DEC5D5C129EA43D100EAB6D2 /* EventInfoViewController.m in Sources */,
-				35077FC12977F3EC002F9587 /* KextController.m in Sources */,
 				DE54FA6129E193E600D40F15 /* EventSubscibleTableCell.m in Sources */,
 				3519F2F129DFB5A700DD76F0 /* SplitViewController.m in Sources */,
 				350F1D54298E55B600F5D796 /* MainWindowController.m in Sources */,
@@ -869,7 +869,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -901,7 +901,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -930,7 +930,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -963,7 +963,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1001,7 +1001,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1042,7 +1042,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1078,7 +1078,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1114,7 +1114,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1110;
+				CURRENT_PROJECT_VERSION = 1160;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (

@@ -26,14 +26,12 @@ extern DDLogLevel ddLogLevel;
 @synthesize producerStatusString;
 @synthesize supportedEventTypes;
 @synthesize delegate;
-@synthesize errorDelegate;
 
-- (instancetype)initProducerWithDelegate:(id<ProducerDelegate>)producerDelegate withErrorManager:(id<ProducerErrorDelegate>)producerErrorDelegate {
+- (instancetype)initProducerWithDelegate:(id<ProducerDelegate>)producerDelegate {
 
     self = [super init];
     if (self) {
         delegate = producerDelegate;
-        errorDelegate = producerErrorDelegate;
         producerName = kESProducerName;
         producerStatus = X_PRODUCER_STOPPED;
         producerStatusString = ProducerStatus2String[producerStatus];

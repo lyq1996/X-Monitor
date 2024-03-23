@@ -12,8 +12,6 @@
 
 @protocol HelperProtocol <NSObject>
 
-- (void)installKernelExtension:(NSURL *)kextURL kextID:(NSString *)identifier reply:(void (^)(int))block;
-
 @end
 
 // other ...

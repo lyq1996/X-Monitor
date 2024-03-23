@@ -67,11 +67,6 @@ static const NSString * _Nonnull WORK_RESULT_STRING[] = {
 
 @end
 
-@interface KextController : NSObject<ExtensionController>
-
-@end
-
-API_AVAILABLE(macos(10.15))
 @interface SextController : NSObject<ExtensionController>
 
 @end

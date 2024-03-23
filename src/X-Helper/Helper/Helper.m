@@ -25,8 +25,6 @@ extern DDLogLevel ddLogLevel;
     newConnection.exportedObject = self;
     
     newConnection.remoteObjectInterface = [NSXPCInterface interfaceWithProtocol:@protocol(AppProtocol)];
-    
-    // we don't need save connection, beacuse we don't need call to app exported interface
 
     newConnection.invalidationHandler = ^(){
         DDLogInfo(@"the connection is invalid");
@@ -52,56 +50,6 @@ extern DDLogLevel ddLogLevel;
         listener.delegate = self;
     }
     return self;
-}
-
-- (void)installKernelExtension:(NSURL *)kextURL kextID:(NSString *)identifier reply:(void (^)(int))block {
-
-    DDLogInfo(@"trying to install kernel extension: %@", kextURL);
-
-    // TODO check if the kext was already install
-    NSString *dest = [NSString stringWithFormat:@"/tmp/%@", identifier];
-
-    NSFileManager *manager = [NSFileManager defaultManager];
-    
-    NSError *error;
-    if ([manager fileExistsAtPath:dest] && ![manager removeItemAtPath:dest error:&error]) {
-        DDLogError(@"error remove exist kext %@", [error localizedDescription]);
-        // TODO error code
-        block(-1);
-        return;
-    }
-    
-    if (![manager copyItemAtURL:kextURL toURL:[NSURL fileURLWithPath:dest] error:&error]) {
-        DDLogError(@"error copy kext to %@, %@", dest, [error localizedDescription]);
-        // TODO error code
-        block(-1);
-        return;
-    }
-    
-    NSDictionary *attrib = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @"root",NSFileOwnerAccountName,
-                              @"wheel",NSFileGroupOwnerAccountName,
-                              nil];
-
-    if (![manager setAttributes:attrib ofItemAtPath:dest error:&error]) {
-        DDLogError(@"error settings permission %@", [error localizedDescription]);
-        block(-1);
-        return;;
-    }
-
-    NSDirectoryEnumerator *dirEnum = [manager enumeratorAtPath:dest];
-    NSString *file;
-    while (file = [dirEnum nextObject]) {
-        if (![manager setAttributes:attrib ofItemAtPath:[dest stringByAppendingPathComponent:file] error:&error]) {
-            DDLogError(@"error settings permission %@", [error localizedDescription]);
-            block(-1);
-            return;;
-        }
-    }
-    
-    OSReturn result = KextManagerLoadKextWithURL((__bridge CFURLRef)[NSURL URLWithString:dest], NULL);
-    
-    block(result);
 }
 
 @end

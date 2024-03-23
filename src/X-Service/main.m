@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     ServiceManager *service = [[ServiceManager alloc] initWithEventManager:manager];
     
     // init producer
-    ESProducer *esProducer = [[ESProducer alloc] initProducerWithDelegate:manager withErrorManager:service];
+    ESProducer *esProducer = [[ESProducer alloc] initProducerWithDelegate:manager];
     
     // add producer to event manager
     [manager attachProducer:esProducer];

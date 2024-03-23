@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ServiceManager : NSObject<ProducerErrorDelegate, ServiceProtocol, NSXPCListenerDelegate>
+@interface ServiceManager : NSObject<ServiceProtocol, NSXPCListenerDelegate>
 
 - (instancetype)initWithEventManager:(EventManager *)manager;
 - (void)start;

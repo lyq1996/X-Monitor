@@ -59,20 +59,10 @@
     [textView setString:[self addStrToNextLine:[textView string] next:@" ➡️ Initializing controllers"]];
     controllers = [NSMutableArray array];
     
-    
-    if (@available(macOS 10.15, *)) {
-        if (activation) {
-            [controllers addObject:[[SextController alloc] initWithArgs:LOAD_EXTENSION]];
-        } else {
-            [controllers addObject:[[SextController alloc] initWithArgs:UNLOAD_EXTENSION]];
-        }
-    }
-    else {
-        if (activation) {
-            [controllers addObject:[[KextController alloc] initWithArgs:LOAD_EXTENSION]];
-        } else {
-            [controllers addObject:[[KextController alloc] initWithArgs:UNLOAD_EXTENSION]];
-        }
+    if (activation) {
+        [controllers addObject:[[SextController alloc] initWithArgs:LOAD_EXTENSION]];
+    } else {
+        [controllers addObject:[[SextController alloc] initWithArgs:UNLOAD_EXTENSION]];
     }
 }
 

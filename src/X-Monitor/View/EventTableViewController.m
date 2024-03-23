@@ -201,6 +201,11 @@ extern DDLogLevel ddLogLevel;
     NSTimer *timer = [[NSTimer alloc] initWithFireDate:fireTime interval:1.0 target:self selector:@selector(addTableRows) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
     [timer fire];
+    
+//    NSDate *fireTime2 = [NSDate dateWithTimeIntervalSinceNow:1.0];
+//    NSTimer *timer2 = [[NSTimer alloc] initWithFireDate:fireTime2 interval:5.0 target:self selector:@selector(clearEvent:) userInfo:nil repeats:YES];
+//    [[NSRunLoop currentRunLoop] addTimer:timer2 forMode:NSDefaultRunLoopMode];
+//    [timer2 fire];
 }
 
 - (void)switchAutoScroll:(id)sender {

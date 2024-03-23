@@ -21,21 +21,9 @@ static NSString * _Nonnull ProducerStatus2String[] = {
     [X_PRODUCER_STARTED] = @"X-Procuder started",
 };
 
-typedef enum : NSUInteger {
-    X_PRODUCER_RESERVE, // not use for now
-} XProducerError;
-
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ProducerErrorDelegate <NSObject>
-
-- (void)handleProducerError:(XProducerError)error;
-
-@end
-
 @protocol ProducerDelegate <NSObject>
-
-- (void)handleProducerStatus:(XProducerStatus)status withStatusString:(NSString *)statusString;
 
 - (void)handleEvent:(Event *)event;
 
@@ -52,10 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) NSString *producerStatusString;
 
 @property (weak, readonly) id<ProducerDelegate> delegate;
-@property (weak, readonly) id<ProducerErrorDelegate> errorDelegate;
 
-
-- (instancetype)initProducerWithDelegate:(id<ProducerDelegate>)producerDelegate withErrorManager:(id<ProducerErrorDelegate>)producerErrorDelegate;
+- (instancetype)initProducerWithDelegate:(id<ProducerDelegate>)producerDelegate;
 - (void)subscribleEventType:(NSArray<NSString *> *)eventTypes;
 
 @end

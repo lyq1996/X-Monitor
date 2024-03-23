@@ -195,12 +195,6 @@ extern DDLogLevel ddLogLevel;
             completion(NO, nil);
             break;
     }
-    
-}
-
-#pragma mark Event producer status handle method
-- (void)handleProducerError:(XProducerError)error {
-    // notify all client the producer status
 }
 
 @end

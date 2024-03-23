@@ -39,7 +39,6 @@ extern DDLogLevel ddLogLevel;
  * @brief system extension request user approval callback
  */
 - (void)requestNeedsUserApproval:(OSSystemExtensionRequest *)request {
-    // [TODO] do we need this callback to notice user to allow sext load?
     DDLogInfo(@"Request to control %@ awaiting approval.", request.identifier);
 }
 
