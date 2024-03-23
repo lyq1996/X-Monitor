@@ -148,9 +148,13 @@ extern DDLogLevel ddLogLevel;
 
     NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
 
-    NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.dir->path]];
-    [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.filename]]];
-    [eventInfo setValue:destination forKey:@"TargetFilePath"];
+    if (msg->event.create.destination_type == ES_DESTINATION_TYPE_EXISTING_FILE) {
+        [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.create.destination.existing_file->path]] forKey:@"TargetFilePath"];
+    } else {
+        NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.dir->path]];
+        [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.create.destination.new_path.filename]]];
+        [eventInfo setValue:destination forKey:@"TargetFilePath"];
+    }
     
     event.EventInfo = eventInfo;
     return event;
@@ -386,9 +390,13 @@ extern DDLogLevel ddLogLevel;
     FILL_FILE_INFO(sourceFile, msg->event.rename.source)
     [eventInfo setValue:sourceFile forKey:@"SourceFile"];
     
-    NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.rename.destination.new_path.dir->path]];
-    [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.rename.destination.new_path.filename]]];
-    [eventInfo setValue:destination forKey:@"TargetFilePath"];
+    if (msg->event.rename.destination_type == ES_DESTINATION_TYPE_EXISTING_FILE) {
+        [eventInfo setValue:[NSString stringWithUTF8String:[self getString:msg->event.rename.destination.existing_file->path]] forKey:@"TargetFilePath"];
+    } else {
+        NSMutableString *destination = [NSMutableString stringWithUTF8String:[self getString:msg->event.rename.destination.new_path.dir->path]];
+        [destination appendString:[NSString stringWithUTF8String:[self getString:msg->event.rename.destination.new_path.filename]]];
+        [eventInfo setValue:destination forKey:@"TargetFilePath"];
+    }
     
     event.EventInfo = eventInfo;
     return event;
