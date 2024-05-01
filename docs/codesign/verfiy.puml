@@ -1,0 +1,22 @@
+
+@startuml
+
+activate XMonitor
+
+XMonitor -> Daemon: XPC
+note right: X-Service or X-Helper
+
+activate Daemon
+Daemon -> XMonitor: Read XMonitor binary
+Daemon -> Daemon: Calculate the TEXT segment hash
+Daemon -> XMonitor: Read _DATA_CONST, _custom_sign data, decrypt using public key
+Daemon -> Daemon: Compare decrypted hash with calculated hash
+
+alt hash is equal
+Daemon -> XMonitor: Accept connection
+else hash is not equal
+Daemon -> XMonitor: Decline connection
+end
+
+@enduml
+

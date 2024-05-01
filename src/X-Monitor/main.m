@@ -6,6 +6,7 @@
 //
 
 #import "ConfigManager.h"
+#import "Signature.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
 #import <Cocoa/Cocoa.h>
 

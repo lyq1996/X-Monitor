@@ -1,0 +1,33 @@
+
+@startuml
+
+Xcode -> PreActions: Build X-Monitor trigger
+
+
+PreActions -> PreActions: Generate AES256 certificates
+
+
+Xcode -> RunScripts: Build X-Service trigger(Before compile source)
+
+RunScripts -> RunScripts: Read public key
+RunScripts -> RunScripts: Replace key data in X-Service source file
+RunScripts -> Xcode: Build continue
+
+Xcode -> RunScripts: Build X-Helper trigger(Before compile source)
+RunScripts -> RunScripts: Read public key
+RunScripts -> RunScripts: Replace key data in X-Helper source file
+RunScripts -> Xcode: Build continue
+
+Xcode -> RunScripts: Build X-Monitor APP trigger(After compile source)
+RunScripts -> RunScripts: Calcuate X-Monitor TEXT segment hash
+RunScripts -> RunScripts: Remove X-Monitor ad-hoc codesign
+RunScripts -> RunScripts: Crypto hash using private key and place crypto result into _DATA_CONST, _custom_sign
+RunScripts -> RunScripts: Resign ad-hoc
+
+Xcode -> PostActions: Build Finish
+
+PostActions -> PostActions: delete AES256 certificates
+
+
+@enduml
+

@@ -17,16 +17,6 @@
 
 ![GUI](docs/X-Monitor-GUI.png)
 
-# Deny process And Low version macOS
-If you need:
-1. Deny new process execve.
-2. 10.12 ~ 10.14 macOS support.
-
-You can use [NuwaStone](https://github.com/ConradSun/NuwaStone), this project supports deny new process that has no signature.
-
-> NuwaStone may merge with X-Monitor in the future and move to [Macintosh-Mystery](https://github.com/Macintosh-Mystery) organization.
-
-
 # Feature
 Current support:
 
@@ -45,28 +35,27 @@ It will support in the future:
 X-Monitor can be built from source code or installed from pre-compiled binaries.
 
 ## Build
-Required Xcode Version 14.3.
+### Dependences
+1. openssl 3.2.1+
+2. Xcode 15.3
+
+### Prebuild
+1. There is a prebuild binary in the release page.
 
 # Usage
 ## System Requirements
 X-Monitor is designed to support macOS 10.15 and above.
 
-During the project creation, consideration was given to using Kernel Extensions (KEXT) to support systems from 10.12 to 10.14. However:
-
-1. KEXT is deprecated.
-2. KEXT's event support is far less than SEXT (from Endpoint Security).
-
-Therefore, after careful consideration, the development plan for KEXT has been indefinitely postponed.
-
 ## Notes
 Due to the lack of corresponding Entitlements for X-Monitor developers, please disable SIP.
 
 ## Start Event Monitor
-1. Click the "start" button to begin monitoring events. Subscription settings can be configured through `X-Monitor` -> `Settings` in the menu.
+1. `X-Monitor` -> `Settings` in the menu to subscribes event.
+2. `Start` to start event monitoring.
 2. Clicking on a specific row will display detailed information about the event.
 
 ## Uninstallation
-Simply move X-Monitor to the trash bin.
+Simply move X-Monitor to the trash bin, and the corresponding system extension will be deleted.
 
 # Support
 If you encounter any issues while using X-Monitor, please feel free to submit an issue.
@@ -76,3 +65,21 @@ If you encounter any issues while using X-Monitor, please feel free to submit an
 2. Documentation writing.
 3. Implement system extension XPC peer signing verification.
 4. ~~Optimize performance of NSTableView used for displaying events.~~(Added)
+
+# Others
+## Old MacOS support
+During the project creation, consideration was given to using Kernel Extensions (KEXT) to support systems from 10.12 to 10.14. However:
+
+1. KEXT is deprecated.
+2. KEXT's event support is far less than SEXT (from Endpoint Security).
+
+Therefore, after careful consideration, the development plan for KEXT has been indefinitely postponed.
+
+## Deny process
+If you need:
+1. Deny new process execve.
+2. 10.12 ~ 10.14 macOS support.
+
+You can use [NuwaStone](https://github.com/ConradSun/NuwaStone), this project supports deny new process that has no signature.
+
+> NuwaStone may merge with X-Monitor in the future and move to [Macintosh-Mystery](https://github.com/Macintosh-Mystery) organization.

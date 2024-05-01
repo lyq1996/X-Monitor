@@ -47,6 +47,7 @@
 		DE111EC329DD7EB900F29ABF /* CocoaLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DE111EC529DD7ED600F29ABF /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; };
 		DE111EC629DD7ED600F29ABF /* CocoaLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DE4ED2722BAF13AB00007868 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4ED2712BAF13AB00007868 /* main.m */; };
 		DE54FA6129E193E600D40F15 /* EventSubscibleTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DE54FA6029E193E600D40F15 /* EventSubscibleTableCell.m */; };
 		DE54FA6429E1ABA000D40F15 /* MiscSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE54FA6329E1ABA000D40F15 /* MiscSettingViewController.m */; };
 		DE9A686029E160D20033F14B /* EventSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9A685F29E160D20033F14B /* EventSettingViewController.m */; };
@@ -169,6 +170,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DE4ED26D2BAF13AB00007868 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -251,6 +261,8 @@
 		35E84BCC2A0E236200E4921A /* Event.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		35FE0C442993876300FDAB65 /* CoreManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreManager.h; sourceTree = "<group>"; };
 		35FE0C452993876300FDAB65 /* CoreManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreManager.m; sourceTree = "<group>"; };
+		DE4ED26F2BAF13AB00007868 /* X-SignatureTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "X-SignatureTool"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE4ED2712BAF13AB00007868 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DE54FA5F29E193E600D40F15 /* EventSubscibleTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventSubscibleTableCell.h; sourceTree = "<group>"; };
 		DE54FA6029E193E600D40F15 /* EventSubscibleTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventSubscibleTableCell.m; sourceTree = "<group>"; };
 		DE54FA6229E1ABA000D40F15 /* MiscSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MiscSettingViewController.h; sourceTree = "<group>"; };
@@ -305,6 +317,13 @@
 				DEBD991D2A077A490098A4F8 /* libbsm.tbd in Frameworks */,
 				3529879429D29C7700434276 /* CocoaLumberjack.framework in Frameworks */,
 				3551D22429739E730088CE7F /* libEndpointSecurity.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DE4ED26C2BAF13AB00007868 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,6 +567,14 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		DE4ED2702BAF13AB00007868 /* X-SignatureTool */ = {
+			isa = PBXGroup;
+			children = (
+				DE4ED2712BAF13AB00007868 /* main.m */,
+			);
+			path = "X-SignatureTool";
+			sourceTree = "<group>";
+		};
 		DEA9ECDF29738E5500745109 = {
 			isa = PBXGroup;
 			children = (
@@ -558,6 +585,7 @@
 				3551D20D29739DB10088CE7F /* X-Monitor */,
 				3551D22529739E730088CE7F /* X-Service */,
 				3509E065297A3398001BF18A /* X-Helper */,
+				DE4ED2702BAF13AB00007868 /* X-SignatureTool */,
 				DEA9ECE929738E5500745109 /* Products */,
 				DEA9ED0329738E6F00745109 /* Frameworks */,
 			);
@@ -570,6 +598,7 @@
 				3551D22329739E730088CE7F /* com.lyq1996.X-Service.systemextension */,
 				3511CC6B2977D64100A14AE5 /* com.lyq1996.X-Monitor.X-Helper */,
 				3509E064297A3398001BF18A /* X-Helper.app */,
+				DE4ED26F2BAF13AB00007868 /* X-SignatureTool */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -636,6 +665,7 @@
 				3509E089297A73E3001BF18A /* CopyFiles */,
 				DE111EC429DD7EB900F29ABF /* Embed Frameworks */,
 				3519F2F729DFC31600DD76F0 /* Embed System Extensions */,
+				DE4ED2612BAF0E9600007868 /* Embed Custom Signature */,
 			);
 			buildRules = (
 			);
@@ -666,6 +696,23 @@
 			productReference = 3551D22329739E730088CE7F /* com.lyq1996.X-Service.systemextension */;
 			productType = "com.apple.product-type.system-extension";
 		};
+		DE4ED26E2BAF13AB00007868 /* X-SignatureTool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE4ED2732BAF13AB00007868 /* Build configuration list for PBXNativeTarget "X-SignatureTool" */;
+			buildPhases = (
+				DE4ED26B2BAF13AB00007868 /* Sources */,
+				DE4ED26C2BAF13AB00007868 /* Frameworks */,
+				DE4ED26D2BAF13AB00007868 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "X-SignatureTool";
+			productName = "X-SignatureTool";
+			productReference = DE4ED26F2BAF13AB00007868 /* X-SignatureTool */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -689,6 +736,9 @@
 					3551D22229739E730088CE7F = {
 						CreatedOnToolsVersion = 14.2;
 					};
+					DE4ED26E2BAF13AB00007868 = {
+						CreatedOnToolsVersion = 15.3;
+					};
 				};
 			};
 			buildConfigurationList = DEA9ECE329738E5500745109 /* Build configuration list for PBXProject "X-Monitor" */;
@@ -708,6 +758,7 @@
 				3509E063297A3398001BF18A /* X-Helper */,
 				3511CC6A2977D64100A14AE5 /* Helper */,
 				3551D22229739E730088CE7F /* X-Service */,
+				DE4ED26E2BAF13AB00007868 /* X-SignatureTool */,
 			);
 		};
 /* End PBXProject section */
@@ -760,6 +811,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Create _info.plist then fill variable into it\ncp X-Helper/Helper/info.plist X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(PRODUCT_BUNDLE_IDENTIFIER)/$PRODUCT_BUNDLE_IDENTIFIER/g\" X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(PRODUCT_NAME)/$PRODUCT_NAME/g\" X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(MARKETING_VERSION)/$MARKETING_VERSION/g\" X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(CURRENT_PROJECT_VERSION)/$CURRENT_PROJECT_VERSION/g\" X-Helper/Helper/_info.plist\n\ncp X-Helper/Helper/com.lyq1996.X-Monitor.Helper.plist X-Helper/Helper/_com.lyq1996.X-Monitor.Helper.plist\nsed -i '' \"s/\\$(MARKETING_VERSION)/$MARKETING_VERSION/g\" X-Helper/Helper/_com.lyq1996.X-Monitor.Helper.plist\nsed -i '' \"s/\\$(CURRENT_PROJECT_VERSION)/$CURRENT_PROJECT_VERSION/g\" X-Helper/Helper/_com.lyq1996.X-Monitor.Helper.plist\n";
+		};
+		DE4ED2612BAF0E9600007868 /* Embed Custom Signature */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Custom Signature";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -825,6 +894,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DE4ED26B2BAF13AB00007868 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE4ED2722BAF13AB00007868 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -867,9 +944,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -899,9 +977,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -930,7 +1009,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -963,7 +1042,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1001,7 +1080,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1042,7 +1121,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1078,7 +1157,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1114,7 +1193,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1172;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1140,6 +1219,34 @@
 				PRODUCT_NAME = "$(inherited)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+		DE4ED2742BAF13AB00007868 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DE4ED2752BAF13AB00007868 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -1291,6 +1398,15 @@
 			buildConfigurations = (
 				3551D22E29739E730088CE7F /* Debug */,
 				3551D22F29739E730088CE7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DE4ED2732BAF13AB00007868 /* Build configuration list for PBXNativeTarget "X-SignatureTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DE4ED2742BAF13AB00007868 /* Debug */,
+				DE4ED2752BAF13AB00007868 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -14,15 +14,6 @@
 
 ![GUI](docs/X-Monitor-GUI.png)
 
-# 阻断进程与低版本macOS支持
-如果你需要：
-1. 阻断功能；
-2. 10.12 ~ 10.14系统的事件监控。
-
-可以使用[NuwaStone](https://github.com/ConradSun/NuwaStone)，该项目支持`阻断`未签名的二进制`执行`。
-
-> NuwaStone未来可能与X-Monitor合并，并移动到[Macintosh-Mystery](https://github.com/Macintosh-Mystery)组织。
-
 # 功能
 它当前支持：
 1. 来自Endpoint Security框架的`notify_exec`,`notify_open`,`notify_fork`,`notify_close`,`notify_create`,`notify_exchangedata`,`notify_exit`,`notify_get_task`,`notify_kextload`,`notify_kextunload`,`notify_link`,`notify_mmap`,`notify_mprotect`,`notify_mount`,`notify_unmount`,`notify_iokit_open`,`notify_rename`,`notify_setattrlist`,`notify_setextattr`,`notify_setflags`,`notify_setmode`,`notify_setowner`,`notify_signal`,`notify_unlink`,`notify_write`,`notify_file_provider_materialize`,`notify_file_provider_update`,`notify_readlink`,`notify_truncate`,`notify_lookup`,`notify_chdir`,`notify_getattrlist`,`notify_stat`,`notify_access`,`notify_chroot`,`notify_utimes`,`notify_clone`,`notify_fcntl`,`notify_getextattr`,`notify_listextattr`,`notify_readdir`,`notify_deleteextattr`,`notify_fsgetpath`,`notify_dup`,`notify_settime`,`notify_uipc_bind`,`notify_uipc_connect`,`notify_setacl`,`notify_pty_grant`,`notify_pty_close`,`notify_proc_check`,`notify_searchfs`,`notify_proc_suspend_resume`,`notify_cs_invalidated`事件。
@@ -39,28 +30,28 @@
 可以从源码编译，也可以安装预编译的二进制。
 
 ## 编译
-需要Xcode Version 14.3
+### 依赖
+1. openssl 3.2.1 以上（推荐通过brew安装）
+2. Xcode 15.3 以上
+
+## 预编译
+1. Relase上传了一个预编译的X-Monitor，解压到Applications目录即可
 
 # 使用
 ## 系统要求
 X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 
-在创建工程时曾考虑过使用内核拓展（KEXT）支持`10.12 ~ 10.14`的系统，但：
-1. KEXT是过时的；
-2. KEXT支持的事件远比不上SEXT（来自`Endpoint Security`）；
-
-因此，经过权衡，KEXT的开发计划无限期搁置。
-
 ## 注意事项
 由于X-Monitor的开发人员没有相应的`Entitlements`，请关闭SIP使用。
 
-## 启动
+## 使用方法
 
-1. 点击界面`start`，即可开始监控事件，订阅事件可通过左上角`X-Monitor`->`Settings`进行设置。
-2. 点击具体行，可显示事件详细信息。
+1. 左上角`X-Monitor`->`Settings`设置事件订阅；
+2. 点击界面`start`，即可开始监控事件；
+3. 点击具体行，可显示事件详细信息。
 
 ## 卸载
-只需要将其移除到废纸篓。
+只需要将其移除到废纸篓，托管的系统拓展会一起被删除。
 
 # 支持
 如果您在使用X-Monitor时遇到任何问题，欢迎提出issue。
@@ -70,3 +61,21 @@ X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 2. 文档编写；
 3. 系统拓展XPC对端签名校验（自实现）；
 4. ~~优化用于显示事件的NSTableView的性能。~~(已完成)
+
+# 其它
+
+## 低版本支持
+在创建工程时曾考虑过使用内核拓展（KEXT）支持`10.12 ~ 10.14`的系统，但：
+1. KEXT是过时的；
+2. KEXT支持的事件远比不上SEXT（来自`Endpoint Security`）；
+
+因此，经过权衡，KEXT的开发计划无限期搁置。
+
+## 阻断功能
+如果你需要：
+1. 阻断功能；
+2. 10.12 ~ 10.14系统的事件监控。
+
+可以使用[NuwaStone](https://github.com/ConradSun/NuwaStone)，该项目支持`阻断`未签名的二进制`执行`。
+
+> NuwaStone未来可能与X-Monitor合并，并移动到[Macintosh-Mystery](https://github.com/Macintosh-Mystery)组织。
