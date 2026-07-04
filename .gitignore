@@ -4,3 +4,4 @@ xcuserdata/
 _info.plist
 _com.lyq1996.X-Monitor.Helper.plist
 _com.lyq1996.X-Service.plist
+src/utils/embedded_public_key.h

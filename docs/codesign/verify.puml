@@ -1,0 +1,25 @@
+
+@startuml
+
+participant XMonitor as "X-Monitor"
+participant Daemon
+
+activate XMonitor
+
+XMonitor -> Daemon: XPC connection request
+note right: X-Service or X-Helper
+
+activate Daemon
+Daemon -> Daemon: Get XMonitor binary path from pid
+Daemon -> Daemon: Read XMonitor Mach-O file
+Daemon -> Daemon: Calculate __TEXT sections SHA256 hash
+Daemon -> Daemon: Read __X_CUSTOM,__SIGNATURE section data
+Daemon -> Daemon: Verify signature using embedded RSA public key
+
+alt signature is valid
+Daemon -> XMonitor: Accept connection
+else signature is invalid
+Daemon -> XMonitor: Decline connection
+end
+
+@enduml

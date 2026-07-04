@@ -8,8 +8,8 @@
 <p align="center">
     <a href="https://github.com/lyq1996/X-Monitor/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green" alt="LICENSE"></a>
     <img alt="Language" src="https://img.shields.io/badge/Language-Objective--C-blue.svg" />
-    <a href="https://github.com/lyq1996/X-Monitor/README_ZH_CN.md"><img src="https://img.shields.io/badge/lang-简体中文-red.svg" alt="简体中文"></a>
-    <a href="https://github.com/lyq1996/X-Monitor/README.md"><img src="https://img.shields.io/badge/lang-English-red.svg" alt="English"></a>
+    <a href="https://github.com/lyq1996/X-Monitor/blob/main//README_ZH_CN.md"><img src="https://img.shields.io/badge/lang-简体中文-red.svg" alt="简体中文"></a>
+    <a href="https://github.com/lyq1996/X-Monitor/blob/main//README.md"><img src="https://img.shields.io/badge/lang-English-red.svg" alt="English"></a>
 </p>
 
 ![GUI](docs/X-Monitor-GUI.png)
@@ -30,40 +30,35 @@
 # 安装
 可以从源码编译，也可以从release安装预编译的二进制。
 
-## 从源码编译
-需要Xcode 14.3及以上版本。
+## 编译
+### 依赖
+1. Xcode 26 以上
 
-### Xcode 14.x
-配置你自己的签名身份后直接编译即可。
-
-### Xcode 26 (Xcode 16+)
+### 关于Xcode 26
 Xcode 26 对带有 Entitlements 的 Ad-Hoc 签名增加了限制，会要求提供 Provisioning Profile。本项目通过以下方式绕过：
 1. 在 X-Monitor 和 X-Service 的 Build Settings 中设置 `CODE_SIGNING_ALLOWED = NO`，禁止 Xcode 自动签名。
 2. 添加了 Run Script Build Phase "Resign with Entitlements"，在编译完成后使用 `codesign --force --deep --sign - --entitlements` 对 App 和 System Extension 进行 Ad-Hoc 重签名并注入 Entitlements。
 
 因此，使用 Xcode 26 时直接编译即可，无需额外配置。
 
+### 自定义签名校验
+由于 Ad-Hoc 签名无法通过 Apple 的代码签名体系验证 XPC 对端身份，X-Monitor 实现了一个简单的自定义 RSA 签名校验机制：构建时，Scheme PreActions 生成 RSA-2048 密钥对，X-Service 和 X-Helper 的 Run Script 将公钥注入为 C 头文件（`embedded_public_key.h`），编译完成后 X-SignatureTool 对 X-Monitor 二进制计算 `__TEXT` 各 section 的 SHA256 哈希（排除 `__X_CUSTOM,__SIGNATURE` section），用私钥签名后写入 Mach-O 的 `__X_CUSTOM,__SIGNATURE` section，最后重新 Ad-Hoc 签名；构建完成后密钥对被删除。运行时，X-Service 和 X-Helper 在接受 XPC 连接前，通过 `SignatureVerifier` 读取对端二进制，以相同方式计算哈希并用嵌入的公钥验证签名，确保连接来自构建时签名的 X-Monitor 二进制，防止恶意进程伪造 XPC 连接。
 
 ## 从release安装
-## 系统要求
+### 系统要求
 X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 
-在创建工程时曾考虑过使用内核拓展（KEXT）支持`10.12 ~ 10.14`的系统，但：
-1. KEXT是过时的；
-2. KEXT支持的事件远比不上SEXT（来自`Endpoint Security`）；
-
-因此，经过权衡，KEXT的开发计划无限期搁置。
-
-## 注意事项
+### 注意事项
 1. 由于X-Monitor的开发人员没有相应的`Entitlements`，请关闭SIP使用。
 2. 可能会弹出`X-Monitor was not opened because it contains malware. This action did not harm your Mac.`，请在命令行输入：`xattr -cr /path/to/X-Monitor.app`
 
-## 启动
+### 使用方法
 
-1. 点击界面`start`，即可开始监控事件，订阅事件可通过左上角`X-Monitor`->`Settings`进行设置。
-2. 点击具体行，可显示事件详细信息。
+1. 左上角`X-Monitor`->`Settings`设置事件订阅；
+2. 点击界面`start`，即可开始监控事件；
+3. 点击具体行，可显示事件详细信息。
 
-## 卸载
+### 卸载
 无任何本地文件存留，因此只需要将其移除到废纸篓，其中的系统拓展会自动移除。
 
 # 支持
@@ -72,5 +67,6 @@ X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 # 其它待做事项
 1. 单元测试；
 2. 文档编写；
-3. 系统拓展XPC对端签名校验（自实现）；
+3. ~~系统拓展XPC对端签名校验（自实现）；~~(已完成)
 4. ~~优化用于显示事件的NSTableView的性能。~~(已完成)
+

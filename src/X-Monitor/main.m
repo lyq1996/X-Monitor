@@ -13,7 +13,6 @@ extern DDLogLevel ddLogLevel;
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // Setup code that might create autoreleased objects goes here.
         DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
         [DDLog addLogger:fileLogger];
         DDOSLogger *logger = [[DDOSLogger alloc] init];

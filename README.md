@@ -10,8 +10,8 @@
 <p align="center">
     <a href="https://github.com/lyq1996/X-Monitor/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green" alt="LICENSE"></a>
     <img alt="Language" src="https://img.shields.io/badge/Language-Objective--C-blue.svg" />
-    <a href="https://github.com/lyq1996/X-Monitor/README_ZH_CN.md"><img src="https://img.shields.io/badge/lang-简体中文-red.svg" alt="简体中文"></a>
-    <a href="https://github.com/lyq1996/X-Monitor/README.md"><img src="https://img.shields.io/badge/lang-English-red.svg" alt="English"></a>
+    <a href="https://github.com/lyq1996/X-Monitor/blob/main//README_ZH_CN.md"><img src="https://img.shields.io/badge/lang-简体中文-red.svg" alt="简体中文"></a>
+    <a href="https://github.com/lyq1996/X-Monitor/blob/main//README.md"><img src="https://img.shields.io/badge/lang-English-red.svg" alt="English"></a>
 </p>
 
 ![GUI](docs/X-Monitor-GUI.png)
@@ -33,21 +33,21 @@ Planned features:
 X-Monitor can be built from source or installed from a pre-compiled binary available in the releases.
 
 ## Building from Source
-Requires Xcode 14.3 or later.
+### Dependences
+1. Xcode 26+
 
-### Xcode 14.x
-Configure your own code signing identity and build directly.
-
-### Xcode 26 (Xcode 16+)
+### About Xcode 26
 Xcode 26 imposes new restrictions on Ad-Hoc signing with Entitlements, requiring a Provisioning Profile. This project works around it as follows:
 1. `CODE_SIGNING_ALLOWED = NO` is set in the Build Settings for X-Monitor and X-Service, disabling Xcode's automatic code signing.
 2. A Run Script Build Phase named "Resign with Entitlements" is added, which uses `codesign --force --deep --sign - --entitlements` to perform Ad-Hoc re-signing and inject the Entitlements into the app and system extension after the build completes.
 
 With Xcode 26, simply build the project — no additional configuration is needed.
 
-## Installing from Release
+### Custom Signature Verification
+Since Ad-Hoc signing cannot verify XPC peer identity through Apple's code signing infrastructure, X-Monitor implements a simple custom RSA signature verification mechanism: at build time, the Scheme PreActions generate an RSA-2048 key pair; Run Script phases in X-Service and X-Helper inject the public key as a C header file (`embedded_public_key.h`); after compilation, X-SignatureTool calculates the SHA256 hash of each `__TEXT` section in the X-Monitor binary (excluding the `__X_CUSTOM,__SIGNATURE` section), signs the hash with the private key, and writes the signature into the Mach-O's `__X_CUSTOM,__SIGNATURE` section, then re-applies Ad-Hoc signing; the key pair is deleted after the build completes. At runtime, X-Service and X-Helper verify XPC peers by reading the connecting process's binary, calculating the hash the same way, and verifying the signature using the embedded public key via `SignatureVerifier`, ensuring the connection originates from the X-Monitor binary signed at build time and preventing malicious processes from forging XPC connections.
 
-## System Requirements
+## Installing from Release
+### System Requirements
 X-Monitor is designed to support macOS 10.15 and later.
 
 During initial development, Kernel Extensions (KEXT) were considered for supporting macOS 10.12 through 10.14. However:
@@ -56,11 +56,11 @@ During initial development, Kernel Extensions (KEXT) were considered for support
 
 Consequently, the KEXT development plan has been shelved indefinitely.
 
-## Important Notes
+### Important Notes
 1. Since X-Monitor's developers do not hold the required `Entitlements`, you must disable SIP to use this application.
 2. You may encounter the alert: `X-Monitor was not opened because it contains malware. This action did not harm your Mac.` To resolve this, run the following command in Terminal: `xattr -cr /path/to/X-Monitor.app`
 
-## Getting Started
+### Getting Started
 
 1. Click `start` on the interface to begin monitoring events. You can configure event subscriptions via `X-Monitor` → `Settings` in the menu bar.
 2. Click on any row to view detailed event information.
@@ -74,5 +74,5 @@ If you encounter any issues while using X-Monitor, feel free to open an issue.
 # Other Pending Tasks
 1. Unit testing;
 2. Documentation;
-3. System Extension XPC peer signature verification (custom implementation);
+3. ~~System Extension XPC peer signature verification (custom implementation);~~ (Completed)
 4. ~~Optimize the performance of the NSTableView used for displaying events.~~ (Completed)

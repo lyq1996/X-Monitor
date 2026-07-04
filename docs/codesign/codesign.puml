@@ -1,0 +1,39 @@
+
+@startuml
+
+participant Xcode
+participant PreActions
+participant RunScripts
+participant XSignatureTool as "X-SignatureTool"
+participant PostActions
+
+Xcode -> PreActions: Build X-Monitor trigger
+
+PreActions -> PreActions: Generate RSA-2048 key pair
+
+Xcode -> RunScripts: Build X-Service trigger(Before compile source)
+
+RunScripts -> RunScripts: Read public key
+RunScripts -> RunScripts: Generate embedded_public_key.h
+RunScripts -> Xcode: Build continue
+
+Xcode -> RunScripts: Build X-Helper trigger(Before compile source)
+RunScripts -> RunScripts: Read public key
+RunScripts -> RunScripts: Generate embedded_public_key.h
+RunScripts -> Xcode: Build continue
+
+Xcode -> RunScripts: Build X-Monitor APP trigger(After compile source)
+RunScripts -> XSignatureTool: write_signature(macho, private_key)
+XSignatureTool -> XSignatureTool: Remove existing codesign
+XSignatureTool -> XSignatureTool: Calculate __TEXT sections SHA256 hash
+XSignatureTool -> XSignatureTool: RSA-SHA256 sign hash with private key
+XSignatureTool -> XSignatureTool: Write signature into __X_CUSTOM,__SIGNATURE section
+XSignatureTool -> RunScripts: Done
+RunScripts -> RunScripts: Resign ad-hoc with entitlements
+
+Xcode -> PostActions: Build Finish
+
+PostActions -> PostActions: Delete RSA key pair
+
+
+@enduml

@@ -5,12 +5,21 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;openssl genrsa -out /tmp/private_key.pem 2048&#10;openssl rsa -pubout -in /tmp/private_key.pem -out /tmp/public_key.pem&#10;">
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <PostActions>
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;cd ${PROJECT_DIR} &amp;&amp; xcrun agvtool next-version -all&#10;">
+               scriptText = "# Bump build version&#10;cd ${PROJECT_DIR} &amp;&amp; xcrun agvtool next-version -all&#10;&#10;rm -f /tmp/private_key.pem /tmp/public_key.pem&#10;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"

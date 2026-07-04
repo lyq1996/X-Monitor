@@ -11,6 +11,8 @@
 #import "ConsumerProtocol.h"
 #import "EventManager.h"
 #import "RemoteConsumer.h"
+#import "SignatureVerifier.h"
+#import "ProcUtils.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
 extern DDLogLevel ddLogLevel;
@@ -56,7 +58,14 @@ extern DDLogLevel ddLogLevel;
         }
     }
     
-    // [TODO] Verify peer
+    // Verify peer
+    NSString *peerPath = [ProcUtils getPathFromPid:@(remotePid)];
+    DDLogInfo(@"verifying peer pid=%d path=%@", remotePid, peerPath);
+    if (![SignatureVerifier verifyMachOAtPath:peerPath]) {
+        DDLogError(@"deny process: %d, custom signature verification failed for path: %@", remotePid, peerPath);
+        return NO;
+    }
+    DDLogInfo(@"peer pid=%d custom signature verified OK", remotePid);
     
     DDLogVerbose(@"incoming connection: %@", newConnection);
 

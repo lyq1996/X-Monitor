@@ -12,7 +12,7 @@
 #ifdef DEBUG
 DDLogLevel ddLogLevel = DDLogLevelDebug;
 #else
-DDLogLevel ddlogLevel = DDLogLevelInfo;
+DDLogLevel ddLogLevel = DDLogLevelInfo;
 #endif
 
 

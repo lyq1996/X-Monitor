@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2701509A8B0D49A69F724873 /* SignatureVerifier.m in Sources */ = {isa = PBXBuildFile; fileRef = CA230E26F59A45ED9437E5A7 /* SignatureVerifier.m */; };
 		35077FC42977F70F002F9587 /* HelperManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35077FC32977F70F002F9587 /* HelperManager.m */; };
 		35095E9C29BC9C7D00BD9914 /* ServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3585EBB32994872C002E70C6 /* ServiceManager.m */; };
 		3509E072297A3398001BF18A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3509E071297A3398001BF18A /* main.m */; };
@@ -42,13 +43,17 @@
 		35E84BCD2A0E236200E4921A /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E84BCC2A0E236200E4921A /* Event.m */; };
 		35E84BCE2A0F3BC900E4921A /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E84BCC2A0E236200E4921A /* Event.m */; };
 		35FE0C462993876300FDAB65 /* CoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 35FE0C452993876300FDAB65 /* CoreManager.m */; };
+		3BB8E7F76A054D16A405413B /* SignatureVerifier.m in Sources */ = {isa = PBXBuildFile; fileRef = CA230E26F59A45ED9437E5A7 /* SignatureVerifier.m */; };
+		75903DB4304F4BEC9C02DD72 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA8345A6BE3D42AD9D40BE56 /* Security.framework */; };
 		DE111EC029DD7B2D00F29ABF /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; };
 		DE111EC229DD7EB900F29ABF /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; };
 		DE111EC329DD7EB900F29ABF /* CocoaLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DE111EC529DD7ED600F29ABF /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; };
 		DE111EC629DD7ED600F29ABF /* CocoaLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3529879329D29C7700434276 /* CocoaLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DE4ED2722BAF13AB00007868 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4ED2712BAF13AB00007868 /* main.m */; };
 		DE54FA6129E193E600D40F15 /* EventSubscibleTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DE54FA6029E193E600D40F15 /* EventSubscibleTableCell.m */; };
 		DE54FA6429E1ABA000D40F15 /* MiscSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE54FA6329E1ABA000D40F15 /* MiscSettingViewController.m */; };
+		DE74FAEC2FF8F3EE00D72BD5 /* SignatureVerifier.m in Sources */ = {isa = PBXBuildFile; fileRef = CA230E26F59A45ED9437E5A7 /* SignatureVerifier.m */; };
 		DE9A686029E160D20033F14B /* EventSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9A685F29E160D20033F14B /* EventSettingViewController.m */; };
 		DEB2CCE029EB8BBF0096EA15 /* EditCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB2CCDF29EB8BBF0096EA15 /* EditCategoryViewController.m */; };
 		DEB7A9F12BAEA24B0036E2C4 /* ShortInfoModel.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB7A9F02BAEA24B0036E2C4 /* ShortInfoModel.json */; };
@@ -73,6 +78,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 3509E063297A3398001BF18A;
 			remoteInfo = "X-Helper";
+		};
+		DE74FAED2FF8FEFD00D72BD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEA9ECE029738E5500745109 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DE4ED26E2BAF13AB00007868;
+			remoteInfo = "X-SignatureTool";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -169,6 +181,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DE4ED26D2BAF13AB00007868 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -251,6 +272,11 @@
 		35E84BCC2A0E236200E4921A /* Event.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		35FE0C442993876300FDAB65 /* CoreManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreManager.h; sourceTree = "<group>"; };
 		35FE0C452993876300FDAB65 /* CoreManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreManager.m; sourceTree = "<group>"; };
+		43E15B01ABCC4E9D92D14372 /* embedded_public_key.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = embedded_public_key.h; sourceTree = "<group>"; };
+		7CF51ADD7DBA4CCDA3D4E8A4 /* SignatureVerifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignatureVerifier.h; sourceTree = "<group>"; };
+		CA230E26F59A45ED9437E5A7 /* SignatureVerifier.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SignatureVerifier.m; sourceTree = "<group>"; };
+		DE4ED26F2BAF13AB00007868 /* X-SignatureTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "X-SignatureTool"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE4ED2712BAF13AB00007868 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DE54FA5F29E193E600D40F15 /* EventSubscibleTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventSubscibleTableCell.h; sourceTree = "<group>"; };
 		DE54FA6029E193E600D40F15 /* EventSubscibleTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventSubscibleTableCell.m; sourceTree = "<group>"; };
 		DE54FA6229E1ABA000D40F15 /* MiscSettingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MiscSettingViewController.h; sourceTree = "<group>"; };
@@ -271,6 +297,7 @@
 		DEC5D5BD29EA403400EAB6D2 /* EventTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventTableViewController.m; sourceTree = "<group>"; };
 		DEC5D5BF29EA43D100EAB6D2 /* EventInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventInfoViewController.h; sourceTree = "<group>"; };
 		DEC5D5C029EA43D100EAB6D2 /* EventInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventInfoViewController.m; sourceTree = "<group>"; };
+		EA8345A6BE3D42AD9D40BE56 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -305,6 +332,14 @@
 				DEBD991D2A077A490098A4F8 /* libbsm.tbd in Frameworks */,
 				3529879429D29C7700434276 /* CocoaLumberjack.framework in Frameworks */,
 				3551D22429739E730088CE7F /* libEndpointSecurity.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DE4ED26C2BAF13AB00007868 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75903DB4304F4BEC9C02DD72 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +421,9 @@
 				3585EBF62994BFF2002E70C6 /* SMJobBlessUtil */,
 				35E84BC22A0C7DCC00E4921A /* ProcUtils.h */,
 				35E84BC32A0C7DCC00E4921A /* ProcUtils.m */,
+				7CF51ADD7DBA4CCDA3D4E8A4 /* SignatureVerifier.h */,
+				CA230E26F59A45ED9437E5A7 /* SignatureVerifier.m */,
+				43E15B01ABCC4E9D92D14372 /* embedded_public_key.h */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -548,6 +586,14 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		DE4ED2702BAF13AB00007868 /* X-SignatureTool */ = {
+			isa = PBXGroup;
+			children = (
+				DE4ED2712BAF13AB00007868 /* main.m */,
+			);
+			path = "X-SignatureTool";
+			sourceTree = "<group>";
+		};
 		DEA9ECDF29738E5500745109 = {
 			isa = PBXGroup;
 			children = (
@@ -558,6 +604,7 @@
 				3551D20D29739DB10088CE7F /* X-Monitor */,
 				3551D22529739E730088CE7F /* X-Service */,
 				3509E065297A3398001BF18A /* X-Helper */,
+				DE4ED2702BAF13AB00007868 /* X-SignatureTool */,
 				DEA9ECE929738E5500745109 /* Products */,
 				DEA9ED0329738E6F00745109 /* Frameworks */,
 			);
@@ -570,6 +617,7 @@
 				3551D22329739E730088CE7F /* com.lyq1996.X-Service.systemextension */,
 				3511CC6B2977D64100A14AE5 /* com.lyq1996.X-Monitor.X-Helper */,
 				3509E064297A3398001BF18A /* X-Helper.app */,
+				DE4ED26F2BAF13AB00007868 /* X-SignatureTool */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -579,6 +627,7 @@
 			children = (
 				DEBD991B2A077A400098A4F8 /* libbsm.tbd */,
 				3529879329D29C7700434276 /* CocoaLumberjack.framework */,
+				EA8345A6BE3D42AD9D40BE56 /* Security.framework */,
 				DEA9ED0429738E6F00745109 /* libEndpointSecurity.tbd */,
 			);
 			name = Frameworks;
@@ -610,7 +659,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3511CC6F2977D64100A14AE5 /* Build configuration list for PBXNativeTarget "Helper" */;
 			buildPhases = (
-				35077FBE2977EC16002F9587 /* ShellScript */,
+				35077FBE2977EC16002F9587 /* Replace info.plist Variables */,
+				B772EE4EC8C14C12992693D6 /* Inject Public Key into embedded_public_key.h */,
 				3511CC672977D64100A14AE5 /* Sources */,
 				3511CC682977D64100A14AE5 /* Frameworks */,
 				3511CC692977D64100A14AE5 /* CopyFiles */,
@@ -636,11 +686,13 @@
 				3509E089297A73E3001BF18A /* CopyFiles */,
 				DE111EC429DD7EB900F29ABF /* Embed Frameworks */,
 				3519F2F729DFC31600DD76F0 /* Embed System Extensions */,
+				DE4ED2612BAF0E9600007868 /* Custom Code Sign */,
 				AABB000129DFC31600DD76F0 /* Resign with Entitlements */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DE74FAEE2FF8FEFD00D72BD5 /* PBXTargetDependency */,
 				352848BD297A765700F01973 /* PBXTargetDependency */,
 				3519F2F629DFC31600DD76F0 /* PBXTargetDependency */,
 			);
@@ -653,6 +705,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3551D22D29739E730088CE7F /* Build configuration list for PBXNativeTarget "X-Service" */;
 			buildPhases = (
+				F607F4B2DE6E42F4B99A8C3F /* Inject Public Key into embedded_public_key.h */,
 				3551D21F29739E730088CE7F /* Sources */,
 				3551D22029739E730088CE7F /* Frameworks */,
 				3551D22129739E730088CE7F /* Resources */,
@@ -666,6 +719,23 @@
 			productName = "X-Service";
 			productReference = 3551D22329739E730088CE7F /* com.lyq1996.X-Service.systemextension */;
 			productType = "com.apple.product-type.system-extension";
+		};
+		DE4ED26E2BAF13AB00007868 /* X-SignatureTool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE4ED2732BAF13AB00007868 /* Build configuration list for PBXNativeTarget "X-SignatureTool" */;
+			buildPhases = (
+				DE4ED26B2BAF13AB00007868 /* Sources */,
+				DE4ED26C2BAF13AB00007868 /* Frameworks */,
+				DE4ED26D2BAF13AB00007868 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "X-SignatureTool";
+			productName = "X-SignatureTool";
+			productReference = DE4ED26F2BAF13AB00007868 /* X-SignatureTool */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -690,6 +760,9 @@
 					3551D22229739E730088CE7F = {
 						CreatedOnToolsVersion = 14.2;
 					};
+					DE4ED26E2BAF13AB00007868 = {
+						CreatedOnToolsVersion = 15.3;
+					};
 				};
 			};
 			buildConfigurationList = DEA9ECE329738E5500745109 /* Build configuration list for PBXProject "X-Monitor" */;
@@ -709,6 +782,7 @@
 				3509E063297A3398001BF18A /* X-Helper */,
 				3511CC6A2977D64100A14AE5 /* Helper */,
 				3551D22229739E730088CE7F /* X-Service */,
+				DE4ED26E2BAF13AB00007868 /* X-SignatureTool */,
 			);
 		};
 /* End PBXProject section */
@@ -744,7 +818,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		35077FBE2977EC16002F9587 /* ShellScript */ = {
+		35077FBE2977EC16002F9587 /* Replace info.plist Variables */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -754,6 +828,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Replace info.plist Variables";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -778,7 +853,61 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nAPP_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app\"\nSERVICE_PATH=\"$APP_PATH/Contents/Library/SystemExtensions/com.lyq1996.X-Service.systemextension\"\nHELPER_PATH=\"$APP_PATH/Contents/Library/LaunchServices/com.lyq1996.X-Monitor.X-Helper\"\n\nif [ -d \"$SERVICE_PATH\" ]; then\n    codesign --force --deep --sign - --entitlements \"$SRCROOT/X-Service/X-Service.entitlements\" --timestamp=none \"$SERVICE_PATH\"\n    echo \"Resigned X-Service with entitlements\"\nfi\n\nif [ -f \"$HELPER_PATH\" ]; then\n    codesign --force --sign - --timestamp=none \"$HELPER_PATH\"\n    echo \"Resigned X-Helper\"\nfi\n\ncodesign --force --deep --sign - --entitlements \"$SRCROOT/X-Monitor/X-Monitor.entitlements\" --timestamp=none \"$APP_PATH\"\necho \"Resigned X-Monitor.app with entitlements\"\n";
+			shellScript = "set -e\nAPP_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app\"\nSERVICE_PATH=\"$APP_PATH/Contents/Library/SystemExtensions/com.lyq1996.X-Service.systemextension\"\n\nif [ -d \"$SERVICE_PATH\" ]; then\n    codesign --force --deep --sign - --entitlements \"$SRCROOT/X-Service/X-Service.entitlements\" --timestamp=none \"$SERVICE_PATH\"\n    echo \"Resigned X-Service with entitlements\"\nfi\n\ncodesign --force --deep --sign - --entitlements \"$SRCROOT/X-Monitor/X-Monitor.entitlements\" --timestamp=none \"$APP_PATH\"\necho \"Resigned X-Monitor.app with entitlements\"\n";
+		};
+		B772EE4EC8C14C12992693D6 /* Inject Public Key into embedded_public_key.h */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Inject Public Key into embedded_public_key.h";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/scripts/inject_public_key.sh\"\n";
+		};
+		DE4ED2612BAF0E9600007868 /* Custom Code Sign */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Custom Code Sign";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" != \"Release\" ]; then\n    echo \"Custom Code Sign: skipped (${CONFIGURATION})\"\n    exit 0\nfi\n\necho \"Custom Code Sign: CONFIGURATION=${CONFIGURATION}\"\n\nSIGNATURE_TOOL=\"${BUILT_PRODUCTS_DIR}/X-SignatureTool\"\nif [ ! -x \"${SIGNATURE_TOOL}\" ]; then\n    SIGNATURE_TOOL=\"${SRCROOT}/Build/Products/${CONFIGURATION}/X-SignatureTool\"\nfi\nif [ ! -x \"${SIGNATURE_TOOL}\" ]; then\n    SIGNATURE_TOOL=\"${SRCROOT}/Build/${CONFIGURATION}/X-SignatureTool\"\nfi\necho \"Custom Code Sign: SIGNATURE_TOOL=${SIGNATURE_TOOL}\"\necho \"Custom Code Sign: tool executable: $([ -x \"${SIGNATURE_TOOL}\" ] && echo YES || echo NO)\"\n\nXMONITOR_BIN=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/Contents/MacOS/${PRODUCT_NAME}\"\necho \"Custom Code Sign: XMONITOR_BIN=${XMONITOR_BIN}\"\necho \"Custom Code Sign: bin exists: $([ -f \"${XMONITOR_BIN}\" ] && echo YES || echo NO)\"\necho \"Custom Code Sign: /tmp/private_key.pem exists: $([ -f /tmp/private_key.pem ] && echo YES || echo NO)\"\n\nif [ -f /tmp/private_key.pem ] && [ -x \"${SIGNATURE_TOOL}\" ] && [ -f \"${XMONITOR_BIN}\" ]; then\n    \"${SIGNATURE_TOOL}\" -e -k /tmp/private_key.pem \"${XMONITOR_BIN}\"\nelse\n    echo \"Custom Code Sign: SKIPPED - one or more conditions not met\"\nfi\n";
+		};
+		F607F4B2DE6E42F4B99A8C3F /* Inject Public Key into embedded_public_key.h */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Inject Public Key into embedded_public_key.h";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/scripts/inject_public_key.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -797,6 +926,7 @@
 			files = (
 				3511CC6E2977D64100A14AE5 /* main.m in Sources */,
 				3509E07D297A4061001BF18A /* Helper.m in Sources */,
+				2701509A8B0D49A69F724873 /* SignatureVerifier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -839,8 +969,18 @@
 				DEBD991829F396690098A4F8 /* ESNotifyEventHandler.m in Sources */,
 				35C7ADEC29BC76F9001130C8 /* EventManager.m in Sources */,
 				35E84BC42A0C7DCC00E4921A /* ProcUtils.m in Sources */,
+				3BB8E7F76A054D16A405413B /* SignatureVerifier.m in Sources */,
 				3551D22729739E730088CE7F /* main.m in Sources */,
 				351F748D29DC10510048899E /* ESProducer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DE4ED26B2BAF13AB00007868 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE4ED2722BAF13AB00007868 /* main.m in Sources */,
+				DE74FAEC2FF8F3EE00D72BD5 /* SignatureVerifier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -856,6 +996,11 @@
 			isa = PBXTargetDependency;
 			target = 3509E063297A3398001BF18A /* X-Helper */;
 			targetProxy = 352848BC297A765700F01973 /* PBXContainerItemProxy */;
+		};
+		DE74FAEE2FF8FEFD00D72BD5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DE4ED26E2BAF13AB00007868 /* X-SignatureTool */;
+			targetProxy = DE74FAED2FF8FEFD00D72BD5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -888,7 +1033,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -920,7 +1065,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -949,7 +1094,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -982,7 +1127,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1021,7 +1166,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1063,7 +1208,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1083,6 +1228,12 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__X_CUSTOM,
+					__SIGNATURE,
+					"$(SRCROOT)/X-Monitor/empty_signature.bin",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.lyq1996.X-Monitor";
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1100,7 +1251,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1137,7 +1288,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1162;
+				CURRENT_PROJECT_VERSION = 1251;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1163,6 +1314,64 @@
 				PRODUCT_NAME = "$(inherited)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+		DE4ED2742BAF13AB00007868 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HYNXS9RU3M;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rd",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"SIGNATURE_VERIFIER_NO_LOG=1",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/utils";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Security,
+				);
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "com.lyq1996.x-signature-tool";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+			};
+			name = Debug;
+		};
+		DE4ED2752BAF13AB00007868 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HYNXS9RU3M;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rd",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"SIGNATURE_VERIFIER_NO_LOG=1",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/utils";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Security,
+				);
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "com.lyq1996.x-signature-tool";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
@@ -1314,6 +1523,15 @@
 			buildConfigurations = (
 				3551D22E29739E730088CE7F /* Debug */,
 				3551D22F29739E730088CE7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DE4ED2732BAF13AB00007868 /* Build configuration list for PBXNativeTarget "X-SignatureTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DE4ED2742BAF13AB00007868 /* Debug */,
+				DE4ED2752BAF13AB00007868 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
