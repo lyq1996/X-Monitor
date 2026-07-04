@@ -13,7 +13,7 @@
 #ifdef DEBUG
 DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #else
-DDLogLevel ddlogLevel = DDLogLevelInfo;
+DDLogLevel ddLogLevel = DDLogLevelInfo;
 #endif
 
 int main(int argc, char *argv[])

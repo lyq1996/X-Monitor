@@ -3,7 +3,7 @@
    <h2 align="center">X-Monitor</h2>
 </p>
 <p align="center">
-  <div align="center">X-Monitor是一款开源、可拓展的macOS的事件监控工具，它使用Objective-C原生实现，可为安全人员提供进程行为审计的能力。</div>
+  <div align="center">X-Monitor是一款开源、可拓展的macOS的事件监控工具，它使用Objective-C原生实现，可为安全人员提供进程行为审计的能力。注意：X-Monitor的代码大部分来源于2023年，因此99%由人工编写，而非AI-Agent😊。</div>
 </p>
 <p align="center">
     <a href="https://github.com/lyq1996/X-Monitor/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-green" alt="LICENSE"></a>
@@ -13,15 +13,6 @@
 </p>
 
 ![GUI](docs/X-Monitor-GUI.png)
-
-# 阻断进程与低版本macOS支持
-如果你需要：
-1. 阻断功能；
-2. 10.12 ~ 10.14系统的事件监控。
-
-可以使用[NuwaStone](https://github.com/ConradSun/NuwaStone)，该项目支持`阻断`未签名的二进制`执行`。
-
-> NuwaStone未来可能与X-Monitor合并，并移动到[Macintosh-Mystery](https://github.com/Macintosh-Mystery)组织。
 
 # 功能
 它当前支持：
@@ -33,15 +24,27 @@
 2. 实现事件过滤器（H1优先级）；
 3. 进程链分析（H2优先级）；
 4. 来自`Network Extension`框架的网络连接、DNS事件（H2优先级）；
-5. 事件保存至本地（H3优先级）。
+5. 事件保存至本地（H3优先级）；
+6. 进程阻断（H3优先级）。
 
 # 安装
-可以从源码编译，也可以安装预编译的二进制。
+可以从源码编译，也可以从release安装预编译的二进制。
 
-## 编译
-需要Xcode Version 14.3
+## 从源码编译
+需要Xcode 14.3及以上版本。
 
-# 使用
+### Xcode 14.x
+配置你自己的签名身份后直接编译即可。
+
+### Xcode 26 (Xcode 16+)
+Xcode 26 对带有 Entitlements 的 Ad-Hoc 签名增加了限制，会要求提供 Provisioning Profile。本项目通过以下方式绕过：
+1. 在 X-Monitor 和 X-Service 的 Build Settings 中设置 `CODE_SIGNING_ALLOWED = NO`，禁止 Xcode 自动签名。
+2. 添加了 Run Script Build Phase "Resign with Entitlements"，在编译完成后使用 `codesign --force --deep --sign - --entitlements` 对 App 和 System Extension 进行 Ad-Hoc 重签名并注入 Entitlements。
+
+因此，使用 Xcode 26 时直接编译即可，无需额外配置。
+
+
+## 从release安装
 ## 系统要求
 X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 
@@ -52,7 +55,8 @@ X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 因此，经过权衡，KEXT的开发计划无限期搁置。
 
 ## 注意事项
-由于X-Monitor的开发人员没有相应的`Entitlements`，请关闭SIP使用。
+1. 由于X-Monitor的开发人员没有相应的`Entitlements`，请关闭SIP使用。
+2. 可能会弹出`X-Monitor was not opened because it contains malware. This action did not harm your Mac.`，请在命令行输入：`xattr -cr /path/to/X-Monitor.app`
 
 ## 启动
 
@@ -60,7 +64,7 @@ X-Monitor被设计为支持`macOS 10.15`及以上的系统。
 2. 点击具体行，可显示事件详细信息。
 
 ## 卸载
-只需要将其移除到废纸篓。
+无任何本地文件存留，因此只需要将其移除到废纸篓，其中的系统拓展会自动移除。
 
 # 支持
 如果您在使用X-Monitor时遇到任何问题，欢迎提出issue。

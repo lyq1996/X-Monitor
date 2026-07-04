@@ -183,7 +183,7 @@ extern DDLogLevel ddLogLevel;
     
     NSMutableDictionary *file2Info = [NSMutableDictionary dictionary];
     FILL_FILE_INFO(file2Info, msg->event.exchangedata.file2)
-    [eventInfo setValue:file2Info forKey:@"File1"];
+    [eventInfo setValue:file2Info forKey:@"File2"];
     
     event.EventInfo = eventInfo;
     return event;
@@ -358,7 +358,7 @@ extern DDLogLevel ddLogLevel;
 
     NSMutableDictionary *eventInfo = [NSMutableDictionary dictionary];
 
-    [eventInfo setValue:[NSString stringWithFormat:@"%d %d", msg->event.unmount.statfs->f_fsid.val[0], msg->event.mount.statfs->f_fsid.val[1]] forKey:@"FileSystemID"];
+    [eventInfo setValue:[NSString stringWithFormat:@"%d %d", msg->event.unmount.statfs->f_fsid.val[0], msg->event.unmount.statfs->f_fsid.val[1]] forKey:@"FileSystemID"];
     [eventInfo setValue:[NSString stringWithUTF8String:msg->event.unmount.statfs->f_fstypename] forKey:@"FileSystemType"];
     [eventInfo setValue:@(msg->event.unmount.statfs->f_owner) forKey:@"OwnerUID"];
     [eventInfo setValue:@(msg->event.unmount.statfs->f_flags) forKey:@"MountFlags"];
@@ -504,7 +504,7 @@ extern DDLogLevel ddLogLevel;
     [eventInfo setValue:targetFile forKey:@"TargetFile"];
     
     [eventInfo setValue:@(msg->event.setowner.uid) forKey:@"UID"];
-    [eventInfo setValue:@(msg->event.setowner.gid) forKey:@"UID"];
+    [eventInfo setValue:@(msg->event.setowner.gid) forKey:@"GID"];
 
     event.EventInfo = eventInfo;
     return event;

@@ -132,7 +132,7 @@
     
     // create SecStaticCodeRef object
     SecStaticCodeRef staticCodeRef;
-    OSStatus status = SecStaticCodeCreateWithPath((__bridge CFURLRef)[NSURL URLWithString:path], kSecCSDefaultFlags, &staticCodeRef);
+    OSStatus status = SecStaticCodeCreateWithPath((__bridge CFURLRef)[NSURL fileURLWithPath:path], kSecCSDefaultFlags, &staticCodeRef);
     if (status != errSecSuccess) {
         NSLog(@"Failed to create static code object with error code: %d", (int)status);
         return nil;

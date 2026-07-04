@@ -636,6 +636,7 @@
 				3509E089297A73E3001BF18A /* CopyFiles */,
 				DE111EC429DD7EB900F29ABF /* Embed Frameworks */,
 				3519F2F729DFC31600DD76F0 /* Embed System Extensions */,
+				AABB000129DFC31600DD76F0 /* Resign with Entitlements */,
 			);
 			buildRules = (
 			);
@@ -761,6 +762,24 @@
 			shellPath = /bin/sh;
 			shellScript = "# Create _info.plist then fill variable into it\ncp X-Helper/Helper/info.plist X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(PRODUCT_BUNDLE_IDENTIFIER)/$PRODUCT_BUNDLE_IDENTIFIER/g\" X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(PRODUCT_NAME)/$PRODUCT_NAME/g\" X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(MARKETING_VERSION)/$MARKETING_VERSION/g\" X-Helper/Helper/_info.plist\nsed -i '' \"s/\\$(CURRENT_PROJECT_VERSION)/$CURRENT_PROJECT_VERSION/g\" X-Helper/Helper/_info.plist\n\ncp X-Helper/Helper/com.lyq1996.X-Monitor.Helper.plist X-Helper/Helper/_com.lyq1996.X-Monitor.Helper.plist\nsed -i '' \"s/\\$(MARKETING_VERSION)/$MARKETING_VERSION/g\" X-Helper/Helper/_com.lyq1996.X-Monitor.Helper.plist\nsed -i '' \"s/\\$(CURRENT_PROJECT_VERSION)/$CURRENT_PROJECT_VERSION/g\" X-Helper/Helper/_com.lyq1996.X-Monitor.Helper.plist\n";
 		};
+		AABB000129DFC31600DD76F0 /* Resign with Entitlements */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Resign with Entitlements";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nAPP_PATH=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app\"\nSERVICE_PATH=\"$APP_PATH/Contents/Library/SystemExtensions/com.lyq1996.X-Service.systemextension\"\nHELPER_PATH=\"$APP_PATH/Contents/Library/LaunchServices/com.lyq1996.X-Monitor.X-Helper\"\n\nif [ -d \"$SERVICE_PATH\" ]; then\n    codesign --force --deep --sign - --entitlements \"$SRCROOT/X-Service/X-Service.entitlements\" --timestamp=none \"$SERVICE_PATH\"\n    echo \"Resigned X-Service with entitlements\"\nfi\n\nif [ -f \"$HELPER_PATH\" ]; then\n    codesign --force --sign - --timestamp=none \"$HELPER_PATH\"\n    echo \"Resigned X-Helper\"\nfi\n\ncodesign --force --deep --sign - --entitlements \"$SRCROOT/X-Monitor/X-Monitor.entitlements\" --timestamp=none \"$APP_PATH\"\necho \"Resigned X-Monitor.app with entitlements\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -869,7 +888,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -901,7 +920,7 @@
 				CODE_SIGN_ENTITLEMENTS = "X-Helper/X-Helper.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -930,7 +949,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -963,7 +982,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEVELOPMENT_TEAM = HYNXS9RU3M;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -997,11 +1016,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_ENTITLEMENTS = "X-Monitor/X-Monitor.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1038,11 +1058,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_ENTITLEMENTS = "X-Monitor/X-Monitor.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1075,10 +1096,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1111,10 +1133,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_ENTITLEMENTS = "X-Service/X-Service.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1160;
+				CURRENT_PROJECT_VERSION = 1162;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (

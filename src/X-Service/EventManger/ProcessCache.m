@@ -81,7 +81,6 @@ extern DDLogLevel ddLogLevel;
 
 @implementation ProcessCache {
     NSMutableDictionary<NSNumber *, Cache *> *caches;
-    os_unfair_lock cacheLock;
 }
 
 @synthesize subscribleEventTypes;
@@ -90,7 +89,6 @@ extern DDLogLevel ddLogLevel;
     self = [super init];
     if (self) {
         [self initCaches];
-        cacheLock = OS_UNFAIR_LOCK_INIT;
     }
     return self;
 }
@@ -110,7 +108,8 @@ extern DDLogLevel ddLogLevel;
 }
 
 - (Cache *)getCache:(NSNumber *)pid {
-    return [caches objectForKey:pid];
+    Cache *result = [caches objectForKey:pid];
+    return result;
 }
 
 - (void)fillCacheFromAnotherCache:(Cache *)tofill withAnother:(Cache *)another {
@@ -338,9 +337,8 @@ extern DDLogLevel ddLogLevel;
         event.EventProcess = newProcessInfo;
         
         // parent pid could be -1, get it from cache.
-        if ([ppid isEqualToNumber:@(-1)]) {
+        if ([ppid isEqualToNumber:@(-1)] && cache.ppid != nil) {
             ppid = cache.ppid;
-            [parentProcessInfo setValue:ppid forKey:@"Pid"];
         }
     }
     

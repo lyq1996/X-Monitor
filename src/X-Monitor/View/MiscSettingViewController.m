@@ -34,7 +34,7 @@ extern DDLogLevel ddLogLevel;
 
 - (void)initAutoClearSelection {
     for (NSNumber *index in index2Interval) {
-        NSNumber *interval = index2level[index];
+        NSNumber *interval = index2Interval[index];
         if ([interval isEqualToNumber:@([ConfigManager shared].autoClearInterval)]) {
             [autoClearButton selectItemAtIndex:[index unsignedIntValue]];
             break;
