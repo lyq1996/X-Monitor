@@ -13,8 +13,8 @@
 #import <arpa/inet.h>
 
 #ifdef SIGNATURE_VERIFIER_NO_LOG
-#define SVLogError(fmt, ...) do {} while(0)
-#define SVLogInfo(fmt, ...) do {} while(0)
+#define SVLogError(fmt, ...) NSLog((@"[SignatureVerifier] " fmt), ##__VA_ARGS__)
+#define SVLogInfo(fmt, ...)  NSLog((@"[SignatureVerifier] " fmt), ##__VA_ARGS__)
 #else
 #import <CocoaLumberjack/CocoaLumberjack.h>
 extern DDLogLevel ddLogLevel;

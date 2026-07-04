@@ -58,6 +58,11 @@ extern DDLogLevel ddLogLevel;
             XCoreError ret = [coreManager initCore];
             if (ret != X_CORE_SUCCESS) {
                 DDLogError(@"init core service failed, will exit");
+                NSAlert *alert = [[NSAlert alloc] init];
+                alert.messageText = @"Failed to initialize core service";
+                alert.informativeText = [NSString stringWithFormat:@"Error code: %d", (int)ret];
+                [alert addButtonWithTitle:@"OK"];
+                [alert runModal];
                 [NSApp terminate:nil];
             }
         }
